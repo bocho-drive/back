@@ -1,18 +1,17 @@
-package com.sparta.bochodrive.entity;
+package com.sparta.bochodrive.domain.community.entity;
 
 
+import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post {
+public class Community extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +21,7 @@ public class Post {
     private String title;
 
     @Column(nullable = false)
-    private String category;
+    private CategoryEnum category;
 
     @Column(nullable = false)
     private String content;
@@ -31,11 +30,6 @@ public class Post {
     @Column(nullable = false)
     private boolean verifiedYN=false;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 
     @Column(nullable = false)
     private boolean deleteYN=false;

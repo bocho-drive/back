@@ -1,16 +1,19 @@
-package com.sparta.bochodrive.entity;
+package com.sparta.bochodrive.domain.user.entity;
 
 
+import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Time;
+
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class User {
+public class User extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +29,7 @@ public class User {
     private String nickname;
 
     @Column(nullable = false)
-    private String createAt;
+    private boolean deleteYN;
+
+
 }
