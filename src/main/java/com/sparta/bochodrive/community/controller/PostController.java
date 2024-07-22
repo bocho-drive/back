@@ -19,7 +19,7 @@ public class PostController {
     PostService postService;
 
     //게시글 작성
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<PostRequestDto> addPost(@RequestBody @Valid PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto postResponseDto=postService.addPost(postRequestDto,userDetails.getUser());
         return null;
