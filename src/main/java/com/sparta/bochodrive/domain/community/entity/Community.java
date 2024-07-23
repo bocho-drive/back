@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.awt.*;
 import java.util.List;
@@ -52,15 +53,15 @@ public class Community extends TimeStamped {
     private User user;
 
     //댓글
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
     private List<Comment> comments;
 
     //챌린지 인증
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
     private List<ChallengeVarify> challengeVarifies;
 
     //게시글 투표
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
     private List<Vote> votes;
 
 
@@ -70,7 +71,7 @@ public class Community extends TimeStamped {
 
 
     //이미지
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
     private List<ImageS3> images;
 
 

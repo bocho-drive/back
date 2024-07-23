@@ -4,8 +4,7 @@ package com.sparta.bochodrive.domain.community.controller;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
-import com.sparta.bochodrive.domain.community.entity.Community;
-import com.sparta.bochodrive.domain.community.service.CommunityService;
+import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
 import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.Message;
 import jakarta.validation.Valid;
@@ -22,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommunityController {
 
-    CommunityService communityService;
+    CommunityServiceImpl communityService;
 
     // 게시글 작성
     @PostMapping

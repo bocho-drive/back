@@ -3,7 +3,7 @@ package com.sparta.bochodrive.domain.comment.controller;
 
 import com.sparta.bochodrive.domain.comment.dto.CommentReponseDto;
 import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
-import com.sparta.bochodrive.domain.comment.service.CommentService;
+import com.sparta.bochodrive.domain.comment.service.CommentServiceImpl;
 import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.Message;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/communities")
 @RequiredArgsConstructor
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentServiceImpl commentService;
 
     //댓글 작성
     @PostMapping
