@@ -1,6 +1,8 @@
 package com.sparta.bochodrive.domain.user.entity;
 
 
+import com.sparta.bochodrive.domain.comment.entity.Comment;
+import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.util.List;
 
 @Entity
 @Setter
@@ -30,6 +33,17 @@ public class User extends TimeStamped {
 
     @Column(nullable = false)
     private boolean deleteYN;
+
+    //게시글
+    @OneToMany(mappedBy = "community")
+    private List<Community> communities;
+
+    //댓글
+    @OneToMany(mappedBy = "comment")
+    private List<Comment> comments;
+
+
+
 
 
 }
