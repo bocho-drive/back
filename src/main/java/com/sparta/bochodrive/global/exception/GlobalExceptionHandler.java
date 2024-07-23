@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
         return e.getMessage();
     }
 
+
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<RestApiException> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
         RestApiException restApiException = new RestApiException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());

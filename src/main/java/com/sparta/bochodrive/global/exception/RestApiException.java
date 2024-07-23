@@ -9,4 +9,5 @@ public class RestApiException {
 
     private String errorMessage;
     private int statusCode;
+
 }
