@@ -8,6 +8,7 @@ import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.UserDetailsImpl;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class CommentService {
         return commentReponseDtoList;
     }
 
+    @Transactional
     public CommentReponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto,UserDetailsImpl userDetails) {
         Comment comment = findCommentById(commentId);
         if(!comment.getUser().equals(userDetails.getUsername())) {

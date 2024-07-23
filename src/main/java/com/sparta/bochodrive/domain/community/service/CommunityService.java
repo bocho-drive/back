@@ -7,6 +7,7 @@ import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.UserDetailsImpl;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,8 +55,8 @@ public class CommunityService {
         communityResponseDto.addViewCount(); //조회수++
         return communityResponseDto;
     }
-
     //게시글 수정
+    @Transactional
     public CommunityResponseDto updatePost(Long id,
                                            CommunityRequestDto communityRequestDto,
                                            UserDetailsImpl userDetails) throws AccessDeniedException {

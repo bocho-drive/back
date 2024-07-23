@@ -26,12 +26,12 @@ public class Comment extends TimeStamped {
     private boolean deleteYN;
 
     //게시글
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="community_id",nullable = false)
     private Community community;
 
     //회원
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 
