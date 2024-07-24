@@ -7,10 +7,8 @@ import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
-import com.sparta.bochodrive.global.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +23,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
+
         Community community=findCommunityById(commentRequestDto.getCommunitiesId());
         Comment comment = new Comment(commentRequestDto, user, community);
         Comment savedComment = commentRepository.save(comment);
@@ -35,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     //다시
     public List<CommentReponseDto> getComments(Long communitiesId) {
 
-        List<Comment> commentList=commentRepository.findByCommunitiesId(communitiesId);
+        List<Comment> commentList=commentRepository.findByCommunityId(communitiesId);
         List<CommentReponseDto> commentReponseDtoList=new ArrayList<>();
         for(Comment comment:commentList) {
             commentReponseDtoList.add(new CommentReponseDto(comment));
@@ -45,21 +44,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public CommentReponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto,UserDetailsImpl userDetails) {
+    public void updateComment(Long commentId, CommentRequestDto commentRequestDto) {
         Comment comment = findCommentById(commentId);
-        if(!comment.getUser().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("댓글 작성자가 아닙니다.");
-        }
+
         comment.update(commentRequestDto);
-        commentRepository.save(comment);
-        return new CommentReponseDto(comment);
+
     }
 
-    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+    public void deleteComment(Long commentId) {
         Comment comment = findCommentById(commentId);
-        if(!comment.getUser().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("댓글 작성자가 아닙니다.");
-        }
         commentRepository.delete(comment);
 
     }
