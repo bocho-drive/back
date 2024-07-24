@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/communities")
+@RequestMapping("/api/comments")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentServiceImpl commentService;
@@ -50,10 +50,9 @@ public class CommentController {
 
     //댓글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody @Valid CommentRequestDto commentRequestDto,
-                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody @Valid CommentRequestDto commentRequestDto) {
         try{
-            commentService.updateComment(commentId,commentRequestDto,userDetails);
+            commentService.updateComment(commentId,commentRequestDto);
             Message message=new Message(HttpStatus.OK,"수정에 성공하였습니다",null);
             return new ResponseEntity<>(message,HttpStatus.OK);
         }catch (IllegalArgumentException e) {
@@ -69,7 +68,7 @@ public class CommentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try{
-            commentService.deleteComment(commentId,userDetails);
+            commentService.deleteComment(commentId);
             Message message=new Message(HttpStatus.OK,"수정에 성공하였습니다",null);
             return new ResponseEntity<>(message,HttpStatus.OK);
         }catch (IllegalArgumentException e) {
