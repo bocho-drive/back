@@ -35,11 +35,11 @@ public class User extends TimeStamped {
     private boolean deleteYN;
 
     //게시글
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "user")
     private List<Community> communities;
 
     //댓글
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
 

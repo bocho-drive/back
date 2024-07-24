@@ -31,7 +31,7 @@ public class Challenge extends TimeStamped {
 
 
     //챌린지 인증
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "challenge")
     private List<ChallengeVarify> challengeVarifies;
 
 
