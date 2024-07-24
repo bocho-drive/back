@@ -4,6 +4,7 @@ package com.sparta.bochodrive.domain.community.controller;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
+import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
 import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.Message;
@@ -39,7 +40,7 @@ public class CommunityController {
 
     // 게시글 목록 조회
     @GetMapping
-    public ResponseEntity<?> getAllPosts(@RequestParam(required = false) String category) {
+    public ResponseEntity<?> getAllPosts(@RequestParam(required = false) CategoryEnum category) {
         try {
             List<CommunityListResponseDto> posts = communityService.getAllPosts(category);
             Message message = new Message(HttpStatus.OK, "목록 조회 성공", posts);
@@ -67,21 +68,12 @@ public class CommunityController {
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable Long id,
-                                              @RequestBody @Valid CommunityRequestDto postRequestDto,
-                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try {
-            communityService.updatePost(id, postRequestDto, userDetails);
-            Message message = new Message(HttpStatus.OK, "수정에 성공하였습니다.", null);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        }catch (IllegalArgumentException e) {
-            Message message=new Message(HttpStatus.NOT_FOUND,"존재하지 않는 게시글입니다.",null);
-            return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e) {
-            Message message = new Message(HttpStatus.UNAUTHORIZED, "수정에 실패하였습니다.", null);
-            return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity updatePost(@PathVariable Long id,
+                                              @RequestBody @Valid CommunityRequestDto postRequestDto) {
+
+        communityService.updatePost(id, postRequestDto);
+        return null;
+
     }
 
     // 게시글 삭제
