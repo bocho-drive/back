@@ -13,7 +13,6 @@ import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -45,15 +44,15 @@ public class CommunityServiceImplTest {
         CommunityRequestDto requestDto = new CommunityRequestDto("Test Title", "Test Content", CategoryEnum.GENERAL, Arrays.asList("image1.jpg", "image2.jpg"));
         Community community = new Community(requestDto, user);
 
-        // Ensure that save method returns the community object with an ID set
-        community.setId(1L); // Ensure ID is set
+
+        community.setId(1L);
         when(communityRepository.save(any(Community.class))).thenReturn(community);
 
         log.info("Calling addPost method");
         CommunityResponseDto responseDto = communityService.addPost(requestDto, user);
         assertNotNull(responseDto);
         assertEquals("Test Title", responseDto.getTitle());
-        assertEquals(1L, responseDto.getId()); // Check if ID is set correctly
+        assertEquals(1L, responseDto.getId());
     }
 
     @Test
@@ -99,7 +98,7 @@ public class CommunityServiceImplTest {
         verify(communityRepository).save(communityCaptor.capture());
         Community deletedCommunity = communityCaptor.getValue();
 
-        assertTrue(deletedCommunity.isDeleteYN()); // Ensure the deleteYn flag is set to true
+        assertTrue(deletedCommunity.isDeleteYN());
     }
 
     @Test
