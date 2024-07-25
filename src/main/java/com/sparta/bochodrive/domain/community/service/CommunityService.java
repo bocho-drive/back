@@ -11,6 +11,6 @@ public interface CommunityService {
     CommunityResponseDto addPost(CommunityRequestDto communityRequestDto,User user) throws Exception;
     List<CommunityListResponseDto> getAllPosts(CategoryEnum category) throws Exception;
     CommunityResponseDto getPost(Long id);
-    void updatePost(Long id, CommunityRequestDto communityRequestDto) throws Exception;
-    void deletePost(Long id) throws Exception;
+    void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws Exception;
+    void deletePost(Long id, User user) throws Exception;
 }

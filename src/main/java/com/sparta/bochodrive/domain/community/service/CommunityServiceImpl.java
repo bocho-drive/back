@@ -37,7 +37,7 @@ public class CommunityServiceImpl implements CommunityService {
             Community savedCommunity = communityRepository.save(community);
             return new CommunityResponseDto(savedCommunity);
         } catch (Exception e) {
-            throw new Exception(ErrorCode.ADD_FAILED.getMessage(), e);
+            throw new Exception(ErrorCode.ADD_FAILED.getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 수정
     @Override
     @Transactional
-    public void updatePost(Long id, CommunityRequestDto communityRequestDto) throws Exception{
+    public void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws Exception{
 
         try{
             Community community=findCommunityById(id);
@@ -88,11 +88,8 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 삭제
     @Override
-    public void deletePost(Long id)  throws Exception {
+    public void deletePost(Long id,User user)  throws Exception {
 
-        //궁금한 것 데이터베이스에서 deleteYn이 있는데
-        //이걸 한 이유가 사용자가 글을 삭제한다고 해서 진짜 삭제하는게 아니라 정보는 가지고 있는 걸 구분하기 위한 컬럼인데
-        //이걸 어떻게 처리할지 모르겠습니다.
         try{
             Community community=findCommunityById(id);
             community.setDeleteYn(true);
