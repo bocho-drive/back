@@ -1,6 +1,8 @@
 package com.sparta.bochodrive.domain.community.dto;
 
 
+import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,16 +11,18 @@ import java.util.List;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class PostRequestDto {
+@AllArgsConstructor
+@Setter
+public class CommunityRequestDto {
 
 
     private String title;
     private String content;
-    private String category;
-    private boolean isVote;
+    private CategoryEnum category;
     private List<String> images;
+
+
 
 
 }
