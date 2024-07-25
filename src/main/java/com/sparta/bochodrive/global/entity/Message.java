@@ -1,22 +1,19 @@
 package com.sparta.bochodrive.global.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
-@NoArgsConstructor
 @AllArgsConstructor
 public class Message<T> {
+    int statusCode;
+    String message;
 
-    private int statusCode;
-    private String message;
-    private T data;
+    @JsonInclude(JsonInclude.Include.NON_NULL) //null일 때는 json에 포함을 안함
+    T data=null;
 
-
-    public Message(HttpStatus httpStatus, String msg, T data) {
-        this.statusCode = httpStatus.value();
-        this.message = msg;
-        this.data = data;
+    public Message(int statusCode, String message) {
+        this.statusCode = statusCode;
+        this.message = message;
     }
 }
