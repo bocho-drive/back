@@ -19,16 +19,17 @@ public class CommunityResponseDto {
     private String title;
     private String content;
     private CategoryEnum category;
-    private String author;
     private int viewCount=0;
-    private List<String> imageUploadUrls;
+    //private List<String> imageUploadUrls;
     private LocalDateTime createdAt;
 
 
     public CommunityResponseDto(Community saveCommunity) {
-    }
-
-    public void addViewCount() {
+        this.id = saveCommunity.getId();
+        this.title = saveCommunity.getTitle();
+        this.content = saveCommunity.getContent();
+        this.category = saveCommunity.getCategory();
+        this.createdAt = saveCommunity.getCreatedAt();
         this.viewCount++;
     }
 }
