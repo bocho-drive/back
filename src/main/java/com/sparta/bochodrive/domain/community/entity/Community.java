@@ -9,6 +9,7 @@ import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.vote.entity.Vote;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,13 +22,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name="community")
 public class Community extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
+    @Size(min=1,max=100)
     private String title;
 
     @Column(nullable = false)
@@ -35,6 +38,7 @@ public class Community extends TimeStamped {
     private CategoryEnum category;
 
     @Column(nullable = false)
+    @Size(min = 1)
     private String content;
 
 
@@ -44,9 +48,6 @@ public class Community extends TimeStamped {
 
     @Column(nullable = false)
     private boolean deleteYN=false;
-
-    @Column(nullable = false)
-    private boolean isVote;
 
     //유저
     @ManyToOne(fetch = FetchType.LAZY)
@@ -76,24 +77,24 @@ public class Community extends TimeStamped {
     private List<ImageS3> images;
 
 
-
-
-
-
-
-
-
-    public Community(CommunityRequestDto communityRequestDto, User user) {
+    public Community(CommunityRequestDto communityRequestDto,User user) {
         this.title = communityRequestDto.getTitle();
         this.content=communityRequestDto.getContent();
         this.category=communityRequestDto.getCategory();
         this.user=user;
+
     }
+
+
 
     public void update(CommunityRequestDto communityRequestDto) {
         this.category=communityRequestDto.getCategory();
         this.title=communityRequestDto.getTitle();
         this.content=communityRequestDto.getContent();
 
+    }
+
+    public void setDeleteYn(boolean b) {
+        this.deleteYN=b;
     }
 }

@@ -5,6 +5,7 @@ import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class Challenge extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 100)
+    @Size(min = 1, max = 100)
     private String title;
 
     @Column(nullable = false)

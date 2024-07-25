@@ -5,6 +5,7 @@ import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Comment extends TimeStamped {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min=1)
     private String content;
 
     @Column(nullable = false)
@@ -41,6 +43,10 @@ public class Comment extends TimeStamped {
         this.community=community;
         this.user = user;
         this.content= commentRequestDto.getContent();
+        this.deleteYN=false;
+    }
+    public void setDeleteYN(boolean deleteYN) {
+        this.deleteYN = deleteYN;
     }
 
     public void update(CommentRequestDto commentRequestDto) {
