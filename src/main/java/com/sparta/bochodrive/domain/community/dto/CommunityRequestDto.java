@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class CommunityRequestDto {
 
 
@@ -20,6 +21,8 @@ public class CommunityRequestDto {
     private String content;
     private CategoryEnum category;
     private List<String> images;
+
+
 
 
 }
