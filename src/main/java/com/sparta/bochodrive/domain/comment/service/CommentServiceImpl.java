@@ -9,6 +9,7 @@ import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
+import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,60 +26,54 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) throws Exception {
+    public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
-        try{
-            Community community=findCommunityById(commentRequestDto.getCommunitiesId());
-            Comment comment = new Comment(commentRequestDto, user, community);
-            Comment savedComment = commentRepository.save(comment);
-            return new CommentReponseDto(savedComment);
-        }catch (Exception e){
-            throw new Exception(ErrorCode.ADD_FAILED.getMessage());
+        Community community=findCommunityById(commentRequestDto.getCommunitiesId());
+        if(community.getUser().getId().equals(user.getId())){
+            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
         }
+        Comment comment = new Comment(commentRequestDto, user, community);
+        Comment savedComment = commentRepository.save(comment);
+        return new CommentReponseDto(savedComment);
 
     }
 
 
     @Override
-    public List<CommentReponseDto> getComments(Long communitiesId) throws Exception {
+    public List<CommentReponseDto> getComments(Long communitiesId) {
 
-
-        try{
-            List<Comment> commentList=commentRepository.findByCommunityId(communitiesId);
-            return commentList.stream().map(commentResponseDto ->
-                    new CommentReponseDto(commentResponseDto)).collect(Collectors.toList());
-        }catch (Exception e){
-            throw new Exception(ErrorCode.GETLIST_FAILED.getMessage());
-        }
+        List<Comment> commentList=commentRepository.findByCommunityId(communitiesId);
+        return commentList.stream().map(commentResponseDto ->
+                new CommentReponseDto(commentResponseDto)).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void updateComment(Long commentId, CommentRequestDto commentRequestDto) throws Exception {
-       try{
-           Comment comment = findCommentById(commentId);
-           comment.update(commentRequestDto);
-           commentRepository.save(comment);
-       }catch (Exception e){
-           throw new Exception(ErrorCode.UPDATE_FAILED.getMessage());
-       }
+    public ErrorCode updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
+        Comment comment = findCommentById(commentId);
+        if(comment.getUser().getId().equals(commentRequestDto.getCommunitiesId())){
+            return ErrorCode.UPDATE_FAILED;
+        }
+        comment.update(commentRequestDto);
+        commentRepository.save(comment);
+        return ErrorCode.OK;
 
     }
 
     @Override
-    public void deleteComment(Long commentId) throws Exception {
-        try{
-            Comment comment = findCommentById(commentId);
-            comment.setDeleteYN(true);
-            commentRepository.save(comment);
-        }catch (Exception e){
-            throw new Exception(ErrorCode.DELETE_FAILED.getMessage());
+    public ErrorCode deleteComment(Long commentId,User user)  {
+        Comment comment = findCommentById(commentId);
+        if(comment.getUser().getId().equals(user.getId())){
+            return ErrorCode.DELETE_FAILED;
         }
+        comment.setDeleteYN(true);
+        commentRepository.save(comment);
+        return ErrorCode.OK;
 
     }
 
-    public Community findCommunityById(Long communityId) throws Exception {
-        Community community = communityRepository.findById(communityId).orElseThrow(()->new Exception(ErrorCode.POST_NOT_FOUND.getMessage()));
+    public Community findCommunityById(Long communityId)  {
+        Community community = communityRepository.findById(communityId).orElseThrow(()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
         return community;
     }
     public Comment findCommentById(Long commentId) {

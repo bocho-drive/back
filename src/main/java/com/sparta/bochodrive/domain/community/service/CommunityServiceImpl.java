@@ -8,7 +8,9 @@ import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
+
 import com.sparta.bochodrive.global.exception.NotFoundException;
+import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -30,37 +33,31 @@ public class CommunityServiceImpl implements CommunityService {
 
     // 게시글 작성
     @Override
-    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) throws Exception {
-        try {
-
-            Community community = new Community(communityRequestDto, user);
-            Community savedCommunity = communityRepository.save(community);
-            return new CommunityResponseDto(savedCommunity);
-        } catch (Exception e) {
-            throw new Exception(ErrorCode.ADD_FAILED.getMessage());
+    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user)  {
+        Community community = new Community(communityRequestDto, user);
+        if(community.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
         }
+        Community savedCommunity = communityRepository.save(community);
+        return new CommunityResponseDto(savedCommunity);
     }
 
 
     //게시글 목록 조회
     @Override
-    public List<CommunityListResponseDto> getAllPosts(CategoryEnum category) throws Exception {
-        try{
-            //카테고리 별로 list찾기
-            List<Community> communities;
-            //카테고리별 목록 조회
-            if(category == null) {
-                communities = communityRepository.findAll(); //카테고리 설정 안했을 때 전체글 목록
-            }
-            else {
-                communities=communityRepository.findAllByCategory(category); //카테고리별 글목록
-            }
-
-            return communities.stream().map(communityListResponseDto ->
-                    new CommunityListResponseDto(communityListResponseDto)).collect(Collectors.toList());
-        }catch (Exception e){
-            throw new Exception(ErrorCode.ADD_FAILED.getMessage());
+    public List<CommunityListResponseDto> getAllPosts(CategoryEnum category)  {
+        //카테고리 별로 list찾기
+        List<Community> communities;
+        //카테고리별 목록 조회
+        if(category == null) {
+            communities = communityRepository.findAll(); //카테고리 설정 안했을 때 전체글 목록
         }
+        else {
+            communities=communityRepository.findAllByCategory(category); //카테고리별 글목록
+        }
+
+        return communities.stream().map(communityListResponseDto ->
+                new CommunityListResponseDto(communityListResponseDto)).collect(Collectors.toList());
     }
 
     //게시글 상세 조회
@@ -74,29 +71,28 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 수정
     @Override
     @Transactional
-    public void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws Exception{
+    public ErrorCode updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
-        try{
-            Community community=findCommunityById(id);
-            community.update(communityRequestDto);//update
-            communityRepository.save(community);
-        }catch (Exception e){
-            throw new Exception(ErrorCode.UPDATE_FAILED.getMessage());
+        Community community=findCommunityById(id);
+        if(!community.getUser().getId().equals(user.getId())) {
+            return ErrorCode.DELETE_FAILED;
         }
-
+        community.update(communityRequestDto);//update
+        communityRepository.save(community);
+        return ErrorCode.OK;
     }
 
     //게시글 삭제
     @Override
-    public void deletePost(Long id,User user)  throws Exception {
+    public ErrorCode deletePost(Long id, User user)  {
 
-        try{
-            Community community=findCommunityById(id);
-            community.setDeleteYn(true);
-            communityRepository.save(community);
-        }catch (Exception e){
-            throw new Exception(ErrorCode.DELETE_FAILED.getMessage());
+        Community community=findCommunityById(id);
+        if(!community.getUser().getId().equals(user.getId())) {
+            return ErrorCode.DELETE_FAILED;
         }
+        community.setDeleteYn(true);
+        communityRepository.save(community);
+        return ErrorCode.OK;
     }
 
 
