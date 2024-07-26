@@ -29,36 +29,20 @@ public class CommunityController {
     // 게시글 작성
     @PostMapping
     public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,@AuthenticationPrincipal User user
-    ) throws Exception {
+    )  {
 
         communityService.addPost(postRequestDto,user);
         return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
 
     }
 
-    // 게시글 목록 조회
-    @GetMapping
-    public ApiResponse<List<CommunityListResponseDto>> getAllPosts(@RequestParam(required = false) CategoryEnum category) throws Exception{
 
-        List<CommunityListResponseDto> posts = communityService.getAllPosts(category);
-        return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.",posts);
-
-    }
-
-    // 게시글 상세 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPost(@PathVariable Long id) {
-
-        CommunityResponseDto post = communityService.getPost(id);
-        return ResponseEntity.ok().body(post);
-
-    }
 
     // 게시글 수정
     @PutMapping("/{id}")
     public ApiResponse updatePost(@PathVariable Long id,
                                           @RequestBody @Valid CommunityRequestDto postRequestDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails)  {
 
         communityService.updatePost(id, postRequestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
@@ -68,7 +52,7 @@ public class CommunityController {
     // 게시글 삭제
     @DeleteMapping("/{id}")
     public ApiResponse deletePost(@PathVariable Long id,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception{
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         communityService.deletePost(id,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
