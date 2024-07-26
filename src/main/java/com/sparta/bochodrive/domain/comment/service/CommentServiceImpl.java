@@ -27,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
+    @Transactional
     public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
         Community community=findCommunityById(commentRequestDto.getCommunitiesId());

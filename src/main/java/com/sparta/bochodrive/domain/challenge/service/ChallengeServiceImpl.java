@@ -24,6 +24,7 @@ public class ChallengeServiceImpl implements ChallengService {
 
     //챌린지 작성
     @Override
+    @Transactional
     public ChallengeResponseDto addChallenge(ChallengeRequestDto requestDto) {
 
         Challenge challenge = new Challenge(requestDto);

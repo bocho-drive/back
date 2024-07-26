@@ -33,6 +33,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     // 게시글 작성
     @Override
+    @Transactional
     public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user)  {
         Community community = new Community(communityRequestDto, user);
 //        //오늘의 질문!!! ->equals인지 signup뭐시기 인지
