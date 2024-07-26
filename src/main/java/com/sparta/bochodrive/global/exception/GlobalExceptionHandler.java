@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(restApiException, HttpStatus.INTERNAL_SERVER_ERROR);}
 
 
-    //400
+    //400 -> 회원가입할 때 중복된 이메일 이런거
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<RestApiException> IllegalArgumentExceptionHandler(IllegalArgumentException ex) {
         RestApiException restApiException = new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    //404
+    //404 -> 개발자 예상 가능
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<RestApiException> NotFoundExceptionHandler(NotFoundException ex) {
         RestApiException restApiException = new RestApiException(HttpStatus.NOT_FOUND.value(), ex.getMessage());
@@ -41,13 +41,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-    //403
-    @ExceptionHandler({UnauthorizedException.class})
-    public ResponseEntity<RestApiException> UnauthorizedExceptionHandler(UnauthorizedException ex) {
-        RestApiException restApiException = new RestApiException(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
-        return new ResponseEntity<>(
-                restApiException,
-                HttpStatus.FORBIDDEN
-        );
-    }
+//    //403
+//    @ExceptionHandler({UnauthorizedException.class})
+//    public ResponseEntity<RestApiException> UnauthorizedExceptionHandler(UnauthorizedException ex) {
+//        RestApiException restApiException = new RestApiException(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+//        return new ResponseEntity<>(
+//                restApiException,
+//                HttpStatus.FORBIDDEN
+//        );
+//    }
 }

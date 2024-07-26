@@ -11,6 +11,6 @@ import java.util.List;
 public interface CommentService {
     CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user);
     List<CommentReponseDto> getComments(Long communitiesId);
-    ErrorCode updateComment(Long commentId, CommentRequestDto commentRequestDto, User user); ;
-    ErrorCode deleteComment(Long commentId,User user);
+    void updateComment(Long commentId, CommentRequestDto commentRequestDto, User user); ;
+    void deleteComment(Long commentId,User user);
 }

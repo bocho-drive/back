@@ -35,9 +35,10 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user)  {
         Community community = new Community(communityRequestDto, user);
-        if(community.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
-        }
+//        //오늘의 질문!!! ->equals인지 signup뭐시기 인지
+//        if(!community.getUser().getId().equals(user.getId())) {
+//            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+//        }
         Community savedCommunity = communityRepository.save(community);
         return new CommunityResponseDto(savedCommunity);
     }
@@ -71,28 +72,30 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 수정
     @Override
     @Transactional
-    public ErrorCode updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
+    public void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
         Community community=findCommunityById(id);
-        if(!community.getUser().getId().equals(user.getId())) {
-            return ErrorCode.DELETE_FAILED;
-        }
+//        //오늘의 질문!!! ->equals인지 signup뭐시기 인지
+//        if(!community.getUser().getId().equals(user.getId())) {
+//            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+//        }
         community.update(communityRequestDto);//update
         communityRepository.save(community);
-        return ErrorCode.OK;
+
     }
 
     //게시글 삭제
     @Override
-    public ErrorCode deletePost(Long id, User user)  {
+    public void deletePost(Long id, User user)  {
 
         Community community=findCommunityById(id);
-        if(!community.getUser().getId().equals(user.getId())) {
-            return ErrorCode.DELETE_FAILED;
-        }
+        //
+//        if(!community.getUser().getId().equals(user.getId())) {
+//            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+//        }
         community.setDeleteYn(true);
         communityRepository.save(community);
-        return ErrorCode.OK;
+
     }
 
 
