@@ -12,6 +12,7 @@ import com.sparta.bochodrive.global.exception.NotFoundException;
 import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +30,9 @@ public class CommentServiceImpl implements CommentService {
     public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
         Community community=findCommunityById(commentRequestDto.getCommunitiesId());
-        if(community.getUser().getId().equals(user.getId())){
-            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
-        }
+//        if(community.getUser().getId().equals(user.getId())){
+//            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
+//        }
         Comment comment = new Comment(commentRequestDto, user, community);
         Comment savedComment = commentRepository.save(comment);
         return new CommentReponseDto(savedComment);
@@ -49,26 +50,27 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public ErrorCode updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
+    public void updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
         Comment comment = findCommentById(commentId);
-        if(comment.getUser().getId().equals(commentRequestDto.getCommunitiesId())){
-            return ErrorCode.UPDATE_FAILED;
-        }
+//        if(comment.getUser().getId().equals(user.getId())){
+//            throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
+//        }
         comment.update(commentRequestDto);
         commentRepository.save(comment);
-        return ErrorCode.OK;
+
 
     }
 
     @Override
-    public ErrorCode deleteComment(Long commentId,User user)  {
+    public void deleteComment(Long commentId,User user)  {
         Comment comment = findCommentById(commentId);
-        if(comment.getUser().getId().equals(user.getId())){
-            return ErrorCode.DELETE_FAILED;
-        }
+//        if(comment.getUser().getId().equals(user.getId())){
+//            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+//        }
         comment.setDeleteYN(true);
         commentRepository.save(comment);
-        return ErrorCode.OK;
+//        return HttpStatus.OK;
+
 
     }
 
