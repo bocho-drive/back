@@ -1,11 +1,10 @@
 package com.sparta.bochodrive.global.exception;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.Getter;
 
 public class NotFoundException extends EntityNotFoundException {
-    //404
-    @Getter
+
+    //엔티티가 목록에 존재하지 않을 때의 에러처리
     private final ErrorCode errorCode;
     public NotFoundException(ErrorCode errorCode) {
         super(errorCode.getMessage());

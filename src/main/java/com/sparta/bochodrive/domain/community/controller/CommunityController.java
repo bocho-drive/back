@@ -6,10 +6,12 @@ import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
+import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.UserDetailsImpl;
-import com.sparta.bochodrive.global.entity.Message;
+import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,52 +28,34 @@ public class CommunityController {
 
     // 게시글 작성
     @PostMapping
-    public ResponseEntity addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,@AuthenticationPrincipal UserDetailsImpl userDetails
-    ) throws Exception {
+    public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,@AuthenticationPrincipal User user
+    )  {
 
-        communityService.addPost(postRequestDto,userDetails.getUser());
-        Message message = new Message(HttpStatus.CREATED.value(), "작성에 성공하였습니다.");
-        return new ResponseEntity<>(message,HttpStatus.CREATED);
-
-    }
-
-    // 게시글 목록 조회
-    @GetMapping
-    public ResponseEntity<?> getAllPosts(@RequestParam(required = false) CategoryEnum category) throws Exception{
-
-        List<CommunityListResponseDto> posts = communityService.getAllPosts(category);
-        Message message = new Message(HttpStatus.OK.value(), "목록 조회 성공",posts);
-        return new ResponseEntity<>(HttpStatus.OK);
+        communityService.addPost(postRequestDto,user);
+        return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
 
     }
 
-    // 게시글 상세 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getPost(@PathVariable Long id) {
 
-        CommunityResponseDto post = communityService.getPost(id);
-        return ResponseEntity.ok().body(post);
-
-    }
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public ResponseEntity updatePost(@PathVariable Long id,
-                                     @RequestBody @Valid CommunityRequestDto postRequestDto) throws Exception {
+    public ApiResponse updatePost(@PathVariable Long id,
+                                          @RequestBody @Valid CommunityRequestDto postRequestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails)  {
 
-        communityService.updatePost(id, postRequestDto);
-        Message message = new Message(HttpStatus.OK.value(), "수정에 성공하였습니다.");
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        communityService.updatePost(id, postRequestDto,userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
 
     }
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) throws Exception{
+    public ApiResponse deletePost(@PathVariable Long id,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        communityService.deletePost(id);
-        Message message = new Message(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        communityService.deletePost(id,userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
 
     }
 
