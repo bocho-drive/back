@@ -10,7 +10,6 @@ import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 
 import com.sparta.bochodrive.global.exception.NotFoundException;
-import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +85,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 삭제
     @Override
+    @Transactional
     public void deletePost(Long id, User user)  {
 
         Community community=findCommunityById(id);

@@ -62,6 +62,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long commentId,User user)  {
         Comment comment = findCommentById(commentId);
 //        if(comment.getUser().getId().equals(user.getId())){
