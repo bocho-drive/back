@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.challengevarify.entity;
 
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
+import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.entity.CreatedTimeStamped;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="challenge_varifies")
 public class ChallengeVarify extends CreatedTimeStamped {
 
     @Id
@@ -31,12 +33,16 @@ public class ChallengeVarify extends CreatedTimeStamped {
     @JoinColumn(name ="challenge_id", nullable = false)
     private Challenge challenge;
 
+    public ChallengeVarify(ChallengeVarifyRequestDto requestDto) {
+
+        this.community.setTitle(requestDto.getTitle());
+        this.community.setContent(requestDto.getContent());
+        this.community.setCategory(requestDto.getCategory());
+        this.community.getUser().setNickname(requestDto.getAuthor());
+
+    }
 
 
-//    //내일 물어보기
-//    @Transient
-//    @CreatedDate
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private LocalDateTime updatedAt=null;
+
 
 }
