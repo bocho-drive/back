@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -20,7 +21,8 @@ public class CommunityRequestDto {
     private String title;
     private String content;
     private CategoryEnum category;
-    private List<String> images;
+    private String author;
+    //private File[] imgUrl;
 
 
 
