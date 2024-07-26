@@ -20,10 +20,11 @@ public class CommunityController {
 
     // 게시글 작성
     @PostMapping
-    public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,@AuthenticationPrincipal User user
-    )  {
+    public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails)
+      {
 
-        communityService.addPost(postRequestDto,user);
+        communityService.addPost(postRequestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
 
     }
@@ -41,11 +42,11 @@ public class CommunityController {
 
     }
 
+
     // 게시글 삭제
     @DeleteMapping("/{id}")
     public ApiResponse deletePost(@PathVariable Long id,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
-
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
         communityService.deletePost(id,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
 
