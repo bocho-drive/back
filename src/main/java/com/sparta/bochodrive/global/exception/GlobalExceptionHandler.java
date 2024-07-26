@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
 
-    //커스텀하지 않은 모든 예외 -> 이렇게 지정해주면 알아서 던져준다.
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity exception(Exception ex) {
         RestApiException restApiException=new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return new ResponseEntity<>(restApiException, HttpStatus.INTERNAL_SERVER_ERROR);}
 
 
-    //400 -> 회원가입할 때 중복된 이메일 이런거
+    //400 -> 회원가입할 때 데이터 관련 예외
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<RestApiException> IllegalArgumentExceptionHandler(IllegalArgumentException ex) {
         RestApiException restApiException = new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
@@ -41,13 +41,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-//    //403
-//    @ExceptionHandler({UnauthorizedException.class})
-//    public ResponseEntity<RestApiException> UnauthorizedExceptionHandler(UnauthorizedException ex) {
-//        RestApiException restApiException = new RestApiException(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
-//        return new ResponseEntity<>(
-//                restApiException,
-//                HttpStatus.FORBIDDEN
-//        );
-//    }
+    //403
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<RestApiException> UnauthorizedExceptionHandler(UnauthorizedException ex) {
+        RestApiException restApiException = new RestApiException(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        return new ResponseEntity<>(
+                restApiException,
+                HttpStatus.FORBIDDEN
+        );
+    }
 }
