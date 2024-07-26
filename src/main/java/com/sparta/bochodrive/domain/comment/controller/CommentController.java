@@ -27,7 +27,7 @@ public class CommentController {
     //댓글 작성
     @PostMapping
     public ApiResponse addComment(@RequestBody @Valid CommentRequestDto commentRequestDto,
-                                          /*@AuthenticationPrincipal*/ User user) {
+                                          @AuthenticationPrincipal User user) {
 
         commentService.addComments(commentRequestDto,user);
         return ApiResponse.ok(HttpStatus.OK.value(), "댓글 작성에 성공하였습니다.");
