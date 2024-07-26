@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
 
+    USER_NOT_FOUND(404,"존재하지 않는 사용자입니다."),
     POST_NOT_FOUND(404,"존재하지 않는 게시글입니다."),
     COMMENT_NOT_FOUND(404,"존재하지 않는 댓글입니다."),
     ADD_FAILED(403,"등록 실패하였습니다."),
