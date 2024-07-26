@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="comments")
 public class Comment extends TimeStamped {
 
     @Id
@@ -50,6 +51,7 @@ public class Comment extends TimeStamped {
     }
 
     public void update(CommentRequestDto commentRequestDto) {
+
         this.content= commentRequestDto.getContent();
     }
 }

@@ -10,6 +10,7 @@ import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
 import com.sparta.bochodrive.global.exception.UnauthorizedException;
+import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,15 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommunityRepository communityRepository;
+    private final CommonFuntion commonFuntion;
 
 
     @Override
+    @Transactional
     public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
+        commonFuntion.existsById(user.getId());
         Community community=findCommunityById(commentRequestDto.getCommunitiesId());
-//        if(community.getUser().getId().equals(user.getId())){
-//            throw new UnauthorizedException(ErrorCode.ADD_FAILED);
-//        }
         Comment comment = new Comment(commentRequestDto, user, community);
         Comment savedComment = commentRepository.save(comment);
         return new CommentReponseDto(savedComment);
@@ -51,10 +52,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
+
+        commonFuntion.existsById(user.getId());
         Comment comment = findCommentById(commentId);
-//        if(comment.getUser().getId().equals(user.getId())){
-//            throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
-//        }
+
+        //댓글 작성자가 맞는지 확인
+        if(comment.getUser().getId().equals(user.getId())){
+            throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
+        }
         comment.update(commentRequestDto);
         commentRepository.save(comment);
 
@@ -62,14 +67,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long commentId,User user)  {
+
+        commonFuntion.existsById(user.getId());
         Comment comment = findCommentById(commentId);
-//        if(comment.getUser().getId().equals(user.getId())){
-//            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
-//        }
+
+        if(comment.getUser().getId().equals(user.getId())){
+            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+        }
         comment.setDeleteYN(true);
         commentRepository.save(comment);
-//        return HttpStatus.OK;
 
 
     }

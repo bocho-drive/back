@@ -22,7 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="community")
+@Table(name="communities")
 public class Community extends TimeStamped {
 
     @Id
@@ -40,6 +40,9 @@ public class Community extends TimeStamped {
     @Column(nullable = false)
     @Size(min = 1)
     private String content;
+
+    @Column(nullable = false)
+    private int viewCount=0;
 
 
     @Column(nullable = false)
@@ -82,16 +85,14 @@ public class Community extends TimeStamped {
         this.content=communityRequestDto.getContent();
         this.category=communityRequestDto.getCategory();
         this.user=user;
-
     }
 
 
 
     public void update(CommunityRequestDto communityRequestDto) {
-        this.category=communityRequestDto.getCategory();
         this.title=communityRequestDto.getTitle();
         this.content=communityRequestDto.getContent();
-
+        this.category=communityRequestDto.getCategory();
     }
 
     public void setDeleteYn(boolean b) {
