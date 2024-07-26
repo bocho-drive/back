@@ -18,18 +18,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChallengeServiceImpl implements ChallengService {
     private final ChallengeRepository challengeRepository;
 
 
     //챌린지 작성
     @Override
-    @Transactional
+
     public ChallengeResponseDto addChallenge(ChallengeRequestDto requestDto) {
+
 
         Challenge challenge = new Challenge(requestDto);
         Challenge savedChallenge = challengeRepository.save(challenge);
-
         return new ChallengeResponseDto(savedChallenge);
     }
     //챌린지 목록 조회
@@ -50,7 +51,7 @@ public class ChallengeServiceImpl implements ChallengService {
 
     //챌린지 수정
     @Override
-    @Transactional
+
     public void updateChallenge(Long id, ChallengeRequestDto requestDto) {
         Challenge challenge = findChallengeById(id);
         challenge.update(requestDto);
@@ -60,7 +61,6 @@ public class ChallengeServiceImpl implements ChallengService {
 
     //챌린지 삭제
     @Override
-    @Transactional
     public void deleteChallenge(Long id) {
         Challenge challenge = findChallengeById(id);
         challengeRepository.delete(challenge);
