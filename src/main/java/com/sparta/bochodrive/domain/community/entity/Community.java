@@ -22,7 +22,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="community")
+@Table(name="communities")
 public class Community extends TimeStamped {
 
     @Id

@@ -90,6 +90,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 삭제
     @Override
+    @Transactional
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());

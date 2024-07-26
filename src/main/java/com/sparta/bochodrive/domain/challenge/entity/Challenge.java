@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.challenge.entity;
 
 
+import com.sparta.bochodrive.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.entity.TimeStamped;
@@ -37,7 +38,14 @@ public class Challenge extends TimeStamped {
     private List<ChallengeVarify> challengeVarifies;
 
 
+    public Challenge(ChallengeRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+    }
 
+    public void update(ChallengeRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
 
-
+    }
 }
