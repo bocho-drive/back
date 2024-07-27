@@ -35,7 +35,6 @@ public class CommunityServiceImpl implements CommunityService {
 
     // 게시글 작성
     @Override
-    @Transactional
     public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user)  {
 
         commonFuntion.existsById(user.getId());
