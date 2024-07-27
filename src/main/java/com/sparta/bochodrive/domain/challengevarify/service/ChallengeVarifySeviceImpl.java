@@ -12,7 +12,6 @@ import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.dialect.function.CommonFunctionFactory;
 import org.springframework.stereotype.Service;
 
 @Service
