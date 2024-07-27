@@ -7,7 +7,7 @@ import com.sparta.bochodrive.domain.user.entity.User;
 public interface ChallengeVarifyService {
     public ChallengeVarifyResponseDto addChallengeVarify(ChallengeVarifyRequestDto requestDto, User user);
 
-    public void getChallengeVarify(Long id);
+    public ChallengeVarifyResponseDto getChallengeVarify(Long id);
 
     public void updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user);
 

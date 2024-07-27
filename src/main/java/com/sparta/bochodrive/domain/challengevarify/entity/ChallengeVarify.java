@@ -21,7 +21,7 @@ public class ChallengeVarify extends CreatedTimeStamped {
     private Long id;
 
     @Column(nullable = false)
-    private boolean completeYN;
+    private boolean completeYN; //완료 여부를 지정하는 시점은 언제인지
 
     //게시글
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,6 +43,10 @@ public class ChallengeVarify extends CreatedTimeStamped {
     }
 
 
+    public void update(ChallengeVarifyRequestDto requestDto) {
+        this.community.setTitle(requestDto.getTitle());
+        this.community.setContent(requestDto.getContent());
+        this.community.setCategory(requestDto.getCategory());
 
-
+    }
 }
