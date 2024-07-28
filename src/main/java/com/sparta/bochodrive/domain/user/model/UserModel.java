@@ -37,4 +37,13 @@ public class UserModel {
 
         private String nickname;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserLoginDto {
+        private String email;
+        private String password;
+    }
 }
