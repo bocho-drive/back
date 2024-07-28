@@ -1,14 +1,10 @@
 package com.sparta.bochodrive.global.function;
 
-import com.sparta.bochodrive.domain.user.Repository.UserRepository;
-import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

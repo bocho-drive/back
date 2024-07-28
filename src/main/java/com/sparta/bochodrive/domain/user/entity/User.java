@@ -1,22 +1,17 @@
 package com.sparta.bochodrive.domain.user.entity;
 
-
-import com.sparta.bochodrive.domain.comment.entity.Comment;
-import com.sparta.bochodrive.domain.community.entity.Community;
-import com.sparta.bochodrive.domain.vote.entity.Vote;
+import com.sparta.bochodrive.domain.security.enums.UserRole;
+import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.sql.Time;
-import java.util.List;
+import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class User extends TimeStamped {
 
@@ -24,33 +19,37 @@ public class User extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
-    @Size(max = 255)
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Column(nullable = false, length = 255)
-    @Size(max = 255)
+    @Column(name = "PASSWORD")
     private String password;
 
-    @Column(nullable = false,length = 100)
-    @Size(max = 100)
+    @Column(name = "NICKNAME")
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(name = "DELETE_YN", nullable = false)
     private boolean deleteYN;
 
-    //게시글
-    @OneToMany(mappedBy = "user")
-    private List<Community> communities;
+    @Column(name = "USER_ROLE")
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
-    //댓글
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments;
+    public static User of(UserModel.UserRegistDto userRegistDto, BCryptPasswordEncoder encoder) {
+        return User.builder()
+                .email(userRegistDto.getEmail())
+                .password(encoder.encode(userRegistDto.getPassword()))
+                .nickname(userRegistDto.getNickname())
+                .deleteYN(false)
+                .userRole(UserRole.USER)
+                .build();
+    }
 
-
-
-
-
-
-
+    public UserModel.UserResponseDto toDto() {
+        return UserModel.UserResponseDto.builder()
+                .id(this.id)
+                .email(this.email)
+                .nickname(this.nickname)
+                .build();
+    }
 }
