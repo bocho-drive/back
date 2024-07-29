@@ -40,17 +40,18 @@ public class JwtUtils {
     }
 
     public String getUsername(String token) {
-        return getClaims(token).getPayload().get("username", String.class);
+        return getClaims(token).getPayload().getSubject();
     }
 
     public UserRole getRole(String token) {
-        String roleString = getUserInfoFromToken(token).get("role", String.class);
-        return UserRole.valueOf(roleString);
+//        String roleString = getUserInfoFromToken(token).get("role", String.class);
+        String role = getClaims(token).getPayload().get("role", String.class);
+        return UserRole.valueOf(role);
     }
 
-    public Integer getUserId(String token) {
-        return getClaims(token).getPayload().get("userId", Integer.class);
-    }
+//    public long getUserId(String token) {
+//        return getClaims(token)
+//    }
 
     public Boolean isExpired(String token) {
         return getClaims(token).getPayload().getExpiration().before(new Date());
@@ -96,6 +97,7 @@ public class JwtUtils {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
+        System.out.println("token : " + token);
         return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 

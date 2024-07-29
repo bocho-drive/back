@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommunityGetController {
 
-    CommunityServiceImpl communityService;
+    private final CommunityServiceImpl communityService;
 
     // 게시글 목록 조회
     @GetMapping

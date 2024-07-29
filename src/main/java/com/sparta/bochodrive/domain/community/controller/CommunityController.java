@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.community.controller;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -12,19 +13,23 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/communities")
 @RequiredArgsConstructor
+@RequestMapping("/api/communities")
 public class CommunityController {
 
-    CommunityServiceImpl communityService;
+    private final CommunityServiceImpl communityService;
 
     // 게시글 작성
     @PostMapping
     public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,
-                               @AuthenticationPrincipal UserDetailsImpl userDetails)
+                               @AuthenticationPrincipal CustomUserDetails userDetails)
       {
 
-        communityService.addPost(postRequestDto,userDetails.getUser());
+//          System.out.println(userDetails.getUserId());
+//
+//          long userId = userDetails.getUserId();
+
+          communityService.addPost(postRequestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
 
     }

@@ -2,8 +2,10 @@ package com.sparta.bochodrive.domain.security.config;
 
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
+import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
+    private final CustomerUserDetailsService customerUserDetailsService;
+
+
+    @Value("${spring.jwt.secret}")
+    private String secretKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -42,7 +49,7 @@ public class SecurityConfig {
 
         // 필터 추가
         httpSecurity
-                .addFilterBefore(new JwtFilter(jwtUtils), LoginFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtils, secretKey, customerUserDetailsService), LoginFilter.class);
 
         httpSecurity
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils), UsernamePasswordAuthenticationFilter.class);
