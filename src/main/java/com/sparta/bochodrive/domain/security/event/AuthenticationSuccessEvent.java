@@ -6,13 +6,10 @@ import org.springframework.security.core.Authentication;
 
 @Getter
 public class AuthenticationSuccessEvent extends ApplicationEvent {
-
-    private final String refreshToken;
     private final Authentication authentication;
 
-    public AuthenticationSuccessEvent(Object source, String refreshToken, Authentication authentication) {
+    public AuthenticationSuccessEvent(Object source, Authentication authentication) {
         super(source);
-        this.refreshToken = refreshToken;
         this.authentication = authentication;
     }
 }
