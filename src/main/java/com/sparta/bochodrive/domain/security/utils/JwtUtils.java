@@ -1,19 +1,38 @@
 package com.sparta.bochodrive.domain.security.utils;
 
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
+@Slf4j(topic = "JwtUtil")
 @Component
 public class JwtUtils {
 
+    // Header KEY 값
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    // 사용자 권한 값의 KEY
+    public static final String AUTHORIZATION_KEY = "auth";
+    // Token 식별자
+    public static final String BEARER_PREFIX = "Bearer ";
+    // 토큰 만료시간
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+
     private final SecretKey secretKey;
+    private Key key;
 
     public JwtUtils(@Value("${spring.jwt.secret}")String secretKey) {
         this.secretKey =
@@ -24,8 +43,9 @@ public class JwtUtils {
         return getClaims(token).getPayload().get("username", String.class);
     }
 
-    public String getRole(String token) {
-        return getClaims(token).getPayload().get("role", String.class);
+    public UserRole getRole(String token) {
+        String roleString = getUserInfoFromToken(token).get("role", String.class);
+        return UserRole.valueOf(roleString);
     }
 
     public Integer getUserId(String token) {
@@ -53,11 +73,10 @@ public class JwtUtils {
         return null;
     }
 
-    public String createAccessToken(long userId, String username, String role) {
+    public String createAccessToken(String username, String role) {
         long expiredMs = 1000 * 60 * 15;    // 15분
         return "Bearer " + Jwts.builder()
                 .subject(username)
-                .claim("userId", userId)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
@@ -65,15 +84,19 @@ public class JwtUtils {
                 .compact();
     }
 
-    // refreshToken은 유효시간외에는 아무 정보도 담지 않고 있기 때문에, DB에 저장해놓고, 요청 헤더에 담긴 Refresh Token이 해당 사용자의
-    // Refresh Token이 맞는지 검증해야한다.
-    public String createRefreshToken() {
-        long expiredMs = 1000 * 60 * 60 * 24 * 10;  // 10일
-
-        return Jwts.builder()
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
-                .compact();
+    // header 에서 JWT 가져오기
+    public String getJwtFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
+
+
+    // 토큰에서 사용자 정보 가져오기
+    public Claims getUserInfoFromToken(String token) {
+        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
 }
