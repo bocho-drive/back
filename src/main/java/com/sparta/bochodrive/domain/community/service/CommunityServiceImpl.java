@@ -35,11 +35,44 @@ public class CommunityServiceImpl implements CommunityService {
 
     // 게시글 작성
     @Override
-    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user)  {
+    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) {
+        // 로그: 게시글 작성 요청 데이터
+        log.info("게시글 작성 요청 데이터: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 = {}",
+                communityRequestDto.getTitle(),
+                communityRequestDto.getContent(),
+                communityRequestDto.getCategory(),
+                communityRequestDto.getAuthor());
 
+        // 로그: 게시글 작성자 정보
+        log.info("게시글 작성자 정보: ID = {}, 닉네임 = {}, 이메일 = {}",
+                user.getId(),
+                user.getNickname(),
+                user.getEmail());
+
+        // 사용자 ID 검증
         commonFuntion.existsById(user.getId());
-        Community community = new Community(communityRequestDto,user);
+        log.info("사용자 ID 검증 완료: {}", user.getId());
+
+        // 커뮤니티 엔티티 생성
+        Community community = new Community(communityRequestDto, user);
+        log.info("생성된 커뮤니티 엔티티: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
+                community.getTitle(),
+                community.getContent(),
+                community.getCategory(),
+                community.getUser().getId(),
+                community.getUser().getNickname());
+
+        // 커뮤니티 엔티티 저장
         Community savedCommunity = communityRepository.save(community);
+        log.info("저장된 커뮤니티 엔티티: ID = {}, 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
+                savedCommunity.getId(),
+                savedCommunity.getTitle(),
+                savedCommunity.getContent(),
+                savedCommunity.getCategory(),
+                savedCommunity.getUser().getId(),
+                savedCommunity.getUser().getNickname());
+
+        // 반환
         return new CommunityResponseDto(savedCommunity);
     }
 
@@ -51,10 +84,10 @@ public class CommunityServiceImpl implements CommunityService {
         List<Community> communities;
         //카테고리별 목록 조회
         if(category == null) {
-            communities = communityRepository.findAllByOrderByCreatedAtDesc(); //카테고리 설정 안했을 때 전체글 목록
+            communities = communityRepository.findAllByDeleteYNFalseOrderByCreatedAtDesc(); //카테고리 설정 안했을 때 전체글 목록
         }
         else {
-            communities=communityRepository.findAllByCategory(category); //카테고리별 글목록
+            communities=communityRepository.findAllByCategoryAndDeleteYNFalse(category); //카테고리별 글목록
         }
 
         return communities.stream().map(communityListResponseDto ->
