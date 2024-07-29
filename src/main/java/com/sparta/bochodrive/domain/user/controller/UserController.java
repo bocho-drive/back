@@ -43,8 +43,8 @@ public class UserController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        String nickname = user.getNickname();
-        return jwtUtils.createAccessToken(nickname, "USER");
+        String email = user.getEmail();
+        return jwtUtils.createAccessToken(email, "USER");
     }
 
     @PostMapping("/api/auth/signin")
