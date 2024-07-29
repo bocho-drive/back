@@ -4,12 +4,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+
 public enum UserRole {
 
-    USER("USER", "일반사용자"),
-    ADMIN("ADMIN", "관리자");
+    USER("USER"),
+    ADMIN("ADMIN");
 
     private final String role;
-    private final String description;
+
+
+    UserRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

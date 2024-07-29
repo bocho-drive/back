@@ -31,15 +31,13 @@ public class UserService {
             throw new IllegalArgumentException("중복된 닉네임 입니다.");
         }
 
-        if(!StringUtils.equals(userRegistDto.getPassword(), userRegistDto.getVerifyPassword())) {
-            //이것도
-            throw new IllegalArgumentException("입력된 비밀번호가 일치하지 않습니다.");
-        }
+//        if(!StringUtils.equals(userRegistDto.getPassword(), userRegistDto.getVerifyPassword())) {
+//            //이것도
+//            throw new IllegalArgumentException("입력된 비밀번호가 일치하지 않습니다.");
+//        }
 
         return userRepository.save(User.of(userRegistDto, passwordEncoder)).toDto();
     }
 
-    public void loginUser (UserModel.UserLoginDto userLoginDto) {
-        UserDetails userDetails = customerUserDetailsService.loadUserByUsername(userLoginDto.getEmail());
-    }
+
 }
