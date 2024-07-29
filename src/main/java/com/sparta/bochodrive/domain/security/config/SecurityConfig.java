@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -35,17 +34,18 @@ public class SecurityConfig {
         // 경로별 인가 여부
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/login", "/api/v1/user/join", "/error", "/").permitAll()
-                        .requestMatchers("/api/v1/auth/**").hasRole("USER")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/user/signup").permitAll()
+                        .requestMatchers("/api/v1/user/signin").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/auth/login").hasRole("ADMIN")
                         .anyRequest().permitAll());
 
         // 필터 추가
         httpSecurity
-//                .addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtUtils), LoginFilter.class)
-                .addFilterAt(new LoginFilter(jwtUtils, authenticationManager(authenticationConfiguration), eventPublisher), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtils), LoginFilter.class);
 
+        httpSecurity
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils), UsernamePasswordAuthenticationFilter.class);
         // 세션 설정
         httpSecurity
                 .sessionManagement((session) ->
@@ -63,4 +63,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 }
