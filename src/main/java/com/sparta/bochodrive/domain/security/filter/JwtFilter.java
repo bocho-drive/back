@@ -63,20 +63,20 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
 
-        String username = jwtUtils.getUsername(token);
-        log.info("JWT 토큰에서 추출한 사용자 이름: {}", username);
+        String email = jwtUtils.getUsername(token);
+        log.info("JWT 토큰에서 추출한 사용자 이름: {}", email);
         UserRole role = jwtUtils.getRole(token);
 
 
-        setAuthentication(username);
+        setAuthentication(email);
 
         //검증이 완료됏으니 다음 필터로 넘긴다.
         filterChain.doFilter(request, response);
 
     }
-    public void setAuthentication(String username){
+    public void setAuthentication(String email){
         SecurityContext context=SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(username);
+        Authentication authentication = createAuthentication(email);
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }
