@@ -5,13 +5,11 @@ import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.user.entity.User;
-import com.sparta.bochodrive.global.exception.ErrorCode;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface CommunityService {
     CommunityResponseDto addPost(CommunityRequestDto communityRequestDto,User user); ;
-    List<CommunityListResponseDto> getAllPosts(CategoryEnum category) ;
+    Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) ;
     CommunityResponseDto getPost(Long id);
     void updatePost(Long id, CommunityRequestDto communityRequestDto,User user);
     void deletePost(Long id, User user) ;

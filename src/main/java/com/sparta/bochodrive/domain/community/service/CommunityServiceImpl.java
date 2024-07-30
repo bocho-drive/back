@@ -16,10 +16,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -36,62 +37,40 @@ public class CommunityServiceImpl implements CommunityService {
     // 게시글 작성
     @Override
     public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) {
-        // 로그: 게시글 작성 요청 데이터
-        log.info("게시글 작성 요청 데이터: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 = {}",
-                communityRequestDto.getTitle(),
-                communityRequestDto.getContent(),
-                communityRequestDto.getCategory(),
-                communityRequestDto.getAuthor());
-
-        // 로그: 게시글 작성자 정보
-        log.info("게시글 작성자 정보: ID = {}, 닉네임 = {}, 이메일 = {}",
-                user.getId(),
-                user.getNickname(),
-                user.getEmail());
 
         // 사용자 ID 검증
         commonFuntion.existsById(user.getId());
-        log.info("사용자 ID 검증 완료: {}", user.getId());
 
         // 커뮤니티 엔티티 생성
         Community community = new Community(communityRequestDto, user);
-        log.info("생성된 커뮤니티 엔티티: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
-                community.getTitle(),
-                community.getContent(),
-                community.getCategory(),
-                community.getUser().getId(),
-                community.getUser().getNickname());
+
 
         // 커뮤니티 엔티티 저장
         Community savedCommunity = communityRepository.save(community);
-        log.info("저장된 커뮤니티 엔티티: ID = {}, 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
-                savedCommunity.getId(),
-                savedCommunity.getTitle(),
-                savedCommunity.getContent(),
-                savedCommunity.getCategory(),
-                savedCommunity.getUser().getId(),
-                savedCommunity.getUser().getNickname());
 
         // 반환
         return new CommunityResponseDto(savedCommunity);
     }
 
 
-    //게시글 목록 조회
+    // 게시글 목록 조회
     @Override
-    public List<CommunityListResponseDto> getAllPosts(CategoryEnum category)  {
-        //카테고리 별로 list찾기
-        List<Community> communities;
-        //카테고리별 목록 조회
-        if(category == null) {
-            communities = communityRepository.findAllByDeleteYNFalseOrderByCreatedAtDesc(); //카테고리 설정 안했을 때 전체글 목록
-        }
-        else {
-            communities=communityRepository.findAllByCategoryAndDeleteYNFalse(category); //카테고리별 글목록
+    public Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) {
+        // 정렬 방향 설정
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<Community> communityPage;
+
+        // 카테고리별 목록 조회
+        if (category == null) {
+            communityPage = communityRepository.findAllByDeleteYNFalseOrderByCreatedAtDesc(pageable); // 카테고리 설정 안했을 때 전체글 목록
+        } else {
+            communityPage = communityRepository.findAllByCategoryAndDeleteYNFalse(category, pageable); // 카테고리별 글목록
         }
 
-        return communities.stream().map(communityListResponseDto ->
-                new CommunityListResponseDto(communityListResponseDto)).collect(Collectors.toList());
+        // Community 엔티티를 CommunityListResponseDto로 변환
+        return communityPage.map(CommunityListResponseDto::new);
     }
 
     //게시글 상세 조회
