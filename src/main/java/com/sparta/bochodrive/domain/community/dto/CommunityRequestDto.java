@@ -22,6 +22,7 @@ public class CommunityRequestDto {
     private String content;
     private CategoryEnum category;
     private String author;
+
     //private File[] imgUrl;
 
 

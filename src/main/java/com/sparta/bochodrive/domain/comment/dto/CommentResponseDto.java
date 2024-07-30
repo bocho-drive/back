@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentReponseDto {
+public class CommentResponseDto {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
 
-    public CommentReponseDto(Comment savedComment) {
+    public CommentResponseDto(Comment savedComment) {
         this.id = savedComment.getId();
         this.content = savedComment.getContent();
         this.createdAt = savedComment.getCreatedAt();

@@ -3,6 +3,7 @@ package com.sparta.bochodrive.domain.vote.entity;
 
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.vote.dto.VoteRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="votes")
 public class Vote {
 
     @Id
@@ -33,4 +35,9 @@ public class Vote {
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 
+    public Vote(VoteRequestDto voteRequestDto) {
+        this.community.setId(voteRequestDto.getCommunitesId());
+        this.user.setId(voteRequestDto.getUserId());
+        this.agreeYN = voteRequestDto.isAgreeYn();
+    }
 }

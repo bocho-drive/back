@@ -1,6 +1,6 @@
 package com.sparta.bochodrive.domain.comment.service;
 
-import com.sparta.bochodrive.domain.comment.dto.CommentReponseDto;
+import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
@@ -13,7 +13,7 @@ import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,43 +21,54 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommunityRepository communityRepository;
-    private final CommonFuntion commonFuntion;
+    private final CommonFuntion commonFunction;
 
 
     @Override
-    @Transactional
-    public CommentReponseDto addComments(CommentRequestDto commentRequestDto, User user) {
+    public CommentResponseDto addComments(CommentRequestDto commentRequestDto, User user) {
+        log.info("댓글 작성 요청 데이터: communitiesId = {}, userId = {}, content = {}", commentRequestDto.getCommunityId(), commentRequestDto.getUserId(), commentRequestDto.getContent());
+        log.info("댓글 작성자 정보: {}", user.getNickname());
 
-        commonFuntion.existsById(user.getId());
-        Community community=findCommunityById(commentRequestDto.getCommunitiesId());
+        commonFunction.existsById(user.getId());
+        log.info("사용자 ID 검증 완료: {}", user.getId());
+
+        Community community = findCommunityById(commentRequestDto.getCommunityId());
+        log.info("커뮤니티 검증 완료: {}", community.getId());
+
         Comment comment = new Comment(commentRequestDto, user, community);
+        log.info("생성된 댓글 엔티티: {}", comment);
+
         Comment savedComment = commentRepository.save(comment);
-        return new CommentReponseDto(savedComment);
+        log.info("저장된 댓글 엔티티: {}", savedComment);
 
+        return new CommentResponseDto(savedComment);
     }
 
 
-    @Override
-    public List<CommentReponseDto> getComments(Long communitiesId) {
 
-        List<Comment> commentList=commentRepository.findByCommunityId(communitiesId);
+    @Override
+    public List<CommentResponseDto> getComments(Long communitiesId) {
+
+        List<Comment> commentList=commentRepository.findByCommunityIdAndDeleteYNFalse(communitiesId);
         return commentList.stream().map(commentResponseDto ->
-                new CommentReponseDto(commentResponseDto)).collect(Collectors.toList());
+                new CommentResponseDto(commentResponseDto)).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
     public void updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
 
-        commonFuntion.existsById(user.getId());
+        commonFunction.existsById(user.getId());
         Comment comment = findCommentById(commentId);
+        log.info("comment : {}",comment.getId());
 
         //댓글 작성자가 맞는지 확인
-        if(comment.getUser().getId().equals(user.getId())){
+        if(!comment.getUser().getId().equals(user.getId())){
             throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
         }
         comment.update(commentRequestDto);
@@ -67,13 +78,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional
     public void deleteComment(Long commentId,User user)  {
 
-        commonFuntion.existsById(user.getId());
+        commonFunction.existsById(user.getId());
         Comment comment = findCommentById(commentId);
-
-        if(comment.getUser().getId().equals(user.getId())){
+        log.info("comment : {}",comment.getId());
+        log.info("comment.getUser().getId() :{}",comment.getUser().getId());
+        log.info("user.getId():{}",user.getId());
+        if(!comment.getUser().getId().equals(user.getId())){
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
         comment.setDeleteYN(true);
@@ -82,9 +94,13 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-    public Community findCommunityById(Long communityId)  {
-        Community community = communityRepository.findById(communityId).orElseThrow(()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return community;
+    private Community findCommunityById(Long id) {
+        log.info("커뮤니티 조회 요청 ID: {}", id);
+        return communityRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("커뮤니티 조회 실패: ID = {}", id);
+                    return new IllegalArgumentException("Invalid community ID");
+                });
     }
     public Comment findCommentById(Long commentId) {
         Comment comment=commentRepository.findById(commentId).orElseThrow(()->new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
