@@ -24,11 +24,11 @@ public class CommunityGetController {
     private final CommunityService communityService;
 
     // 게시글 목록 조회
-    @GetMapping("/posts")
+    @GetMapping
     public ApiResponse<Page<CommunityListResponseDto>> getAllPosts(
             @RequestParam(value = "category", required = false) CategoryEnum category,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "limit", defaultValue = "10") int size,
             @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
             @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
 
