@@ -82,9 +82,7 @@ public class CommentServiceImpl implements CommentService {
 
         commonFunction.existsById(user.getId());
         Comment comment = findCommentById(commentId);
-        log.info("comment : {}",comment.getId());
-        log.info("comment.getUser().getId() :{}",comment.getUser().getId());
-        log.info("user.getId():{}",user.getId());
+
         if(!comment.getUser().getId().equals(user.getId())){
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
