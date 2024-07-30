@@ -8,6 +8,7 @@ import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,16 @@ public class CommunityGetController {
     private final CommunityService communityService;
 
     // 게시글 목록 조회
-    @GetMapping
-    public ApiResponse<List<CommunityListResponseDto>> getAllPosts(@RequestParam(value = "category", required = false) CategoryEnum category) {
+    @GetMapping("/posts")
+    public ApiResponse<Page<CommunityListResponseDto>> getAllPosts(
+            @RequestParam(value = "category", required = false) CategoryEnum category,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+            @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
 
-        List<CommunityListResponseDto> posts = communityService.getAllPosts(category);
-        return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.",posts);
-
+        Page<CommunityListResponseDto> posts = communityService.getAllPosts(category, page, size, sortBy, isAsc);
+        return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.", posts);
     }
 
     // 게시글 상세 조회
