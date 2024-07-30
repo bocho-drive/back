@@ -27,14 +27,14 @@ public class ManageChallengeController {
     }
     @PutMapping("{id}")
     @Secured("ADMIN")
-    public ApiResponse updateChallenge(@PathVariable Long id,
+    public ApiResponse updateChallenge(@PathVariable("id") Long id,
                                        @RequestBody @Valid ChallengeRequestDto requestDto) {
         challengeService.updateChallenge(id,requestDto);
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 수정에 성공하셨습니다.");
     }
     @DeleteMapping("{id}")
     @Secured("ADMIN")
-    public ApiResponse deleteChallenge(@PathVariable Long id) {
+    public ApiResponse deleteChallenge(@PathVariable("id") Long id) {
         challengeService.deleteChallenge(id);
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 삭제에 성공하셨습니다.");
     }
