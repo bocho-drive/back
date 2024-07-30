@@ -1,4 +1,4 @@
-package com.sparta.bochodrive.config;
+package com.sparta.bochodrive.global.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
