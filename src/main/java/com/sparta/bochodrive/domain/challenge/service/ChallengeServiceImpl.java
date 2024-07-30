@@ -6,11 +6,16 @@ import com.sparta.bochodrive.domain.challenge.dto.ChallengeResponseDto;
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
 import com.sparta.bochodrive.domain.challenge.repository.ChallengeRepository;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,11 +40,15 @@ public class ChallengeServiceImpl implements ChallengService {
     }
     //챌린지 목록 조회
     @Override
-    public List<ChallengeListResponseDto> getChallengeList() {
-        List<Challenge> challenges = challengeRepository.findAllByOrderByCreatedAtDesc();
-        return challenges.stream()
-                .map(ChallengeListResponseDto::new)
-                .collect(Collectors.toList());
+    public Page<ChallengeListResponseDto> getChallengeList(int page, int size, String sortBy, boolean isAsc) {
+        size=10;
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<Challenge> challengePage;
+
+        challengePage = challengeRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return challengePage.map(ChallengeListResponseDto::new);
     }
 
     //챌린지 상세 조회
