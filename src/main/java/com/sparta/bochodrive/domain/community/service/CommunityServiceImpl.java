@@ -6,6 +6,7 @@ import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
+import com.sparta.bochodrive.domain.like.repository.LikeRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 
@@ -32,6 +33,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
+    private final LikeRepository likeRepository;
 
 
     @Override
@@ -70,7 +72,8 @@ public class CommunityServiceImpl implements CommunityService {
     public CommunityResponseDto getPost(Long id) {
 
         Community community=findCommunityById(id);
-        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community);
+        int likesCount=likeRepository.countByCommunityId(id);
+        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,likesCount);
         return communityResponseDto;
     }
     //게시글 수정

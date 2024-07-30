@@ -22,11 +22,12 @@ public class CommunityResponseDto {
     private String author;
     private CategoryEnum category;
     private int viewCount;
+    private int likesCount=0;
     private LocalDateTime createdAt;
     //private File[] imgUrl;
 
 
-    public CommunityResponseDto(Community saveCommunity) {
+    public CommunityResponseDto(Community saveCommunity,int likesCount) {
         this.id = saveCommunity.getId();
         this.title = saveCommunity.getTitle();
         this.content = saveCommunity.getContent();
@@ -34,5 +35,6 @@ public class CommunityResponseDto {
         this.category = saveCommunity.getCategory();
         this.createdAt = saveCommunity.getCreatedAt();
         this.viewCount++;
+        this.likesCount=likesCount;
     }
 }
