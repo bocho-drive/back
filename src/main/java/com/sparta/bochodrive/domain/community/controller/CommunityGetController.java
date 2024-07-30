@@ -24,7 +24,7 @@ public class CommunityGetController {
     private final CommunityService communityService;
 
     // 게시글 목록 조회
-    @GetMapping("/posts")
+    @GetMapping
     public ApiResponse<Page<CommunityListResponseDto>> getAllPosts(
             @RequestParam(value = "category", required = false) CategoryEnum category,
             @RequestParam(value = "page", defaultValue = "0") int page,
