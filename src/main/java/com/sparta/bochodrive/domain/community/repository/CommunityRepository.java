@@ -11,4 +11,8 @@ import java.util.List;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
     List<Community> findAllByOrderByCreatedAtDesc();
     List<Community> findAllByCategory(CategoryEnum category);
+    // deleteYN이 false인 것만 조회하는 메서드 추가
+    List<Community> findAllByDeleteYNFalseOrderByCreatedAtDesc();
+
+    List<Community> findAllByCategoryAndDeleteYNFalse(CategoryEnum category);
 }
