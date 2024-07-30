@@ -34,21 +34,24 @@ public class CommunityServiceImpl implements CommunityService {
     private final CommonFuntion commonFuntion;
 
 
-    // 게시글 작성
     @Override
     public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) {
 
         // 사용자 ID 검증
+        log.info("검증을 위해 사용자 ID 확인: {}", user.getId());
         commonFuntion.existsById(user.getId());
 
         // 커뮤니티 엔티티 생성
+        log.info("Community 엔티티 생성 중: 제목={}, 내용={}", communityRequestDto.getTitle(), communityRequestDto.getContent());
         Community community = new Community(communityRequestDto, user);
 
-
         // 커뮤니티 엔티티 저장
+        //
+        log.info("커뮤니티 엔티티 저장 중: 제목={}, 작성자={}", community.getTitle(), community.getUser().getNickname());
         Community savedCommunity = communityRepository.save(community);
 
         // 반환
+        log.info("CommunityResponseDto 반환: 커뮤니티 ID={}, 제목={}", savedCommunity.getId(), savedCommunity.getTitle());
         return new CommunityResponseDto(savedCommunity);
     }
 
@@ -57,6 +60,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) {
         // 정렬 방향 설정
+        size=10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
