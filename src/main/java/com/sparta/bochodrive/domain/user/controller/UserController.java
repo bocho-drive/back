@@ -27,12 +27,12 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/api/v1/user/signup")
+    @PostMapping("/signup")
     public UserModel.UserResponseDto postSignUp(@RequestBody UserRegistDto userRegistDto) {
         return userService.registUser(userRegistDto);
     }
 
-    @PostMapping("/api/v1/user/signin")
+    @PostMapping("/signin")
     public String postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
         User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
