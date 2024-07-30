@@ -35,24 +35,12 @@ public class CommunityServiceImpl implements CommunityService {
 
 
     @Override
-    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) {
+    public Long addPost(CommunityRequestDto communityRequestDto, User user) {
 
-        // 사용자 ID 검증
-        log.info("검증을 위해 사용자 ID 확인: {}", user.getId());
         commonFuntion.existsById(user.getId());
-
-        // 커뮤니티 엔티티 생성
-        log.info("Community 엔티티 생성 중: 제목={}, 내용={}", communityRequestDto.getTitle(), communityRequestDto.getContent());
         Community community = new Community(communityRequestDto, user);
-
-        // 커뮤니티 엔티티 저장
-        //
-        log.info("커뮤니티 엔티티 저장 중: 제목={}, 작성자={}", community.getTitle(), community.getUser().getNickname());
         Community savedCommunity = communityRepository.save(community);
-
-        // 반환
-        log.info("CommunityResponseDto 반환: 커뮤니티 ID={}, 제목={}", savedCommunity.getId(), savedCommunity.getTitle());
-        return new CommunityResponseDto(savedCommunity);
+        return savedCommunity.getId();
     }
 
 
@@ -88,7 +76,7 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 수정
     @Override
     @Transactional
-    public void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
+    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
@@ -99,7 +87,9 @@ public class CommunityServiceImpl implements CommunityService {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
         community.update(communityRequestDto);//update
-        communityRepository.save(community);
+        Community save=communityRepository.save(community);
+        return save.getId();
+
 
     }
 

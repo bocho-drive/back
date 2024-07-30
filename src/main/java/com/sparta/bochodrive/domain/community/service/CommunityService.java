@@ -8,9 +8,9 @@ import com.sparta.bochodrive.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
 public interface CommunityService {
-    CommunityResponseDto addPost(CommunityRequestDto communityRequestDto,User user); ;
+    Long addPost(CommunityRequestDto communityRequestDto,User user); ;
     Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) ;
     CommunityResponseDto getPost(Long id);
-    void updatePost(Long id, CommunityRequestDto communityRequestDto,User user);
+    Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user);
     void deletePost(Long id, User user) ;
 }
