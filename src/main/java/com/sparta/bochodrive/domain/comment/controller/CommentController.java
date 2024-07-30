@@ -6,7 +6,6 @@ import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
 import com.sparta.bochodrive.domain.comment.service.CommentService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 //import com.sparta.bochodrive.global.UserDetailsImpl;
-import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
