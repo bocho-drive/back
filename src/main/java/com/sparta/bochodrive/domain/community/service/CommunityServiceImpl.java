@@ -60,7 +60,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) {
         // 정렬 방향 설정
-        size=10;
+        size = 10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 

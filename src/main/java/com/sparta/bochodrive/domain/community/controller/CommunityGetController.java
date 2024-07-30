@@ -31,7 +31,6 @@ public class CommunityGetController {
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
             @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
-
         Page<CommunityListResponseDto> posts = communityService.getAllPosts(category, page, size, sortBy, isAsc);
         return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.", posts);
     }
