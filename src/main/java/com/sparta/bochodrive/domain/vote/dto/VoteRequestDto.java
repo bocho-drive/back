@@ -6,6 +6,6 @@ import lombok.Getter;
 public class VoteRequestDto {
 
     private Long userId;
-    private Long communitesId;
+    private Long communityId;
     private boolean agreeYn;
 }

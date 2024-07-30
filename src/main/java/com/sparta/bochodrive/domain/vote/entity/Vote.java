@@ -21,7 +21,7 @@ public class Vote {
     private Long id;
 
     @Column(nullable = false)
-    private boolean agreeYN;
+    private boolean agreeYn;
 
 
     //게시글
@@ -35,9 +35,11 @@ public class Vote {
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 
-    public Vote(VoteRequestDto voteRequestDto) {
-        this.community.setId(voteRequestDto.getCommunitesId());
-        this.user.setId(voteRequestDto.getUserId());
-        this.agreeYN = voteRequestDto.isAgreeYn();
+
+
+    public Vote(VoteRequestDto voteRequestDto, Community community, User user) {
+        this.agreeYn = voteRequestDto.isAgreeYn();
+        this.community = community;
+        this.user = user;
     }
 }
