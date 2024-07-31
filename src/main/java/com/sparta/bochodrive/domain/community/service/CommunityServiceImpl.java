@@ -72,13 +72,16 @@ public class CommunityServiceImpl implements CommunityService {
     public CommunityResponseDto getPost(Long id) {
 
         Community community=findCommunityById(id);
-        int likesCount=likeRepository.countByCommunityId(id);
-        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,likesCount);
+        community.setViewCount(community.getViewCount()+1); //조회수 +1
+        communityRepository.save(community);
+
+
+        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community);
         return communityResponseDto;
+
     }
     //게시글 수정
     @Override
-    @Transactional
     public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
@@ -98,7 +101,6 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 삭제
     @Override
-    @Transactional
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());

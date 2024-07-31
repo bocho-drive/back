@@ -45,6 +45,9 @@ public class Community extends TimeStamped {
     @Column(nullable = false)
     private int viewCount=0;
 
+    @Column(nullable = false)
+    private int likeCount=0;
+
 
     @Column(nullable = false)
     private boolean verifiedYN=false;

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommunityController {
 
     private final CommunityService communityService;
-
     // 게시글 작성
     @PostMapping
     public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,

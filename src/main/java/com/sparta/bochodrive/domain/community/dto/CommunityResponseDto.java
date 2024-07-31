@@ -27,14 +27,14 @@ public class CommunityResponseDto {
     //private File[] imgUrl;
 
 
-    public CommunityResponseDto(Community saveCommunity,int likesCount) {
+    public CommunityResponseDto(Community saveCommunity) {
         this.id = saveCommunity.getId();
         this.title = saveCommunity.getTitle();
         this.content = saveCommunity.getContent();
         this.author=saveCommunity.getUser().getNickname();
         this.category = saveCommunity.getCategory();
         this.createdAt = saveCommunity.getCreatedAt();
-        this.viewCount++;
-        this.likesCount=likesCount;
+        this.viewCount= saveCommunity.getViewCount();
+        this.likesCount=saveCommunity.getLikeCount();
     }
 }
