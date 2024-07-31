@@ -36,16 +36,7 @@ public class CommentController {
         return ApiResponse.ok(HttpStatus.OK.value(), "댓글 작성에 성공하였습니다.");
     }
 
-    // 댓글 전체 조회
-    @GetMapping
-    public ApiResponse<List<CommentResponseDto>> getComments(@RequestParam(value = "communityId", required = false) Long communitiesId) {
-        log.info("댓글 전체 조회 요청: communitiesId = {}", communitiesId);
 
-        List<CommentResponseDto> comments = commentService.getComments(communitiesId);
-        log.info("댓글 전체 조회 성공: {}개의 댓글 조회됨", comments.size());
-
-        return ApiResponse.ok(HttpStatus.OK.value(), "댓글 조회에 성공하였습니다.", comments);
-    }
 
     //댓글 수정
     @PutMapping("/{id}")
