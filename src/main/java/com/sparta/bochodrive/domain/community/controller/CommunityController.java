@@ -20,39 +20,25 @@ public class CommunityController {
     private final CommunityService communityService;
     // 게시글 작성
     @PostMapping
-    public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,
+    public ApiResponse<Long> addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,
                                @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        log.info("게시글 작성 요청: {}", postRequestDto);
-        log.info("작성자 정보: {}", userDetails);
+        Long communityId=communityService.addPost(postRequestDto, userDetails.getUser());
+        log.info("게시글 작성 성공");
+        return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.",communityId);
 
-        if (userDetails == null || userDetails.getUser() == null) {
-            log.error("사용자 정보가 유효하지 않습니다.");
-            return ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "사용자 정보가 유효하지 않습니다.");
-        }
-
-        log.info("게시글 작성자: {}", userDetails.getUsername());
-
-        try {
-            communityService.addPost(postRequestDto, userDetails.getUser());
-            log.info("게시글 작성 성공");
-            return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
-        } catch (Exception e) {
-            log.error("게시글 작성 중 오류 발생", e);
-            return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "게시글 작성 중 오류가 발생하였습니다.");
-        }
     }
 
 
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public ApiResponse updatePost(@PathVariable("id") Long id,
+    public ApiResponse<Long> updatePost(@PathVariable("id") Long id,
                                           @RequestBody @Valid CommunityRequestDto postRequestDto,
                                           @AuthenticationPrincipal CustomUserDetails userDetails)  {
 
-        communityService.updatePost(id, postRequestDto,userDetails.getUser());
-        return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
+        Long communityId=communityService.updatePost(id, postRequestDto,userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.",communityId);
 
     }
 

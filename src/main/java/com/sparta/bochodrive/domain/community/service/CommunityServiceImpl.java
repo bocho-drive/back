@@ -44,7 +44,7 @@ public class CommunityServiceImpl implements CommunityService {
         commonFuntion.existsById(user.getId()); //user.getId가 userRepository있는지
         Community community = new Community(communityRequestDto, user);
         Community savedCommunity = communityRepository.save(community);
-        return savedCommunity.getId();
+        return community.getId();
     }
 
 
