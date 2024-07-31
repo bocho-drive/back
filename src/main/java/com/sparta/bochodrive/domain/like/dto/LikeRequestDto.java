@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LikeRequestDto {
     Long communityId;
-    Long userId;
+
 }
