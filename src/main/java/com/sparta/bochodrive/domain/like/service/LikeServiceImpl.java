@@ -33,9 +33,7 @@ public class LikeServiceImpl implements LikeService {
 
 
 
-        if(!likeRequestDto.getUserId().equals(user.getId())) {
-            throw new UnauthorizedException(ErrorCode.LIKE_FAILED);
-        }
+
         commonFuntion.existsById(user.getId());
 
         Community community=findCommunityById(likeRequestDto.getCommunityId());
