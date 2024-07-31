@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.community.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,14 @@ public class CommunityResponseDto {
     private int viewCount;
     private int likesCount=0;
     private LocalDateTime createdAt;
+
+    @JsonProperty("isAuthor")
+    private boolean isAuthor;
+
     //private File[] imgUrl;
 
 
-    public CommunityResponseDto(Community saveCommunity) {
+    public CommunityResponseDto(Community saveCommunity,boolean isAuthor) {
         this.id = saveCommunity.getId();
         this.title = saveCommunity.getTitle();
         this.content = saveCommunity.getContent();
@@ -36,5 +41,8 @@ public class CommunityResponseDto {
         this.createdAt = saveCommunity.getCreatedAt();
         this.viewCount= saveCommunity.getViewCount();
         this.likesCount=saveCommunity.getLikeCount();
+        this.isAuthor=isAuthor;
     }
+
+
 }

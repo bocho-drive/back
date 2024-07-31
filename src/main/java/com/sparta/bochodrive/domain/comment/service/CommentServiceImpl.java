@@ -32,8 +32,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDto addComments(CommentRequestDto commentRequestDto, User user) {
-        log.info("댓글 작성 요청 데이터: communitiesId = {}, userId = {}, content = {}", commentRequestDto.getCommunityId(), commentRequestDto.getUserId(), commentRequestDto.getContent());
-        log.info("댓글 작성자 정보: {}", user.getNickname());
 
         commonFunction.existsById(user.getId());
         log.info("사용자 ID 검증 완료: {}", user.getId());

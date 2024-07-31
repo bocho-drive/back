@@ -13,6 +13,5 @@ public class CommentRequestDto {
 
 
     private Long communityId;
-    private Long userId;
     private String content;
 }
