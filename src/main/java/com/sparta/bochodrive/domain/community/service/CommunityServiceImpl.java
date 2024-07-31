@@ -7,6 +7,7 @@ import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.like.repository.LikeRepository;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 
@@ -39,7 +41,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Long addPost(CommunityRequestDto communityRequestDto, User user) {
 
-        commonFuntion.existsById(user.getId());
+        commonFuntion.existsById(user.getId()); //user.getId가 userRepository있는지
         Community community = new Community(communityRequestDto, user);
         Community savedCommunity = communityRepository.save(community);
         return savedCommunity.getId();
@@ -50,7 +52,6 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) {
         // 정렬 방향 설정
-        size = 10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
@@ -69,14 +70,30 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 상세 조회
     @Override
-    public CommunityResponseDto getPost(Long id) {
+    public CommunityResponseDto getPost(Long id, CustomUserDetails customUserDetails) {
 
+
+        //존재하는 커뮤니티인지 확인 여부
         Community community=findCommunityById(id);
+
+        //조회수 +1
         community.setViewCount(community.getViewCount()+1); //조회수 +1
         communityRepository.save(community);
 
+        boolean isAuthor;
+        if(customUserDetails!=null){
+            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
+                isAuthor=false;
+            }
+            else{
+                isAuthor=true;
+            }
+        }
+        else{
+            isAuthor=false;
+        }
 
-        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community);
+        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,isAuthor);
         return communityResponseDto;
 
     }
