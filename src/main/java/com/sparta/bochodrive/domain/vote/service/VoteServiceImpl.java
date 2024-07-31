@@ -39,7 +39,7 @@ public class VoteServiceImpl implements VoteService {
         commonFuntion.existsById(user.getId());
 
         // 중복 투표 예외처리 로직
-        Optional<Vote> existingVote = voteRepository.findByUserIdAndCommunityId(voteRequestDto.getUserId(), voteRequestDto.getCommunityId());
+        Optional<Vote> existingVote = voteRepository.findByUserIdAndCommunityId(user.getId(), voteRequestDto.getCommunityId());
         if (existingVote.isPresent()) {
             throw new DuplicateVoteException(ErrorCode.VOTE_NOT_DUPLICATE);
         }
