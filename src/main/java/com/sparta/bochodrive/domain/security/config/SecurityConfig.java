@@ -37,6 +37,8 @@ public class SecurityConfig {
         // 경로별 인가 여부
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/communities").permitAll()
+                        .requestMatchers("/comments").permitAll()
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/api/login").permitAll()
