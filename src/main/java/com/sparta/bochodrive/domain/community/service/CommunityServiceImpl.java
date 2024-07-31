@@ -6,6 +6,7 @@ import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
+import com.sparta.bochodrive.domain.like.repository.LikeRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 
@@ -32,6 +33,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
+    private final LikeRepository likeRepository;
 
 
     @Override
@@ -70,12 +72,16 @@ public class CommunityServiceImpl implements CommunityService {
     public CommunityResponseDto getPost(Long id) {
 
         Community community=findCommunityById(id);
+        community.setViewCount(community.getViewCount()+1); //조회수 +1
+        communityRepository.save(community);
+
+
         CommunityResponseDto communityResponseDto = new CommunityResponseDto(community);
         return communityResponseDto;
+
     }
     //게시글 수정
     @Override
-    @Transactional
     public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
@@ -95,7 +101,6 @@ public class CommunityServiceImpl implements CommunityService {
 
     //게시글 삭제
     @Override
-    @Transactional
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());
