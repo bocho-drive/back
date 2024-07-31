@@ -27,7 +27,7 @@ public class CommunityResponseDto {
     private LocalDateTime createdAt;
 
     @JsonProperty("isAuthor")
-    private boolean isAuthor;
+    private boolean isAuthor=false;
 
     //private File[] imgUrl;
 
