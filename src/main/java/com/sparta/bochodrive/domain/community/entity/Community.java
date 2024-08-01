@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.community.entity;
 
 
+import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
@@ -91,6 +92,12 @@ public class Community extends TimeStamped {
         this.user=user;
     }
 
+    public Community(ChallengeVarifyRequestDto requestDto,User user) {
+        this.title=requestDto.getTitle();
+        this.content=requestDto.getContent();
+        this.category=requestDto.getCategory();
+        this.user=user;
+    }
 
 
     public void update(CommunityRequestDto communityRequestDto) {
@@ -101,5 +108,11 @@ public class Community extends TimeStamped {
 
     public void setDeleteYn(boolean b) {
         this.deleteYN=b;
+    }
+
+    public void update(ChallengeVarifyRequestDto requestDto) {
+        this.title=requestDto.getTitle();
+        this.content=requestDto.getContent();
+        this.category=requestDto.getCategory();
     }
 }
