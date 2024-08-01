@@ -50,4 +50,10 @@ public class GlobalExceptionHandler {
                 HttpStatus.FORBIDDEN
         );
     }
+
+    @ExceptionHandler({DuplicateVoteException.class})
+    public ResponseEntity<RestApiException> DuplicateVoteExceptionHandler(DuplicateVoteException ex) {
+        RestApiException restApiException = new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>((restApiException), HttpStatus.BAD_REQUEST);
+    }
 }
