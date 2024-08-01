@@ -1,7 +1,10 @@
 package com.sparta.bochodrive.domain.imageS3.service;
+import com.amazonaws.services.cloudformation.model.Change;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
+import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,22 +26,28 @@ import java.util.UUID;
 public class ImageS3Service {
 
     private final AmazonS3Client amazonS3Client;
+    private final ImageS3Repository imageS3Repository;
 
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;
 
-    public String upload(MultipartFile file, String dirname) throws IOException {
+    public String upload(MultipartFile file) throws IOException {
        File uploadFile = convert(file).orElseThrow(() -> new IllegalArgumentException("파일 전환 실패"));
-        String uploadedUrl = upload(uploadFile, dirname);
+        String uploadedUrl = upload(uploadFile);
         return uploadedUrl;
     }
 
-    private String upload(File uploadFile, String dirname) {
-        String filename = dirname + "/" + UUID.randomUUID().toString();
+    private String upload(File uploadFile) {
+        String filename = UUID.randomUUID().toString();
+        log.info(filename);
         String uploadImageUrl = putS3(uploadFile, filename);
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
+    public String getFileName(String url){
+        return url.substring(url.lastIndexOf("/")+1);
+    }
+
 
 
     private void removeNewFile(File targetFile) {
@@ -71,9 +80,19 @@ public class ImageS3Service {
 
     //s3에 파일 삭제 요청
     public void deleteFile(String fileName) {
+        log.info("삭제할 파일 이름 : {}", fileName);
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(deleteObjectRequest);
     }
+
+    //s3에 파일 삭제 요청
+    public void deleteFile(Long id) {
+        Optional<ImageS3> imageS3Optional = imageS3Repository.findById(id);
+        String fileName = imageS3Optional.get().getFileName();
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
+        amazonS3Client.deleteObject(deleteObjectRequest);
+    }
+
 
 
 
