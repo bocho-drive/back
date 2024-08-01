@@ -37,8 +37,10 @@ public class SecurityConfig {
         // 경로별 인가 여부
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/user/signup").permitAll()
-                        .requestMatchers("/api/v1/user/signin").permitAll()
+                        .requestMatchers("/communities").permitAll()
+                        .requestMatchers("/comments").permitAll()
+                        .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/signin").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/auth/login").hasRole("ADMIN")
                         .anyRequest().permitAll());

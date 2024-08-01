@@ -9,6 +9,7 @@ import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import com.sparta.bochodrive.domain.user.service.UserService;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,13 +28,14 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/api/v1/user/signup")
-    public UserModel.UserResponseDto postSignUp(@RequestBody UserRegistDto userRegistDto) {
-        return userService.registUser(userRegistDto);
+    @PostMapping("/signup")
+    public ApiResponse postSignUp(@RequestBody UserRegistDto userRegistDto) {
+        userService.registUser(userRegistDto);
+        return ApiResponse.ok(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
     }
 
-    @PostMapping("/api/v1/user/signin")
-    public String postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
+    @PostMapping("/signin")
+    public ApiResponse<UserModel.UserLoginResDto> postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
         User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
         );
@@ -43,13 +45,17 @@ public class UserController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        String email = user.getEmail();
-        return jwtUtils.createAccessToken(email, "USER");
+        UserModel.UserLoginResDto build = UserModel.UserLoginResDto.builder()
+                                                                   .accessToken(jwtUtils.createAccessToken(user.getEmail(), "USER"))
+                                                                   .userId(user.getId())
+                                                                   .build();
+
+        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.",build);
     }
 
-    @PostMapping("/api/auth/signin")
-    public ApiResponse<?> postAuthSignIn(@RequestBody UserLoginDto userLoginDto) {
-        return null;
-    }
+//    @PostMapping("/api/auth/signin")
+//    public ApiResponse<?> postAuthSignIn(@RequestBody UserLoginDto userLoginDto) {
+//        return null;
+//    }
 
 }

@@ -37,8 +37,8 @@ public class Vote extends TimeStamped {
     private User user;
 
     public Vote(VoteRequestDto voteRequestDto, Community community, User user) {
-        this.community=community;
-        this.user=user;
-        this.agreeYn=voteRequestDto.isAgreeYn();
+        this.community = community;
+        this.user = user;
+        this.agreeYn = voteRequestDto.isAgreeYn();
     }
 }

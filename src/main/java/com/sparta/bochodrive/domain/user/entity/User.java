@@ -29,7 +29,7 @@ public class User extends TimeStamped {
     private String nickname;
 
     @Column(name = "DELETE_YN", nullable = false)
-    private boolean deleteYN=false;
+    private boolean deleteYN;
 
     @Column(name = "USER_ROLE")
     @Enumerated(EnumType.STRING)

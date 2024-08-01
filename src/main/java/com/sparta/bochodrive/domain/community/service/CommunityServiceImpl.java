@@ -6,6 +6,11 @@ import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
+import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
+import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
+import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
+import com.sparta.bochodrive.domain.like.repository.LikeRepository;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 
@@ -16,8 +21,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,84 +41,93 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommunityServiceImpl implements CommunityService {
 
-
+    private final ImageS3Service imageS3Service;
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
+    private final ImageS3Repository imageS3Repository;
 
-
-    // 게시글 작성
     @Override
-    public CommunityResponseDto addPost(CommunityRequestDto communityRequestDto, User user) {
-        // 로그: 게시글 작성 요청 데이터
-        log.info("게시글 작성 요청 데이터: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 = {}",
-                communityRequestDto.getTitle(),
-                communityRequestDto.getContent(),
-                communityRequestDto.getCategory(),
-                communityRequestDto.getAuthor());
+    public Long addPost(CommunityRequestDto communityRequestDto,User user) throws IOException {
 
-        // 로그: 게시글 작성자 정보
-        log.info("게시글 작성자 정보: ID = {}, 닉네임 = {}, 이메일 = {}",
-                user.getId(),
-                user.getNickname(),
-                user.getEmail());
+//        //로직이 필요할 수도 있다고 함.
+//        // 사용자 ID가 userRepository에 있는지 확인
+//        commonFuntion.existsById(user.getId());
 
-        // 사용자 ID 검증
-        commonFuntion.existsById(user.getId());
-        log.info("사용자 ID 검증 완료: {}", user.getId());
-
-        // 커뮤니티 엔티티 생성
+        // 이미지 파일 리스트 가져오기
+        List<MultipartFile> requestImages = communityRequestDto.getImage();
         Community community = new Community(communityRequestDto, user);
-        log.info("생성된 커뮤니티 엔티티: 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
-                community.getTitle(),
-                community.getContent(),
-                community.getCategory(),
-                community.getUser().getId(),
-                community.getUser().getNickname());
-
-        // 커뮤니티 엔티티 저장
         Community savedCommunity = communityRepository.save(community);
-        log.info("저장된 커뮤니티 엔티티: ID = {}, 제목 = {}, 내용 = {}, 카테고리 = {}, 작성자 ID = {}, 작성자 닉네임 = {}",
-                savedCommunity.getId(),
-                savedCommunity.getTitle(),
-                savedCommunity.getContent(),
-                savedCommunity.getCategory(),
-                savedCommunity.getUser().getId(),
-                savedCommunity.getUser().getNickname());
 
-        // 반환
-        return new CommunityResponseDto(savedCommunity);
+        // 이미지 파일이 null이거나 비어 있지 않은지 확인
+        if (requestImages != null && !requestImages.isEmpty()) {
+            for (MultipartFile image : requestImages) {
+                String url=imageS3Service.upload(image);
+                String filename=imageS3Service.getFileName(url);
+                ImageS3 imageS3=new ImageS3(url,filename,savedCommunity);
+                imageS3Repository.save(imageS3);
+            }
+
+            communityRepository.save(savedCommunity);
+
+
+        }
+
+        return savedCommunity.getId();
     }
 
 
-    //게시글 목록 조회
+    // 게시글 목록 조회
     @Override
-    public List<CommunityListResponseDto> getAllPosts(CategoryEnum category)  {
-        //카테고리 별로 list찾기
-        List<Community> communities;
-        //카테고리별 목록 조회
-        if(category == null) {
-            communities = communityRepository.findAllByDeleteYNFalseOrderByCreatedAtDesc(); //카테고리 설정 안했을 때 전체글 목록
-        }
-        else {
-            communities=communityRepository.findAllByCategoryAndDeleteYNFalse(category); //카테고리별 글목록
+    public Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) {
+        // 정렬 방향 설정
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<Community> communityPage;
+
+        // 카테고리별 목록 조회
+        if (category == null) {
+            communityPage = communityRepository.findAllByDeleteYNFalseOrderByCreatedAtDesc(pageable); // 카테고리 설정 안했을 때 전체글 목록
+        } else {
+            communityPage = communityRepository.findAllByCategoryAndDeleteYNFalse(category, pageable); // 카테고리별 글목록
         }
 
-        return communities.stream().map(communityListResponseDto ->
-                new CommunityListResponseDto(communityListResponseDto)).collect(Collectors.toList());
+        // Community 엔티티를 CommunityListResponseDto로 변환
+        return communityPage.map(CommunityListResponseDto::new);
     }
 
     //게시글 상세 조회
     @Override
-    public CommunityResponseDto getPost(Long id) {
+    public CommunityResponseDto getPost(Long id, CustomUserDetails customUserDetails) {
 
+
+        //존재하는 커뮤니티인지 확인 여부
         Community community=findCommunityById(id);
-        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community);
+
+        //조회수 +1
+        community.setViewCount(community.getViewCount()+1); //조회수 +1
+        communityRepository.save(community);
+
+        boolean isAuthor;
+        if(customUserDetails!=null){
+            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
+                isAuthor=false;
+            }
+            else{
+                isAuthor=true;
+            }
+        }
+        else{
+            isAuthor=false;
+        }
+
+        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,isAuthor);
         return communityResponseDto;
+
     }
     //게시글 수정
     @Override
-    @Transactional
-    public void updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
+    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws IOException {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
@@ -115,14 +137,32 @@ public class CommunityServiceImpl implements CommunityService {
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
+        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(id);
+        if(!originImages.isEmpty() && originImages!=null){
+            //기존 이미지들 삭제
+            for(ImageS3 originImage:originImages){
+                imageS3Service.deleteFile(originImage.getFileName());
+                imageS3Repository.delete(originImage);
+            }
+            //새로운 이미지들 추가
+            for(MultipartFile image : communityRequestDto.getImage()) {
+                String url=imageS3Service.upload(image);
+                String filename=imageS3Service.getFileName(url);
+                ImageS3 imageS3=new ImageS3(url,filename,community);
+                imageS3Repository.save(imageS3);
+
+            }
+
+        }
         community.update(communityRequestDto);//update
-        communityRepository.save(community);
+        Community save=communityRepository.save(community);
+        return save.getId();
+
 
     }
 
     //게시글 삭제
     @Override
-    @Transactional
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());
@@ -130,6 +170,7 @@ public class CommunityServiceImpl implements CommunityService {
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
+        //진짜로 글을 삭제하는게 아니므로 -> 이미지도 삭제할 필요가 없음
         community.setDeleteYn(true);
         communityRepository.save(community);
 

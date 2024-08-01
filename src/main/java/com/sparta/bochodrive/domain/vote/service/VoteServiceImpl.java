@@ -1,3 +1,4 @@
+
 package com.sparta.bochodrive.domain.vote.service;
 
 import com.sparta.bochodrive.domain.community.entity.Community;

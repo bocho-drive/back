@@ -5,6 +5,7 @@ import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
+import com.sparta.bochodrive.domain.like.entity.Like;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.vote.entity.Vote;
 import com.sparta.bochodrive.global.entity.TimeStamped;
@@ -44,6 +45,9 @@ public class Community extends TimeStamped {
     @Column(nullable = false)
     private int viewCount=0;
 
+    @Column(nullable = false)
+    private int likeCount=0;
+
 
     @Column(nullable = false)
     private boolean verifiedYN=false;
@@ -70,9 +74,9 @@ public class Community extends TimeStamped {
     private List<Vote> votes;
 
 
-//    //좋아요
-//    @OneToMany(mappedBy = "community")
-//    private List<Like> likes;
+    //좋아요
+    @OneToMany(mappedBy = "community")
+    private List<Like> likes;
 
 
     //이미지

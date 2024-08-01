@@ -1,17 +1,17 @@
 package com.sparta.bochodrive.domain.community.controller;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.service.CommunityService;
-import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
-import com.sparta.bochodrive.domain.user.entity.User;
-import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.io.IOException;
+
 
 
 @RestController
@@ -24,39 +24,27 @@ public class CommunityController {
 
     // 게시글 작성
     @PostMapping
-    public ApiResponse addPost(@RequestBody @Valid CommunityRequestDto postRequestDto,
-                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+    //@ModelAttribute -> 폼 데이터를 받아서 데이터를 매핑할 때 사용
+    public ApiResponse<Long> addPost( @ModelAttribute CommunityRequestDto requestDto,
+                                      @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
 
-        log.info("게시글 작성 요청: {}", postRequestDto);
-        log.info("작성자 정보: {}", userDetails);
 
-        if (userDetails == null || userDetails.getUser() == null) {
-            log.error("사용자 정보가 유효하지 않습니다.");
-            return ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "사용자 정보가 유효하지 않습니다.");
-        }
+        Long communityId = communityService.addPost(requestDto, userDetails.getUser());
+        log.info("게시글 작성 성공");
+        return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.",communityId);
 
-        log.info("게시글 작성자: {}", userDetails.getUsername());
-
-        try {
-            communityService.addPost(postRequestDto, userDetails.getUser());
-            log.info("게시글 작성 성공");
-            return ApiResponse.ok(HttpStatus.OK.value(), "게시글 작성에 성공하였습니다.");
-        } catch (Exception e) {
-            log.error("게시글 작성 중 오류 발생", e);
-            return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "게시글 작성 중 오류가 발생하였습니다.");
-        }
     }
 
 
 
     // 게시글 수정
     @PutMapping("/{id}")
-    public ApiResponse updatePost(@PathVariable("id") Long id,
-                                          @RequestBody @Valid CommunityRequestDto postRequestDto,
-                                          @AuthenticationPrincipal CustomUserDetails userDetails)  {
+    public ApiResponse<Long> updatePost(@PathVariable("id") Long id,
+                                          @ModelAttribute CommunityRequestDto postRequestDto,
+                                          @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException  {
 
-        communityService.updatePost(id, postRequestDto,userDetails.getUser());
-        return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
+        Long communityId=communityService.updatePost(id, postRequestDto,userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.",communityId);
 
     }
 
