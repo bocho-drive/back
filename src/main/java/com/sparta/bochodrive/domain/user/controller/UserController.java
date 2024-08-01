@@ -9,6 +9,7 @@ import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import com.sparta.bochodrive.domain.user.service.UserService;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,12 +29,13 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/signup")
-    public UserModel.UserResponseDto postSignUp(@RequestBody UserRegistDto userRegistDto) {
-        return userService.registUser(userRegistDto);
+    public ApiResponse postSignUp(@RequestBody UserRegistDto userRegistDto) {
+        userService.registUser(userRegistDto);
+        return ApiResponse.ok(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
     }
 
     @PostMapping("/signin")
-    public String postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
+    public ApiResponse<UserModel.UserLoginResDto> postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
         User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
         );
@@ -44,12 +46,14 @@ public class UserController {
         }
 
         String email = user.getEmail();
-        return jwtUtils.createAccessToken(email, "USER");
+        String accessToken = jwtUtils.createAccessToken(email, "USER");
+        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.",
+                                UserModel.UserLoginResDto.builder().accessToken(accessToken).build());
     }
 
-    @PostMapping("/api/auth/signin")
-    public ApiResponse<?> postAuthSignIn(@RequestBody UserLoginDto userLoginDto) {
-        return null;
-    }
+//    @PostMapping("/api/auth/signin")
+//    public ApiResponse<?> postAuthSignIn(@RequestBody UserLoginDto userLoginDto) {
+//        return null;
+//    }
 
 }
