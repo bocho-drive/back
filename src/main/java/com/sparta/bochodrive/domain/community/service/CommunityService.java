@@ -8,10 +8,14 @@ import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
+
+import java.io.IOException;
+
+
 public interface CommunityService {
-    Long addPost(CommunityRequestDto communityRequestDto,User user); ;
+    Long addPost(CommunityRequestDto communityRequestDto, User user) throws IOException; ;
     Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) ;
     CommunityResponseDto getPost(Long id, CustomUserDetails customUserDetails);
-    Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user);
+    Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws IOException;
     void deletePost(Long id, User user) ;
 }

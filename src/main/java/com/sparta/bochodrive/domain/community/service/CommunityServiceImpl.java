@@ -6,6 +6,9 @@ import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
+import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
+import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
+import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
 import com.sparta.bochodrive.domain.like.repository.LikeRepository;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
@@ -24,6 +27,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -32,19 +41,38 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommunityServiceImpl implements CommunityService {
 
-
+    private final ImageS3Service imageS3Service;
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
-    private final LikeRepository likeRepository;
-
+    private final ImageS3Repository imageS3Repository;
 
     @Override
-    public Long addPost(CommunityRequestDto communityRequestDto, User user) {
+    public Long addPost(CommunityRequestDto communityRequestDto,User user) throws IOException {
 
-        commonFuntion.existsById(user.getId()); //user.getId가 userRepository있는지
+//        //로직이 필요할 수도 있다고 함.
+//        // 사용자 ID가 userRepository에 있는지 확인
+//        commonFuntion.existsById(user.getId());
+
+        // 이미지 파일 리스트 가져오기
+        List<MultipartFile> requestImages = communityRequestDto.getImage();
         Community community = new Community(communityRequestDto, user);
         Community savedCommunity = communityRepository.save(community);
-        return community.getId();
+
+        // 이미지 파일이 null이거나 비어 있지 않은지 확인
+        if (requestImages != null && !requestImages.isEmpty()) {
+            for (MultipartFile image : requestImages) {
+                String url=imageS3Service.upload(image);
+                String filename=imageS3Service.getFileName(url);
+                ImageS3 imageS3=new ImageS3(url,filename,savedCommunity);
+                imageS3Repository.save(imageS3);
+            }
+
+            communityRepository.save(savedCommunity);
+
+
+        }
+
+        return savedCommunity.getId();
     }
 
 
@@ -99,7 +127,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
     //게시글 수정
     @Override
-    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
+    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws IOException {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
@@ -108,6 +136,23 @@ public class CommunityServiceImpl implements CommunityService {
 
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+        }
+        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(id);
+        if(!originImages.isEmpty() && originImages!=null){
+            //기존 이미지들 삭제
+            for(ImageS3 originImage:originImages){
+                imageS3Service.deleteFile(originImage.getFileName());
+                imageS3Repository.delete(originImage);
+            }
+            //새로운 이미지들 추가
+            for(MultipartFile image : communityRequestDto.getImage()) {
+                String url=imageS3Service.upload(image);
+                String filename=imageS3Service.getFileName(url);
+                ImageS3 imageS3=new ImageS3(url,filename,community);
+                imageS3Repository.save(imageS3);
+
+            }
+
         }
         community.update(communityRequestDto);//update
         Community save=communityRepository.save(community);
@@ -125,6 +170,7 @@ public class CommunityServiceImpl implements CommunityService {
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
+        //진짜로 글을 삭제하는게 아니므로 -> 이미지도 삭제할 필요가 없음
         community.setDeleteYn(true);
         communityRepository.save(community);
 
