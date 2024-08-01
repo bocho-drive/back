@@ -3,6 +3,7 @@ package com.sparta.bochodrive.domain.vote.controller;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.vote.dto.VoteRequestDto;
 
+import com.sparta.bochodrive.domain.vote.dto.VoteResponseDto;
 import com.sparta.bochodrive.domain.vote.service.VoteService;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -29,6 +32,13 @@ public class VoteController {
 
         voteService.participateVote(voteRequestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(),"투표에 참여하셨습니다.");
+    }
+
+    //투표 정보
+    @GetMapping
+    public ApiResponse<List<VoteResponseDto>> getVotesInfo(@RequestParam("communityId") Long communityId) {
+        List<VoteResponseDto> voteResponseDto=voteService.getVoteInfo(communityId);
+        return ApiResponse.ok(HttpStatus.OK.value(),"투표 정보 조회에 성공하셨습니다.",voteResponseDto);
     }
 
 

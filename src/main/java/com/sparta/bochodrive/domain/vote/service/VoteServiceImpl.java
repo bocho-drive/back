@@ -7,6 +7,7 @@ import com.sparta.bochodrive.domain.community.service.CommunityService;
 import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.vote.dto.VoteRequestDto;
+import com.sparta.bochodrive.domain.vote.dto.VoteResponseDto;
 import com.sparta.bochodrive.domain.vote.entity.Vote;
 import com.sparta.bochodrive.domain.vote.repository.VoteRepository;
 import com.sparta.bochodrive.global.exception.DuplicateVoteException;
@@ -20,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +63,15 @@ public class VoteServiceImpl implements VoteService {
         commonFuntion.existsById(user.getId());
         Vote vote=voteRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.VOTE_NOT_FOUND));
         voteRepository.delete(vote);
+    }
+
+
+
+    @Override
+    public List<VoteResponseDto> getVoteInfo(Long communityId) {
+        List<Vote> voteList = voteRepository.findAllByCommunityId(communityId);
+        return voteList.stream()
+                .map(vote -> new VoteResponseDto(vote))
+                .collect(Collectors.toList());
     }
 }
