@@ -20,14 +20,18 @@ public class ImageS3 {
     @Column(nullable = false)
     private String uploadUrl;
 
+    @Column(nullable = false)
+    private String fileName;
+
     //게시글
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="community_id",nullable = false)
     private Community community;
 
-    public ImageS3( String url, Community community) {
+    public ImageS3( String url, String filename,Community community) {
 
         this.uploadUrl = url;
+        this.fileName = filename;
         this.community = community;
     }
 }

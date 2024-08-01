@@ -10,4 +10,5 @@ import java.util.List;
 @Component
 public interface ImageS3Repository extends JpaRepository<ImageS3,Long> {
 
+    List<ImageS3> findAllByCommunityId(Long id);
 }
