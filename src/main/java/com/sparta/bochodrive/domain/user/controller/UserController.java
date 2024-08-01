@@ -45,10 +45,12 @@ public class UserController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
 
-        String email = user.getEmail();
-        String accessToken = jwtUtils.createAccessToken(email, "USER");
-        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.",
-                                UserModel.UserLoginResDto.builder().accessToken(accessToken).build());
+        UserModel.UserLoginResDto build = UserModel.UserLoginResDto.builder()
+                                                                   .accessToken(jwtUtils.createAccessToken(user.getEmail(), "USER"))
+                                                                   .userId(user.getId())
+                                                                   .build();
+
+        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.",build);
     }
 
 //    @PostMapping("/api/auth/signin")

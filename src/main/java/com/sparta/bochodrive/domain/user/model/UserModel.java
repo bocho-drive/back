@@ -52,6 +52,7 @@ public class UserModel {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UserLoginResDto {
+        private long userId;
         private String accessToken;
     }
 }
