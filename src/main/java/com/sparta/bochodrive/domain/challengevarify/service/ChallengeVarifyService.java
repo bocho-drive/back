@@ -3,13 +3,18 @@ package com.sparta.bochodrive.domain.challengevarify.service;
 import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
 import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyResponseDto;
 import com.sparta.bochodrive.domain.user.entity.User;
+import org.springframework.data.domain.Page;
+
+import java.io.IOException;
 
 public interface ChallengeVarifyService {
-    public ChallengeVarifyResponseDto addChallengeVarify(ChallengeVarifyRequestDto requestDto, User user);
+    Long addChallengeVarify(ChallengeVarifyRequestDto requestDto,  User user) throws IOException;
 
-    public ChallengeVarifyResponseDto getChallengeVarify(Long id);
+    ChallengeVarifyResponseDto getChallengeVarify(Long id);
 
-    public void updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user);
+    Long updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user) throws IOException;
 
-    public void deleteChallengeVarify(Long id, User user);
+    void deleteChallengeVarify(Long id, User user);
+
+    Page<ChallengeVarifyResponseDto> getChallengeVarifies(int page, int size, String sortBy, boolean isAsc);
 }
