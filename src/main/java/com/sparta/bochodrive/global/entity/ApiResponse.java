@@ -10,6 +10,7 @@ import lombok.Getter;
 public class ApiResponse<T> {
     int statusCode;
     String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     T data;
 
 
