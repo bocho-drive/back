@@ -37,6 +37,7 @@ public class Community extends TimeStamped {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Size(min=1,max=300)
     private CategoryEnum category;
 
     @Column(nullable = false)
