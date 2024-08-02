@@ -66,10 +66,6 @@ public class CommunityServiceImpl implements CommunityService {
                 ImageS3 imageS3=new ImageS3(url,filename,savedCommunity);
                 imageS3Repository.save(imageS3);
             }
-
-            communityRepository.save(savedCommunity);
-
-
         }
 
         return savedCommunity.getId();
@@ -104,6 +100,11 @@ public class CommunityServiceImpl implements CommunityService {
         //존재하는 커뮤니티인지 확인 여부
         Community community=findCommunityById(id);
 
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+
         //조회수 +1
         community.setViewCount(community.getViewCount()+1); //조회수 +1
         communityRepository.save(community);
@@ -132,8 +133,10 @@ public class CommunityServiceImpl implements CommunityService {
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
 
-        //게시글 community의 userId와 수정하려는 사람의 userId가 같은지에 관한 에외처리
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
 
+        //게시글 community의 userId와 수정하려는 사람의 userId가 같은지에 관한 에외처리
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
@@ -166,7 +169,14 @@ public class CommunityServiceImpl implements CommunityService {
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());
+
+
         Community community=findCommunityById(id);
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
