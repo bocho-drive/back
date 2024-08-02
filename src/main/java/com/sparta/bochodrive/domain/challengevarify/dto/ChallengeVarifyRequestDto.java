@@ -19,6 +19,6 @@ public class ChallengeVarifyRequestDto {
     private String title;
     private String content;
     private CategoryEnum category;
-    private List<MultipartFile> images;
-    private Long ChallengeId;
+    private List<MultipartFile> image;
+
 }
