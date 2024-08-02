@@ -19,7 +19,8 @@ public enum ErrorCode {
     VOTE_NOT_DUPLICATE(400,"중복 투표는 불가능합니다."),
     LIKE_NOT_DUPLICATE(400,"중복 좋아요는 불가능합니다"),
     LIKE_FAILED(403,"좋아요에 실패하였습니다."),
-    FILE_NOT_FOUND(404,"이미지 파일이 존재하지 않습니다.");
+    FILE_NOT_FOUND(404,"이미지 파일이 존재하지 않습니다."),
+    COMMUNITY_DELETE(404,"삭제된 게시글입니다.");
 
     private final int status;
     private final String message;
