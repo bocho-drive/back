@@ -27,11 +27,12 @@ public class ChallengeVarifyController {
     //챌린지 인증 글 등록
     @PostMapping
     public ApiResponse<Long> addChallengeVarify(@ModelAttribute ChallengeVarifyRequestDto requestDto
-                                          , @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+            ,@RequestParam("challengeId") Long challengeId
+            ,@AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
 
         // 로그 추가
 
-        Long id=challengeVarifyService.addChallengeVarify(requestDto,userDetails.getUser());
+        Long id=challengeVarifyService.addChallengeVarify(requestDto,challengeId,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증에 성공하셨습니다.",id);
     }
 
@@ -56,7 +57,7 @@ public class ChallengeVarifyController {
     //챌린지 인증 수정
     @PutMapping("/{id}")
     public ApiResponse<Long> updateChallengeVarify(@PathVariable("id") Long id,
-                                             @RequestBody @Valid ChallengeVarifyRequestDto requestDto,
+                                             @ModelAttribute ChallengeVarifyRequestDto requestDto,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
         Long challengeVarifyId= challengeVarifyService.updateChallengeVarify(id,requestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 수정에 성공하셨습니다.",challengeVarifyId);
