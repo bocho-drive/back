@@ -45,31 +45,36 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, Long challengeId, User user) throws IOException {
+    public Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, Long challengeId, User user) {
 
+        // 사용자 ID가 userRepository에 있는지 확인
         commonFuntion.existsById(user.getId());
 
-        //게시글 객체 생성 후 저장
-        Community community=new Community(requestDto,user);
-        Community savedCommunity=communityRepository.save(community);
+        // 게시글 객체 생성 후 저장
+        Community community = new Community(requestDto, user);
+        Community savedCommunity = communityRepository.save(community);
 
+        // 챌린지 찾기
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
 
-        Challenge challenge=challengeRepository.findById(challengeId).orElseThrow(()->new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
-
-
-        ChallengeVarify challengeVarify=new ChallengeVarify(user,savedCommunity,challenge);
+        // ChallengeVarify 객체 생성 후 저장
+        ChallengeVarify challengeVarify = new ChallengeVarify(user, savedCommunity, challenge);
         ChallengeVarify challengeVarifySaved = challengeVarifyRepository.save(challengeVarify);
 
-        //이미지 업로드
-        List<MultipartFile> requestImages=requestDto.getImage();
-        if(requestImages!=null ||!requestImages.isEmpty()){
+        // 이미지 업로드
+        List<MultipartFile> requestImages = requestDto.getImage();
+        if (requestImages != null && !requestImages.isEmpty()) {
             for (MultipartFile file : requestImages) {
-                String url=imageS3Service.upload(file);
-                String filename=imageS3Service.getFileName(url);
-                ImageS3 imageS3=new ImageS3(url,filename, challengeVarifySaved.getCommunity());
-                imageS3Repository.save(imageS3);
+                try {
+                    String url = imageS3Service.upload(file);
+                    String filename = imageS3Service.getFileName(url);
+                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarifySaved.getCommunity());
+                    imageS3Repository.save(imageS3);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
         }
 
         return challengeVarifySaved.getId();

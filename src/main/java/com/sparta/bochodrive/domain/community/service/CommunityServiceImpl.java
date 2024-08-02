@@ -47,11 +47,10 @@ public class CommunityServiceImpl implements CommunityService {
     private final ImageS3Repository imageS3Repository;
 
     @Override
-    public Long addPost(CommunityRequestDto communityRequestDto,User user) throws IOException {
+    public Long addPost(CommunityRequestDto communityRequestDto, User user) {
 
-//        //로직이 필요할 수도 있다고 함.
-//        // 사용자 ID가 userRepository에 있는지 확인
-//        commonFuntion.existsById(user.getId());
+        // 사용자 ID가 userRepository에 있는지 확인
+        commonFuntion.existsById(user.getId());
 
         // 이미지 파일 리스트 가져오기
         List<MultipartFile> requestImages = communityRequestDto.getImage();
@@ -61,16 +60,19 @@ public class CommunityServiceImpl implements CommunityService {
         // 이미지 파일이 null이거나 비어 있지 않은지 확인
         if (requestImages != null && !requestImages.isEmpty()) {
             for (MultipartFile image : requestImages) {
-                String url=imageS3Service.upload(image);
-                String filename=imageS3Service.getFileName(url);
-                ImageS3 imageS3=new ImageS3(url,filename,savedCommunity);
-                imageS3Repository.save(imageS3);
+                try {
+                    String url = imageS3Service.upload(image);
+                    String filename = imageS3Service.getFileName(url);
+                    ImageS3 imageS3 = new ImageS3(url, filename, savedCommunity);
+                    imageS3Repository.save(imageS3);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         return savedCommunity.getId();
     }
-
 
     // 게시글 목록 조회
     @Override
