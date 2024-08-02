@@ -36,6 +36,7 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
+
     private final ChallengeVarifyRepository challengeVarifyRepository;
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
@@ -44,7 +45,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, User user) throws IOException {
+    public Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, Long challengeId, User user) throws IOException {
 
         commonFuntion.existsById(user.getId());
 
@@ -52,14 +53,15 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         Community community=new Community(requestDto,user);
         Community savedCommunity=communityRepository.save(community);
 
-        Challenge challenge=challengeRepository.findById(requestDto.getChallengeId()).get();
+
+        Challenge challenge=challengeRepository.findById(challengeId).orElseThrow(()->new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
 
 
         ChallengeVarify challengeVarify=new ChallengeVarify(user,savedCommunity,challenge);
-        //이미지 파일 리스트
-        List<MultipartFile> requestImages=requestDto.getImages();
         ChallengeVarify challengeVarifySaved = challengeVarifyRepository.save(challengeVarify);
 
+        //이미지 업로드
+        List<MultipartFile> requestImages=requestDto.getImage();
         if(requestImages!=null ||!requestImages.isEmpty()){
             for (MultipartFile file : requestImages) {
                 String url=imageS3Service.upload(file);
@@ -79,6 +81,11 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
         Community community=challengeVarify.getCommunity();
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+
         community.setViewCount(community.getViewCount()+1);
         communityRepository.save(community);
         return new ChallengeVarifyResponseDto(challengeVarify);
@@ -89,7 +96,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         // 정렬 방향 설정
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<ChallengeVarify> challengeVarifyPage = challengeVarifyRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<ChallengeVarify> challengeVarifyPage = challengeVarifyRepository.findAllByCommunityDeleteYnFalseOrderByCreatedDateDesc(pageable);
         return challengeVarifyPage.map(ChallengeVarifyResponseDto::new);
 
     }
@@ -98,19 +105,22 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     public Long updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user) throws IOException {
         commonFuntion.existsById(user.getId());
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
-        Community community=challengeVarify.getCommunity();
 
-        if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
+        Community community=challengeVarify.getCommunity();
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+        if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
         }
 
-        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(challengeVarify.getCommunity().getId());
-        if(!originImages.isEmpty() && originImages!=null) {
+        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(community.getId());
+        if(!originImages.isEmpty() || originImages!=null) {
             for(ImageS3 originImage:originImages){
                 imageS3Service.deleteFile(originImage.getFileName());
                 imageS3Repository.delete(originImage);
             }
-            for(MultipartFile file : requestDto.getImages()) {
+            for(MultipartFile file : requestDto.getImage()) {
                 String url=imageS3Service.upload(file);
                 String filename=imageS3Service.getFileName(url);
                 ImageS3 imageS3=new ImageS3(url,filename, challengeVarify.getCommunity());
@@ -127,6 +137,11 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     public void deleteChallengeVarify(Long id, User user) {
         commonFuntion.existsById(user.getId());
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
+
+
         if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }

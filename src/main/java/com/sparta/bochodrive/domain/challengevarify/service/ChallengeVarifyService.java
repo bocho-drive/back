@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.io.IOException;
 
 public interface ChallengeVarifyService {
-    Long addChallengeVarify(ChallengeVarifyRequestDto requestDto,  User user) throws IOException;
+    Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, Long challengeId, User user) throws IOException;
 
     ChallengeVarifyResponseDto getChallengeVarify(Long id);
 
