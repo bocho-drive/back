@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.community.entity;
 
 
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
@@ -32,7 +31,7 @@ public class Community extends TimeStamped {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    @Size(min=1,max=100)
+    @Size(min = 1, max = 100)
     private String title;
 
     @Column(nullable = false)
@@ -44,34 +43,34 @@ public class Community extends TimeStamped {
     private String content;
 
     @Column(nullable = false)
-    private int viewCount=0;
+    private int viewCount = 0;
 
     @Column(nullable = false)
-    private int likeCount=0;
-
-
-    @Column(nullable = false)
-    private boolean verifiedYN=false;
+    private int likeCount = 0;
 
 
     @Column(nullable = false)
-    private boolean deleteYN=false;
+    private boolean verifiedYN = false;
+
+
+    @Column(nullable = false)
+    private boolean deleteYN = false;
 
     //유저
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id",nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     //댓글
-    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     //챌린지 인증
-    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     private List<ChallengeVarify> challengeVarifies;
 
     //게시글 투표
-    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     private List<Vote> votes;
 
 
@@ -81,38 +80,26 @@ public class Community extends TimeStamped {
 
 
     //이미지
-    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "community", cascade = CascadeType.PERSIST)
     private List<ImageS3> images;
 
 
-    public Community(CommunityRequestDto communityRequestDto,User user) {
+    public Community(CommunityRequestDto communityRequestDto, User user) {
         this.title = communityRequestDto.getTitle();
-        this.content=communityRequestDto.getContent();
-        this.category=communityRequestDto.getCategory();
-        this.user=user;
-    }
-
-    public Community(ChallengeVarifyRequestDto requestDto,User user) {
-        this.title=requestDto.getTitle();
-        this.content=requestDto.getContent();
-        this.category=requestDto.getCategory();
-        this.user=user;
+        this.content = communityRequestDto.getContent();
+        this.category = communityRequestDto.getCategory();
+        this.user = user;
     }
 
 
     public void update(CommunityRequestDto communityRequestDto) {
-        this.title=communityRequestDto.getTitle();
-        this.content=communityRequestDto.getContent();
-        this.category=communityRequestDto.getCategory();
+        this.title = communityRequestDto.getTitle();
+        this.content = communityRequestDto.getContent();
+        this.category = communityRequestDto.getCategory();
     }
 
     public void setDeleteYn(boolean b) {
-        this.deleteYN=b;
+        this.deleteYN = b;
     }
 
-    public void update(ChallengeVarifyRequestDto requestDto) {
-        this.title=requestDto.getTitle();
-        this.content=requestDto.getContent();
-        this.category=requestDto.getCategory();
-    }
 }
