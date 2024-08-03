@@ -33,7 +33,6 @@ jobs:
 
       - name: 빌드된 파일 이름 변경
         run: |
-          ls
           pwd
           mv ./build/libs/*.jar ./project.jar
         
