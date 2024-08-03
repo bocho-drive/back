@@ -9,7 +9,6 @@ import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
-import com.sparta.bochodrive.domain.like.repository.LikeRepository;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
@@ -25,14 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -142,11 +138,13 @@ public class CommunityServiceImpl implements CommunityService {
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
-        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(id);
-        if(!originImages.isEmpty() && originImages!=null){
+        // 이미지 파일 리스트 가져오기
+        List<MultipartFile> requestImages = communityRequestDto.getImage();
+
+        if(requestImages!=null && !requestImages.isEmpty()){
 
             //새로운 이미지들 추가
-            for(MultipartFile image : communityRequestDto.getImage()) {
+            for(MultipartFile image : requestImages) {
                 try{
                     String url=imageS3Service.upload(image);
                     String filename=imageS3Service.getFileName(url);
