@@ -2,7 +2,7 @@ name: Bocho-community
 
 on:
   push:
-    branches: ["feature/test-github-action"]
+    branches: ["develop"]
   pull_request:
     branches: ["develop"]
 
