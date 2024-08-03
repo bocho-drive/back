@@ -4,6 +4,7 @@ import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ChallengeVarifyResponseDto {
 
     private Long id;

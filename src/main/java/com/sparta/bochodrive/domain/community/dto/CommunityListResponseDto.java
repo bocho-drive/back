@@ -2,6 +2,7 @@ package com.sparta.bochodrive.domain.community.dto;
 
 import com.sparta.bochodrive.domain.community.entity.Community;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CommunityListResponseDto {
 
     private Long id;
@@ -28,7 +30,6 @@ public class CommunityListResponseDto {
         this.verifiedYN=community.isVerifiedYN();
         this.viewCount=community.getViewCount();
         this.likeCount=community.getLikeCount();
-
-
     }
+
 }
