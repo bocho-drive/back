@@ -34,7 +34,7 @@ public class CommunityListResponseDto {
     }
 
     public CommunityListResponseDto(ChallengeVarify challengeVarify) {
-        this.id=challengeVarify.getId();
+        this.id=challengeVarify.getCommunity().getId();
         this.title=challengeVarify.getCommunity().getTitle();
         this.author=challengeVarify.getCommunity().getUser().getNickname();
         this.createdAt=challengeVarify.getCreatedAt();

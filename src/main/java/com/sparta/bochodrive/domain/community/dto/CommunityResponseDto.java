@@ -50,7 +50,7 @@ public class CommunityResponseDto {
 
 
     public CommunityResponseDto(ChallengeVarify challengeVarify,boolean isAuthor) {
-        this.id=challengeVarify.getId();
+        this.id=challengeVarify.getCommunity().getId();
         this.title=challengeVarify.getCommunity().getTitle();
         this.content=challengeVarify.getCommunity().getContent();
         this.author=challengeVarify.getUser().getNickname();
