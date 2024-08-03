@@ -37,10 +37,10 @@ public class ChallengeVarifyController {
     }
 
     //챌린지 인증 상세 조회
-    @GetMapping("/{id}")
-    public ApiResponse<CommunityResponseDto> getChallengeVarify(@PathVariable("id") Long id,
+    @GetMapping("/{communityId}")
+    public ApiResponse<CommunityResponseDto> getChallengeVarify(@PathVariable("communityId") Long communityId,
                                                                 @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        CommunityResponseDto challengeVarify=challengeVarifyService.getChallengeVarify(id,userDetails);
+        CommunityResponseDto challengeVarify=challengeVarifyService.getChallengeVarify(communityId,userDetails);
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 조회에 성공하셨습니다.",challengeVarify);
     }
 
@@ -56,20 +56,20 @@ public class ChallengeVarifyController {
 
 
     //챌린지 인증 수정
-    @PutMapping("/{id}")
-    public ApiResponse<Long> updateChallengeVarify(@PathVariable("id") Long id,
+    @PutMapping("/{communityId}")
+    public ApiResponse<Long> updateChallengeVarify(@PathVariable("communityId") Long communityId,
                                              @ModelAttribute CommunityRequestDto requestDto,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        Long challengeVarifyId= challengeVarifyService.updateChallengeVarify(id,requestDto,userDetails.getUser());
+        Long challengeVarifyId= challengeVarifyService.updateChallengeVarify(communityId,requestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 수정에 성공하셨습니다.",challengeVarifyId);
     }
 
 
     //챌린지 인증 삭제
-    @DeleteMapping("/{id}")
-    public ApiResponse deleteChallengeVarify(@PathVariable("id") Long id,
+    @DeleteMapping("/{communityId}")
+    public ApiResponse deleteChallengeVarify(@PathVariable("communityId") Long communityId,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-        challengeVarifyService.deleteChallengeVarify(id,userDetails.getUser());
+        challengeVarifyService.deleteChallengeVarify(communityId,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 삭제에 성공하셨습니다.");
     }
 

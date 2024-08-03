@@ -12,11 +12,11 @@ import java.io.IOException;
 public interface ChallengeVarifyService {
     Long addChallengeVarify(CommunityRequestDto requestDto, Long challengeId, User user) throws IOException;
 
-    CommunityResponseDto getChallengeVarify(Long id, CustomUserDetails customUserDetails) throws IOException;
+    CommunityResponseDto getChallengeVarify(Long communityId, CustomUserDetails customUserDetails) throws IOException;
 
-    Long updateChallengeVarify(Long id, CommunityRequestDto requestDto, User user) throws IOException;
+    Long updateChallengeVarify(Long communityId, CommunityRequestDto requestDto, User user) throws IOException;
 
-    void deleteChallengeVarify(Long id, User user);
+    void deleteChallengeVarify(Long communityId, User user);
 
     Page<CommunityListResponseDto> getChallengeVarifies(int page, int size, String sortBy, boolean isAsc);
 }

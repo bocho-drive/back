@@ -78,14 +78,14 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
             }
         }
 
-        return challengeVarifySaved.getId();
+        return challengeVarifySaved.getCommunity().getId();
     }
 
 
     @Override
-    public CommunityResponseDto getChallengeVarify(Long id, CustomUserDetails customUserDetails) {
+    public CommunityResponseDto getChallengeVarify(Long communityId, CustomUserDetails customUserDetails) {
 
-        ChallengeVarify challengeVarify = findChallengeVarifyById(id);
+        ChallengeVarify challengeVarify = findChallengeVarifyById(communityId);
         Community community=challengeVarify.getCommunity();
 
         //deleteYn=true인지 확인하는 로직
@@ -123,9 +123,9 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     }
 
     @Override
-    public Long updateChallengeVarify(Long id, CommunityRequestDto requestDto, User user) {
+    public Long updateChallengeVarify(Long communityId, CommunityRequestDto requestDto, User user) {
         commonFuntion.existsById(user.getId());
-        ChallengeVarify challengeVarify = findChallengeVarifyById(id);
+        ChallengeVarify challengeVarify = findChallengeVarifyById(communityId);
 
         Community community=challengeVarify.getCommunity();
         //deleteYn=true인지 확인하는 로직
@@ -151,13 +151,13 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         }
         community.update(requestDto);
         ChallengeVarify saveChallengeVarify=challengeVarifyRepository.save(challengeVarify);
-        return saveChallengeVarify.getId();
+        return saveChallengeVarify.getCommunity().getId();
     }
 
     @Override
-    public void deleteChallengeVarify(Long id, User user) {
+    public void deleteChallengeVarify(Long communityId, User user) {
         commonFuntion.existsById(user.getId());
-        ChallengeVarify challengeVarify = findChallengeVarifyById(id);
+        ChallengeVarify challengeVarify = findChallengeVarifyById(communityId);
 
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
@@ -174,7 +174,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
 
 
-    public ChallengeVarify findChallengeVarifyById(Long id) {
-        return challengeVarifyRepository.findById(id).orElseThrow(()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
+    public ChallengeVarify findChallengeVarifyById(Long communityId) {
+        return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
     }
 }
