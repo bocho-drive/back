@@ -63,15 +63,15 @@ public class Community extends TimeStamped {
     private User user;
 
     //댓글
-    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     //챌린지 인증
-    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
     private List<ChallengeVarify> challengeVarifies;
 
     //게시글 투표
-    @OneToMany(mappedBy = "community",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "community",cascade = CascadeType.REMOVE)
     private List<Vote> votes;
 
 

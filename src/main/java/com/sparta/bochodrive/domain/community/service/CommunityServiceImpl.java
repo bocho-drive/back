@@ -47,11 +47,10 @@ public class CommunityServiceImpl implements CommunityService {
     private final ImageS3Repository imageS3Repository;
 
     @Override
-    public Long addPost(CommunityRequestDto communityRequestDto,User user) throws IOException {
+    public Long addPost(CommunityRequestDto communityRequestDto, User user) {
 
-//        //로직이 필요할 수도 있다고 함.
-//        // 사용자 ID가 userRepository에 있는지 확인
-//        commonFuntion.existsById(user.getId());
+        // 사용자 ID가 userRepository에 있는지 확인
+        commonFuntion.existsById(user.getId());
 
         // 이미지 파일 리스트 가져오기
         List<MultipartFile> requestImages = communityRequestDto.getImage();
@@ -61,20 +60,19 @@ public class CommunityServiceImpl implements CommunityService {
         // 이미지 파일이 null이거나 비어 있지 않은지 확인
         if (requestImages != null && !requestImages.isEmpty()) {
             for (MultipartFile image : requestImages) {
-                String url=imageS3Service.upload(image);
-                String filename=imageS3Service.getFileName(url);
-                ImageS3 imageS3=new ImageS3(url,filename,savedCommunity);
-                imageS3Repository.save(imageS3);
+                try {
+                    String url = imageS3Service.upload(image);
+                    String filename = imageS3Service.getFileName(url);
+                    ImageS3 imageS3 = new ImageS3(url, filename, savedCommunity);
+                    imageS3Repository.save(imageS3);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-            communityRepository.save(savedCommunity);
-
-
         }
 
         return savedCommunity.getId();
     }
-
 
     // 게시글 목록 조회
     @Override
@@ -104,6 +102,11 @@ public class CommunityServiceImpl implements CommunityService {
         //존재하는 커뮤니티인지 확인 여부
         Community community=findCommunityById(id);
 
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+
         //조회수 +1
         community.setViewCount(community.getViewCount()+1); //조회수 +1
         communityRepository.save(community);
@@ -132,8 +135,10 @@ public class CommunityServiceImpl implements CommunityService {
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
 
-        //게시글 community의 userId와 수정하려는 사람의 userId가 같은지에 관한 에외처리
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
 
+        //게시글 community의 userId와 수정하려는 사람의 userId가 같은지에 관한 에외처리
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
@@ -166,7 +171,14 @@ public class CommunityServiceImpl implements CommunityService {
     public void deletePost(Long id, User user)  {
 
         commonFuntion.existsById(user.getId());
+
+
         Community community=findCommunityById(id);
+
+        //deleteYn=true인지 확인하는 로직
+        commonFuntion.deleteCommunity(community.getId());
+
+
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
