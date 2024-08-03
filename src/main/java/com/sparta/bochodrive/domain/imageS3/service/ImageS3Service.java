@@ -3,6 +3,7 @@ import com.amazonaws.services.cloudformation.model.Change;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.sparta.bochodrive.domain.imageS3.dto.ImageS3DeleteRequestDto;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import jakarta.transaction.Transactional;
@@ -44,9 +45,7 @@ public class ImageS3Service {
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
-    public String getFileName(String url){
-        return url.substring(url.lastIndexOf("/")+1);
-    }
+
 
 
 
@@ -77,21 +76,22 @@ public class ImageS3Service {
         }
         return Optional.empty();
     }
+    public String getFileName(String url){
+        return url.substring(url.lastIndexOf("/")+1);
+    }
 
     //s3에 파일 삭제 요청
-    public void deleteFile(String fileName) {
+    public void deleteFile(ImageS3DeleteRequestDto requestDto) {
+        String url = requestDto.getUrl();
+        String fileName = getFileName(url);
         log.info("삭제할 파일 이름 : {}", fileName);
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(deleteObjectRequest);
+        ImageS3 imageS3 = imageS3Repository.findByFileName(fileName);
+        imageS3Repository.delete(imageS3);
     }
 
-    //s3에 파일 삭제 요청
-    public void deleteFile(Long id) {
-        Optional<ImageS3> imageS3Optional = imageS3Repository.findById(id);
-        String fileName = imageS3Optional.get().getFileName();
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
-        amazonS3Client.deleteObject(deleteObjectRequest);
-    }
+
 
 
 
