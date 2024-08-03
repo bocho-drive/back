@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VoteResponseDto {
+    private Long id;
     private Long userId;
     private boolean agreeYn;
 
     public VoteResponseDto(Vote vote) {
+        this.id = vote.getId();
         this.userId = vote.getUser().getId();
         this.agreeYn = vote.isAgreeYn();
     }
