@@ -2,7 +2,7 @@ name: Bocho-community
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["feature/test-github-action"]
   pull_request:
     branches: ["develop"]
 
@@ -35,7 +35,7 @@ jobs:
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
 
       - name: transfer jar file using scp
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host : ${{ secrets.EC2_IP }}
           username: ${{ secrets.EC2_USERNAME }}
