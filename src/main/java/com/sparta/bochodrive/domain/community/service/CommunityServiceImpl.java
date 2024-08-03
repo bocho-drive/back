@@ -130,7 +130,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
     //게시글 수정
     @Override
-    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws IOException {
+    public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
         commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
         Community community=findCommunityById(id);
@@ -144,17 +144,17 @@ public class CommunityServiceImpl implements CommunityService {
         }
         List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(id);
         if(!originImages.isEmpty() && originImages!=null){
-            //기존 이미지들 삭제
-            for(ImageS3 originImage:originImages){
-                imageS3Service.deleteFile(originImage.getFileName());
-                imageS3Repository.delete(originImage);
-            }
+
             //새로운 이미지들 추가
             for(MultipartFile image : communityRequestDto.getImage()) {
-                String url=imageS3Service.upload(image);
-                String filename=imageS3Service.getFileName(url);
-                ImageS3 imageS3=new ImageS3(url,filename,community);
-                imageS3Repository.save(imageS3);
+                try{
+                    String url=imageS3Service.upload(image);
+                    String filename=imageS3Service.getFileName(url);
+                    ImageS3 imageS3=new ImageS3(url,filename,community);
+                    imageS3Repository.save(imageS3);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
             }
 

@@ -21,6 +21,7 @@ import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -107,7 +108,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     }
 
     @Override
-    public Long updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user) throws IOException {
+    public Long updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user) {
         commonFuntion.existsById(user.getId());
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
 
@@ -121,15 +122,15 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
         List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(community.getId());
         if(!originImages.isEmpty() || originImages!=null) {
-            for(ImageS3 originImage:originImages){
-                imageS3Service.deleteFile(originImage.getFileName());
-                imageS3Repository.delete(originImage);
-            }
             for(MultipartFile file : requestDto.getImage()) {
-                String url=imageS3Service.upload(file);
-                String filename=imageS3Service.getFileName(url);
-                ImageS3 imageS3=new ImageS3(url,filename, challengeVarify.getCommunity());
-                imageS3Repository.save(imageS3);
+                try{
+                    String url=imageS3Service.upload(file);
+                    String filename=imageS3Service.getFileName(url);
+                    ImageS3 imageS3=new ImageS3(url,filename, challengeVarify.getCommunity());
+                    imageS3Repository.save(imageS3);
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
