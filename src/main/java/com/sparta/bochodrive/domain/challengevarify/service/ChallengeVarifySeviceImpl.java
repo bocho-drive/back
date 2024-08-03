@@ -3,16 +3,17 @@ package com.sparta.bochodrive.domain.challengevarify.service;
 
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
 import com.sparta.bochodrive.domain.challenge.repository.ChallengeRepository;
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyResponseDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.challengevarify.repository.ChallengeVarifyRepository;
+import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
-import com.sparta.bochodrive.domain.community.service.CommunityService;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
@@ -21,7 +22,6 @@ import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +46,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public Long addChallengeVarify(ChallengeVarifyRequestDto requestDto, Long challengeId, User user) {
+    public Long addChallengeVarify(CommunityRequestDto requestDto, Long challengeId, User user) {
 
         // 사용자 ID가 userRepository에 있는지 확인
         commonFuntion.existsById(user.getId());
@@ -83,7 +83,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
 
     @Override
-    public ChallengeVarifyResponseDto getChallengeVarify(Long id) {
+    public CommunityResponseDto getChallengeVarify(Long id, CustomUserDetails customUserDetails) {
 
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
         Community community=challengeVarify.getCommunity();
@@ -92,23 +92,38 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         commonFuntion.deleteCommunity(community.getId());
 
 
+
         community.setViewCount(community.getViewCount()+1);
         communityRepository.save(community);
-        return new ChallengeVarifyResponseDto(challengeVarify);
+
+        boolean isAuthor;
+        if(customUserDetails!=null){
+            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
+                isAuthor=false;
+            }
+            else{
+                isAuthor=true;
+            }
+        }
+        else{
+            isAuthor=false;
+        }
+
+        return new CommunityResponseDto(challengeVarify,isAuthor);
     }
 
     @Override
-    public Page<ChallengeVarifyResponseDto> getChallengeVarifies(int page, int size, String sortBy, boolean isAsc) {
+    public Page<CommunityListResponseDto> getChallengeVarifies(int page, int size, String sortBy, boolean isAsc) {
         // 정렬 방향 설정
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<ChallengeVarify> challengeVarifyPage = challengeVarifyRepository.findAllByCommunityDeleteYnFalseOrderByCreatedDateDesc(pageable);
-        return challengeVarifyPage.map(ChallengeVarifyResponseDto::new);
+        return challengeVarifyPage.map(CommunityListResponseDto::new);
 
     }
 
     @Override
-    public Long updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user) {
+    public Long updateChallengeVarify(Long id, CommunityRequestDto requestDto, User user) {
         commonFuntion.existsById(user.getId());
         ChallengeVarify challengeVarify = findChallengeVarifyById(id);
 
