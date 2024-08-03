@@ -120,19 +120,19 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
             throw new UnauthorizedException(ErrorCode.UPDATE_FAILED);
         }
 
-        List<ImageS3> originImages=imageS3Repository.findAllByCommunityId(community.getId());
-        if(!originImages.isEmpty() || originImages!=null) {
-            for(MultipartFile file : requestDto.getImage()) {
-                try{
-                    String url=imageS3Service.upload(file);
-                    String filename=imageS3Service.getFileName(url);
-                    ImageS3 imageS3=new ImageS3(url,filename, challengeVarify.getCommunity());
+        // 이미지 업로드
+        List<MultipartFile> requestImages = requestDto.getImage();
+        if (requestImages != null && !requestImages.isEmpty()) {
+            for (MultipartFile file : requestImages) {
+                try {
+                    String url = imageS3Service.upload(file);
+                    String filename = imageS3Service.getFileName(url);
+                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarify.getCommunity());
                     imageS3Repository.save(imageS3);
-                }catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
         }
         community.update(requestDto);
         ChallengeVarify saveChallengeVarify=challengeVarifyRepository.save(challengeVarify);
