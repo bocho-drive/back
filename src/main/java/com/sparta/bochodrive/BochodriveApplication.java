@@ -9,8 +9,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class BochodriveApplication {
     public static void main(String[] args) {
         SpringApplication.run(BochodriveApplication.class, args);
-        System.out.println("Hello world!");
-        System.out.println("Hello world!");
     }
-
 }
