@@ -1,12 +1,12 @@
 package com.sparta.bochodrive.domain.mypage.service;
 
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyResponseDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.challengevarify.repository.ChallengeVarifyRepository;
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +55,7 @@ public class MyPageServiceImpl implements MyPageService {
         return comments.map(this::convertCommentToDto);
     }
 
+
     private CommentResponseDto convertCommentToDto(Comment comment) {
         return CommentResponseDto.builder()
                 .id(comment.getId())
@@ -66,18 +67,23 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 챌린지 인증 목록 불러오기
     @Override
-    public Page<ChallengeVarifyResponseDto> getMyChallenges(Long userId, int page, int size, String sortBy, boolean isAsc) {
+    public Page<CommunityListResponseDto> getMyChallenges(Long userId, int page, int size, String sortBy, boolean isAsc) {
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<ChallengeVarify> challengeVarifies = challengeVarifyRepository.findByUserId(userId, pageable);
         return challengeVarifies.map(this::convertChallengeVerifyToDto);
     }
 
-    private ChallengeVarifyResponseDto convertChallengeVerifyToDto(ChallengeVarify challengeVarify) {
-        return ChallengeVarifyResponseDto.builder()
+
+
+    private CommunityListResponseDto convertChallengeVerifyToDto(ChallengeVarify challengeVarify) {
+        return CommunityListResponseDto.builder()
                 .id(challengeVarify.getId())
                 .title(challengeVarify.getCommunity().getTitle())
-                .content(challengeVarify.getCommunity().getContent())
+                .author(challengeVarify.getCommunity().getUser().getNickname())
                 .createdAt(challengeVarify.getCreatedAt())
+                .verifiedYN(challengeVarify.getCommunity().isVerifiedYN())
+                .viewCount(challengeVarify.getCommunity().getViewCount())
+                .likeCount(challengeVarify.getCommunity().getLikeCount())
                 .build();
 
     }

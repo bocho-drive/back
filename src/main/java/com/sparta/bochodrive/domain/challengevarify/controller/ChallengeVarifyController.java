@@ -1,9 +1,9 @@
 package com.sparta.bochodrive.domain.challengevarify.controller;
 
-
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyResponseDto;
 import com.sparta.bochodrive.domain.challengevarify.service.ChallengeVarifyService;
+import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class ChallengeVarifyController {
 
     //챌린지 인증 글 등록
     @PostMapping
-    public ApiResponse<Long> addChallengeVarify(@ModelAttribute ChallengeVarifyRequestDto requestDto
+    public ApiResponse<Long> addChallengeVarify(@ModelAttribute CommunityRequestDto requestDto
             ,@RequestParam("challengeId") Long challengeId
             ,@AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
 
@@ -38,18 +38,19 @@ public class ChallengeVarifyController {
 
     //챌린지 인증 상세 조회
     @GetMapping("/{id}")
-    public ApiResponse<ChallengeVarifyResponseDto> getChallengeVarify(@PathVariable("id") Long id) {
-        ChallengeVarifyResponseDto challengeVarify=challengeVarifyService.getChallengeVarify(id);
+    public ApiResponse<CommunityResponseDto> getChallengeVarify(@PathVariable("id") Long id,
+                                                                @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+        CommunityResponseDto challengeVarify=challengeVarifyService.getChallengeVarify(id,userDetails);
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 조회에 성공하셨습니다.",challengeVarify);
     }
 
     //챌린지 목록 조회
     @GetMapping
-    public ApiResponse<Page<ChallengeVarifyResponseDto>> getChallengeVarifies(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ApiResponse<Page<CommunityListResponseDto>> getChallengeVarifies(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                                                               @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                                                                               @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
-        Page<ChallengeVarifyResponseDto> challengeVarifies=challengeVarifyService.getChallengeVarifies(page,size,sortBy,isAsc);
+        Page<CommunityListResponseDto> challengeVarifies=challengeVarifyService.getChallengeVarifies(page,size,sortBy,isAsc);
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 목록 조회에 성공하였습니다.",challengeVarifies);
     }
 
@@ -57,7 +58,7 @@ public class ChallengeVarifyController {
     //챌린지 인증 수정
     @PutMapping("/{id}")
     public ApiResponse<Long> updateChallengeVarify(@PathVariable("id") Long id,
-                                             @ModelAttribute ChallengeVarifyRequestDto requestDto,
+                                             @ModelAttribute CommunityRequestDto requestDto,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
         Long challengeVarifyId= challengeVarifyService.updateChallengeVarify(id,requestDto,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "챌린지 인증 수정에 성공하셨습니다.",challengeVarifyId);

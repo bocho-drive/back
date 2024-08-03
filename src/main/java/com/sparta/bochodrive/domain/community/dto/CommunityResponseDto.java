@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.community.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
@@ -24,7 +25,7 @@ public class CommunityResponseDto {
     private String author;
     private CategoryEnum category;
     private int viewCount;
-    private int likesCount=0;
+    private int likeCount;
     private LocalDateTime createdAt;
 
     @JsonProperty("isAuthor")
@@ -42,10 +43,22 @@ public class CommunityResponseDto {
         this.category = saveCommunity.getCategory();
         this.createdAt = saveCommunity.getCreatedAt();
         this.viewCount= saveCommunity.getViewCount();
-        this.likesCount=saveCommunity.getLikeCount();
+        this.likeCount=saveCommunity.getLikeCount();
         this.isAuthor=isAuthor;
         this.imgUrls=saveCommunity.getImages().stream().map(ImageS3::getUploadUrl).toList();
     }
 
 
+    public CommunityResponseDto(ChallengeVarify challengeVarify,boolean isAuthor) {
+        this.id=challengeVarify.getId();
+        this.title=challengeVarify.getCommunity().getTitle();
+        this.content=challengeVarify.getCommunity().getContent();
+        this.author=challengeVarify.getUser().getNickname();
+        this.category=challengeVarify.getCommunity().getCategory();
+        this.createdAt = challengeVarify.getCreatedAt();
+        this.viewCount=challengeVarify.getCommunity().getViewCount();
+        this.likeCount=challengeVarify.getCommunity().getLikeCount();
+        this.isAuthor=isAuthor;
+        this.imgUrls=challengeVarify.getCommunity().getImages().stream().map(ImageS3::getUploadUrl).toList();
+    }
 }
