@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChallengeVarifyRepository extends JpaRepository<ChallengeVarify, Long> {
     Page<ChallengeVarify> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<ChallengeVarify> findByUserId(Long userId, Pageable pageable);
 }

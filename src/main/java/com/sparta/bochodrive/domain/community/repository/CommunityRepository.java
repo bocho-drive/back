@@ -16,4 +16,8 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
     // 특정 카테고리와 deleteYN이 false인 것만 조회하는 메서드
     Page<Community> findAllByCategoryAndDeleteYNFalse(CategoryEnum category, Pageable pageable);
 
+    Page<Community> findByUserIdAndDeleteYNFalse(Long userId, Pageable pageable);
+
+    Page<Community> findByUserIdAndCategoryAndDeleteYNFalse(Long userId, CategoryEnum category, Pageable pageable);
+
 }
