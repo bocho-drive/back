@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
+
+        Server server = new Server();
+        server.setUrl("https://api.tteokip.o-r.kr");
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("BearerAuth",
                         new SecurityScheme()
@@ -20,7 +24,8 @@ public class SwaggerConfig {
                                 .bearerFormat("JWT")
                 ))
                 .info(customOpenAPI())
-                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+                .addServersItem(server);
     }
 
 
