@@ -11,4 +11,6 @@ import java.util.List;
 public interface ImageS3Repository extends JpaRepository<ImageS3,Long> {
 
     List<ImageS3> findAllByCommunityId(Long id);
+
+    ImageS3 findByFileName(String fileName);
 }
