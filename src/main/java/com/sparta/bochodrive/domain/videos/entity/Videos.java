@@ -1,23 +1,27 @@
 package com.sparta.bochodrive.domain.videos.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.videos.dto.VideosResponseDto;
+import com.sparta.bochodrive.global.entity.CreatedTimeStamped;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Videos {
+@Entity
+public class Videos extends CreatedTimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //유저
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private String title;
@@ -25,5 +29,14 @@ public class Videos {
     @Column(nullable = false)
     private String url;
 
+    public VideosResponseDto toDto() {
+        return VideosResponseDto.builder()
+                .id(this.id)
+                .nickName(this.user.getNickname())
+                .title(this.title)
+                .url(this.url)
+                .build();
+
+    }
 
 }

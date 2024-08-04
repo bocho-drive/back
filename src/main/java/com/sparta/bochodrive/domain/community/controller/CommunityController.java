@@ -1,7 +1,7 @@
 package com.sparta.bochodrive.domain.community.controller;
+
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.service.CommunityServiceImpl;
-import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;

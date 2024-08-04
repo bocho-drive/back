@@ -39,7 +39,7 @@ public class UserService {
         return userRepository.save(User.of(userRegistDto, passwordEncoder)).toDto();
     }
 
-    public void loginUser (UserModel.UserLoginDto userLoginDto) {
+    public void logUser (UserModel.UserLoginDto userLoginDto) {
         UserDetails userDetails = customerUserDetailsService.loadUserByUsername(userLoginDto.getEmail());
     }
 }
