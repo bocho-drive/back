@@ -3,6 +3,8 @@ package com.sparta.bochodrive.domain.vote.entity;
 
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.vote.dto.VoteRequestDto;
+import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,14 +14,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vote {
+@Table(name="votes")
+public class Vote extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private boolean agreeYN;
+    private boolean agreeYn;
 
 
     //게시글
@@ -33,4 +36,9 @@ public class Vote {
     @JoinColumn(name="user_id",nullable = false)
     private User user;
 
+    public Vote(VoteRequestDto voteRequestDto, Community community, User user) {
+        this.community = community;
+        this.user = user;
+        this.agreeYn = voteRequestDto.isAgreeYn();
+    }
 }

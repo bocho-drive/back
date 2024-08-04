@@ -1,15 +1,22 @@
 package com.sparta.bochodrive.domain.challengevarify.service;
 
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyResponseDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
+import org.springframework.data.domain.Page;
+
+import java.io.IOException;
 
 public interface ChallengeVarifyService {
-    public ChallengeVarifyResponseDto addChallengeVarify(ChallengeVarifyRequestDto requestDto, User user);
+    Long addChallengeVarify(CommunityRequestDto requestDto, Long challengeId, User user) throws IOException;
 
-    public ChallengeVarifyResponseDto getChallengeVarify(Long id);
+    CommunityResponseDto getChallengeVarify(Long communityId, CustomUserDetails customUserDetails) throws IOException;
 
-    public void updateChallengeVarify(Long id, ChallengeVarifyRequestDto requestDto, User user);
+    Long updateChallengeVarify(Long communityId, CommunityRequestDto requestDto, User user) throws IOException;
 
-    public void deleteChallengeVarify(Long id, User user);
+    void deleteChallengeVarify(Long communityId, User user);
+
+    Page<CommunityListResponseDto> getChallengeVarifies(int page, int size, String sortBy, boolean isAsc);
 }

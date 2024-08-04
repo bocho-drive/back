@@ -1,22 +1,26 @@
 package com.sparta.bochodrive.domain.security.utils;
 
 import com.sparta.bochodrive.domain.security.enums.UserRole;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
-public class    JwtUtils {
+public class JwtUtils {
 
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -61,7 +65,7 @@ public class    JwtUtils {
 
 
     public String createAccessToken(String username, String role) {
-        long expiredMs = 1000 * 60 * 15;    // 15분
+        long expiredMs = 1000 * 60 * 60 * 24;    // 15분
         String token = BEARER_PREFIX + Jwts.builder()
 
                 .setSubject(username)

@@ -1,8 +1,8 @@
 package com.sparta.bochodrive.domain.challengevarify.entity;
 
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
-import com.sparta.bochodrive.domain.challengevarify.dto.ChallengeVarifyRequestDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
+import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.entity.CreatedTimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,8 +20,6 @@ public class ChallengeVarify extends CreatedTimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private boolean completeYN; //완료 여부를 지정하는 시점은 언제인지
 
     //게시글
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,20 +31,17 @@ public class ChallengeVarify extends CreatedTimeStamped {
     @JoinColumn(name ="challenge_id", nullable = false)
     private Challenge challenge;
 
-    public ChallengeVarify(ChallengeVarifyRequestDto requestDto) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id",nullable = false)
+    private User user;
 
-        this.community.setTitle(requestDto.getTitle());
-        this.community.setContent(requestDto.getContent());
-        this.community.setCategory(requestDto.getCategory());
-        this.community.getUser().setNickname(requestDto.getAuthor());
 
+    public ChallengeVarify(User user, Community community, Challenge challenge) {
+        this.community=community;
+        this.user = user;
+        this.challenge = challenge;
     }
 
 
-    public void update(ChallengeVarifyRequestDto requestDto) {
-        this.community.setTitle(requestDto.getTitle());
-        this.community.setContent(requestDto.getContent());
-        this.community.setCategory(requestDto.getCategory());
 
-    }
 }

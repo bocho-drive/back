@@ -4,15 +4,18 @@ import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
-import com.sparta.bochodrive.global.exception.ErrorCode;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
+
+import java.io.IOException;
+
 
 public interface CommunityService {
-    CommunityResponseDto addPost(CommunityRequestDto communityRequestDto,User user) ;
-    List<CommunityListResponseDto> getAllPosts(CategoryEnum category) ;
-    CommunityResponseDto getPost(Long id);
-    void updatePost(Long id, CommunityRequestDto communityRequestDto,User user);
+    Long addPost(CommunityRequestDto communityRequestDto, User user) throws IOException; ;
+    Page<CommunityListResponseDto> getAllPosts(CategoryEnum category, int page, int size, String sortBy, boolean isAsc) ;
+    CommunityResponseDto getPost(Long id, CustomUserDetails customUserDetails);
+    Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) throws IOException;
     void deletePost(Long id, User user) ;
 }

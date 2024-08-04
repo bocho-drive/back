@@ -33,8 +33,10 @@ public class Challenge extends TimeStamped {
 
 
 
+
+
     //챌린지 인증
-    @OneToMany(mappedBy = "challenge")
+    @OneToMany(mappedBy = "challenge",cascade = CascadeType.REMOVE)
     private List<ChallengeVarify> challengeVarifies;
 
 

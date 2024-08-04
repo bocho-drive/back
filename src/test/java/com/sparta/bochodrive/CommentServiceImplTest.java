@@ -3,7 +3,7 @@
 //import static org.junit.jupiter.api.Assertions.*;
 //
 //import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
-//import com.sparta.bochodrive.domain.comment.dto.CommentReponseDto;
+//import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 //import com.sparta.bochodrive.domain.comment.entity.Comment;
 //import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 //import com.sparta.bochodrive.domain.community.entity.Community;
@@ -53,7 +53,7 @@
 //        Comment comment = new Comment(requestDto, user, community);
 //        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 //
-//        CommentReponseDto responseDto = commentService.addComments(requestDto, user);
+//        CommentResponseDto responseDto = commentService.addComments(requestDto, user);
 //        assertNotNull(responseDto);
 //        assertEquals("Test Comment", responseDto.getContent());
 //    }
@@ -69,7 +69,7 @@
 //
 //        when(commentRepository.findByCommunityId(1L)).thenReturn(comments);
 //
-//        List<CommentReponseDto> responseDtos = commentService.getComments(1L);
+//        List<CommentResponseDto> responseDtos = commentService.getComments(1L);
 //        assertNotNull(responseDtos);
 //        assertEquals(2, responseDtos.size());
 //    }

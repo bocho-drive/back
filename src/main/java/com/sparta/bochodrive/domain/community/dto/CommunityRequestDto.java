@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -21,8 +22,7 @@ public class CommunityRequestDto {
     private String title;
     private String content;
     private CategoryEnum category;
-    private String author;
-    //private File[] imgUrl;
+    private List<MultipartFile> image;
 
 
 

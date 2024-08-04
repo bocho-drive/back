@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -49,5 +51,22 @@ public class GlobalExceptionHandler {
                 restApiException,
                 HttpStatus.FORBIDDEN
         );
+    }
+
+    @ExceptionHandler({DuplicateVoteException.class})
+    public ResponseEntity<RestApiException> DuplicateVoteExceptionHandler(DuplicateVoteException ex) {
+        RestApiException restApiException = new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>((restApiException), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<RestApiException> ResourceNotFoundExceptionHandler(ResourceNotFoundException ex) {
+        RestApiException restApiException = new RestApiException(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>((restApiException), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<RestApiException> IOExceptionHandler(IOException ex) {
+        RestApiException restApiException = new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return new ResponseEntity<>((restApiException), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
