@@ -19,6 +19,6 @@ public class DriveMatchingApplyResponseDto {
     public DriveMatchingApplyResponseDto(DriveMatchingApply driveMatchingApply) {
         this.id = driveMatchingApply.getId();
         this.driveMatchingId = driveMatchingApply.getDriveMatching().getId();
-        this.userId = driveMatchingApply.getTeachers().getUserId();
+        this.userId = driveMatchingApply.getUser().getId();
     }
 }

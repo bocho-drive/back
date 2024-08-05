@@ -5,15 +5,15 @@ import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyReq
 import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyResponseDto;
 import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
 import com.sparta.bochodrive.domain.drivematchingapply.repository.DriveMatchingApplyRepository;
+import com.sparta.bochodrive.domain.teacher.entity.Teachers;
 import com.sparta.bochodrive.domain.teacher.repository.TeachersRepository;
+import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,31 +24,29 @@ public class DriveMatchingApplyServiceImpl implements DriveMatchingApplyService{
     private final TeachersRepository teachersRepository;
 
     @Override
-    public Page<DriveMatchingApplyResponseDto> findDriveMatchingApplys(Long driveMatchingId, Long userId, int page, int size, String sortBy, boolean isAsc) {
-        size = 10;
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+    public List<DriveMatchingApplyResponseDto> findDriveMatchingApplys(Long driveMatchingId) {
+        List<DriveMatchingApply> list = driveMatchingApplyRepository.findDriveMatchingApplyByDriveMatchingId(driveMatchingId);
 
-        Page<DriveMatchingApply> resultList;
-        DriveMatchingApplyRequestDto request = DriveMatchingApplyRequestDto.builder()
-                .driveMatchingId(driveMatchingId)
-                .userId(userId)
-                .build();
+        List<DriveMatchingApplyResponseDto> results = list.stream().map(DriveMatchingApplyResponseDto::new).toList();
 
-        if (driveMatchingId != null) {
-            resultList = driveMatchingApplyRepository.findAllByDriveMatchingOrderByCreatedAt(request, pageable);
-        } else {
-            resultList = driveMatchingApplyRepository.findAllByTeachersOrderByCreatedAt(request, pageable);
-        }
 
-        return resultList.map((entity) -> new DriveMatchingApplyResponseDto(entity));
+
+        return results;
+
     }
 
     @Override
     public void addDriveMatchingApply(Long id, DriveMatchingApplyRequestDto driveMatchingApplyRequestDto) {
+        Teachers teachers = teachersRepository.findByUserId(driveMatchingApplyRequestDto.getUserId());
+        if(teachers == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        User user = User.builder().id(driveMatchingApplyRequestDto.getUserId()).build();
+
         DriveMatchingApply apply = DriveMatchingApply.builder()
                 .driveMatching(driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND)))
-                .teachers(teachersRepository.findByUserId(driveMatchingApplyRequestDto.getUserId()))
+                .user(user)
                 .build();
         driveMatchingApplyRepository.save(apply);
     }

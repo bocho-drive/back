@@ -40,7 +40,7 @@ public class DriveMatching extends TimeStamped {
     @Column(nullable = false)
     private Status status;
 
-    @Column(nullable = false, columnDefinition = "false")
+    @Column(nullable = false)
     private Boolean deleteYN;
 
     public DriveMatchingResponseVo toDto() {

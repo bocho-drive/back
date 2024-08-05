@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface DriveMatchingApplyRepository extends JpaRepository<DriveMatchingApply, Long> {
 
-    Page<DriveMatchingApply> findAllByDriveMatchingOrderByCreatedAt(DriveMatchingApplyRequestDto driveMatchingApplyRequestDto, Pageable pageable);
-    Page<DriveMatchingApply> findAllByTeachersOrderByCreatedAt(DriveMatchingApplyRequestDto driveMatchingApplyRequestDto, Pageable pageable);
+    List<DriveMatchingApply> findDriveMatchingApplyByDriveMatchingId(Long driveMatchingId);
+//    DriveMatchingApply[] findAllByTeachers(DriveMatchingApplyRequestDto driveMatchingApplyRequestDto);
 
 }

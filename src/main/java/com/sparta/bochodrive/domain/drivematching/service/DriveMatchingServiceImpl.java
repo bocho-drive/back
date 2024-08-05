@@ -40,6 +40,7 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
                 .content(driveMatchingRequestDto.getContent())
                 .type(driveMatchingRequestDto.getType())
                 .status(Status.WAITING)
+                .deleteYN(false)
                 .build();
         if(Type.TEACHER.equals(driveMatchingRequestDto.getType())) {
             // TODO , 강사로 요청들어왔을 때, 오류 처리

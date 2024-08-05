@@ -4,6 +4,7 @@ package com.sparta.bochodrive.domain.drivematchingapply.entity;
 import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
 import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyResponseDto;
 import com.sparta.bochodrive.domain.teacher.entity.Teachers;
+import com.sparta.bochodrive.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,13 +26,13 @@ public class DriveMatchingApply {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @Setter
-    private Teachers teachers;
+    private User user;
 
     public DriveMatchingApplyResponseDto toDto() {
         return DriveMatchingApplyResponseDto.builder()
                 .id(this.id)
                 .driveMatchingId(driveMatching.getId())
-                .userId(teachers.getUserId())
+                .userId(user.getId())
                 .build();
     }
 }
