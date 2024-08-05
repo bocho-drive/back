@@ -63,8 +63,8 @@ public class User extends TimeStamped {
                 .email(userRegistDto.getEmail())
                 .password(encoder.encode(userRegistDto.getPassword()))
                 .nickname(userRegistDto.getNickname())
+                .userRole(userRegistDto.getUserRole())
                 .deleteYN(false)
-                .userRole(UserRole.USER)
                 .build();
     }
 
@@ -73,6 +73,7 @@ public class User extends TimeStamped {
                 .id(this.id)
                 .email(this.email)
                 .nickname(this.nickname)
+                .userRole(this.userRole)
                 .build();
     }
 }

@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-
 public enum UserRole {
 
     USER("USER"),
-    ADMIN("ADMIN");
+    ADMIN("ADMIN"),
+    TEACHER("TEACHER");
 
     private final String role;
 
