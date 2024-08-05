@@ -20,10 +20,10 @@ public class DrivingMatchingController {
     private final DriveMatchingService driveMatchingService;
 
     @PostMapping
-    public ApiResponse addDrivingMatching(@RequestBody DriveMatchingRequestDto driveMatchingRequestDto,
+    public ApiResponse<DriveMatchingResponseVo> addDrivingMatching(@RequestBody DriveMatchingRequestDto driveMatchingRequestDto,
                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
-        driveMatchingService.addDriveMatching(driveMatchingRequestDto, userDetails.getUser());
-        return ApiResponse.ok(HttpStatus.CREATED.value(), "매칭글 등록에 성공하셨습니다.");
+        DriveMatchingResponseVo result = driveMatchingService.addDriveMatching(driveMatchingRequestDto, userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.CREATED.value(), "매칭글 등록에 성공하셨습니다.", result);
     }
 
     @GetMapping

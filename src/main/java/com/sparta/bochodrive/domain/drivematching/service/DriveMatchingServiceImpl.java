@@ -41,18 +41,17 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
                 .type(driveMatchingRequestDto.getType())
                 .status(Status.WAITING)
                 .build();
-        if (Type.TEACHER.equals(driveMatchingRequestDto.getType())) {
-            Teachers teachers = teachersRepository.findByUserId(user.getId());
-            driveMatching.setTeacher(teachers);
-        } else {
-            driveMatching.setUser(user);
+        if(Type.TEACHER.equals(driveMatchingRequestDto.getType())) {
+            // TODO , 강사로 요청들어왔을 때, 오류 처리
         }
+
+        driveMatching.setUser(user);
         return driveMatchingRepository.save(driveMatching).toDto();
     }
 
     @Override
     public Page<DriveMatchingResponseVo> getAllDriveMatching(int page, int size, String sortBy, boolean isAsc) {
-        size = 10;
+//        size = 10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<DriveMatching> driveMatchingList = driveMatchingRepository.findAllByOrderByCreatedAt(pageable);
@@ -76,6 +75,7 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
     @Override
     @Transactional
     public void deleteDriveMatching(Long id, User user) {
+        //TODO 실제 삭제 처리가 아닌, deleteYN을 true로 변경
         driveMatchingRepository.deleteById(id);
     }
 }
