@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.drivematching.service;
 
+import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingDetailResponseDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingRequestDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingResponseVo;
 import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
@@ -10,7 +11,7 @@ public interface DriveMatchingService {
 
     DriveMatchingResponseVo addDriveMatching(DriveMatchingRequestDto driveMatchingRequestDto, User user);
     Page<DriveMatchingResponseVo> getAllDriveMatching(int page, int size, String sortBy, boolean isAsc);
-    DriveMatchingResponseVo getDriveMatching(Long id);
+    DriveMatchingDetailResponseDto getDriveMatching(Long id);
     void updateDriveMatching(Long id, DriveMatchingRequestDto driveMatchingRequestDto, User user);
     void deleteDriveMatching(Long id, User user);
 
