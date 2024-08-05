@@ -23,4 +23,16 @@ class UserServiceTest {
         assertEquals(userRegistDto.getNickname(), result.getNickname());
         assertEquals(userRegistDto.getUserRole(), result.getUserRole());
     }
+
+    @Test
+    void login() {
+        UserModel.UserLoginReqDto userLoginDto = new UserModel.UserLoginReqDto("testUser1@gmail.com", "password");
+        UserModel.UserLoginResDto result = userService.login(userLoginDto);
+
+        assertNotNull(result.getAccessToken());
+        System.out.println(result.getAccessToken());
+        System.out.println(result.getUserRole());
+
+
+    }
 }

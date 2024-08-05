@@ -43,7 +43,7 @@ public class UserModel {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserLoginDto {
+    public static class UserLoginReqDto {
         private String email;
         private String password;
     }
@@ -55,5 +55,6 @@ public class UserModel {
     public static class UserLoginResDto {
         private long userId;
         private String accessToken;
+        private UserRole userRole;
     }
 }
