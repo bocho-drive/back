@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.security.config;
 
+import com.sparta.bochodrive.domain.OAuth.service.CustomOAuth2UserService;
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
@@ -26,6 +27,8 @@ public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customUserDetails;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -43,7 +46,19 @@ public class SecurityConfig {
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/auth/login").hasRole("ADMIN")
-                        .anyRequest().permitAll());
+                        .anyRequest().permitAll())
+                        .oauth2Login(oauth2 -> oauth2
+                                        .userInfoEndpoint(userInfo -> userInfo
+                                                .userService(customOAuth2UserService)
+                                        ));
+
+        // OAuth2 설정 추가
+        httpSecurity
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                );
 
         // 필터 추가
         httpSecurity
