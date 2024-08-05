@@ -1,7 +1,10 @@
 package com.sparta.bochodrive.domain.user.service;
 
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
+import com.sparta.bochodrive.domain.teacher.entity.Teachers;
+import com.sparta.bochodrive.domain.teacher.service.TeacherService;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
@@ -18,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private final TeacherService teacherService;
     private final JwtUtils jwtUtils;
 
     public UserModel.UserResponseDto registUser(UserModel.UserRegistDto userRegistDto) {
@@ -36,7 +40,15 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호는 8자 이상 20자 이하로 입력해주세요.");
         }
 
-        return userRepository.save(User.of(userRegistDto, passwordEncoder)).toDto();
+        // 회원가입
+        UserModel.UserResponseDto result = userRepository.save(User.of(userRegistDto, passwordEncoder)).toDto();
+
+        // 강사 회원가입
+        if(userRegistDto.getUserRole().equals(UserRole.TEACHER)) {
+            teacherService.registTeacher(result.getId());
+        }
+
+        return result;
     }
 
 

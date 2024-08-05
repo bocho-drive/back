@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.user.model;
 
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,14 +16,15 @@ public class UserModel {
 
         @NotNull
         private String email;
-
         @NotNull
         private String password;
-
-        private String verifyPassword;
-
         @NotNull
         private String nickname;
+        @NotNull
+        private UserRole userRole;
+
+//        private String verifyPassword;
+
     }
 
     @Getter
@@ -32,10 +34,9 @@ public class UserModel {
     public static class UserResponseDto {
 
         private Long id;
-
         private String email;
-
         private String nickname;
+        private UserRole userRole;
     }
 
     @Getter
