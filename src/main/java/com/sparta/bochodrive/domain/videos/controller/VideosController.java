@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.videos.controller;
 
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
+import com.sparta.bochodrive.domain.videos.dto.VideoResDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosRequestDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosResponseDto;
 import com.sparta.bochodrive.domain.videos.service.VideosService;
@@ -34,9 +35,9 @@ public class VideosController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<VideosResponseDto> getVideos(@PathVariable("id") Long videosId) {
-        VideosResponseDto videos = videosService.getVideos(videosId);
-        return ApiResponse.ok(HttpStatus.OK.value(), "연수관련 영상 조회에 성공하였습니다..", videos);
+    public ApiResponse<VideoResDto> getVideos(@PathVariable("id") Long videosId) {
+        VideoResDto videos = videosService.getVideos(videosId);
+        return ApiResponse.ok(HttpStatus.OK.value(), "영상 조회에 성공하였습니다.", videos);
     }
 
     @GetMapping

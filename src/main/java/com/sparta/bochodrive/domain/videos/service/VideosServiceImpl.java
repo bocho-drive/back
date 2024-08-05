@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.videos.service;
 
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.videos.dto.VideoResDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosRequestDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosResponseDto;
 import com.sparta.bochodrive.domain.videos.entity.Videos;
@@ -62,8 +63,8 @@ public class VideosServiceImpl implements VideosService {
     }
 
     @Override
-    public VideosResponseDto getVideos(Long id) {
+    public VideoResDto getVideos(Long id) {
         Videos videos = videosRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return new VideosResponseDto(videos);
+        return new VideoResDto(videos);
     }
 }
