@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.OAuth.service;
 
 import com.sparta.bochodrive.domain.OAuth.dto.OAuthAttributes;
-import com.sparta.bochodrive.domain.OAuth.dto.SessionUser;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
@@ -41,7 +40,7 @@ public class CustomOAuth2UserService implements OAuth2UserService <OAuth2UserReq
 
         OAuthAttributes attributes=OAuthAttributes.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
         User user=saveOrUpdate(attributes);
-        httpSession.setAttribute("user", new SessionUser(user));
+
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getUserRole().name())),
