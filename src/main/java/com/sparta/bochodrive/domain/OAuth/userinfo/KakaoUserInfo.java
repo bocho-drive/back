@@ -11,12 +11,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoUserInfo implements OAuth2UserInfo{
 
-    private final Map<String, Object> attributes;
-
-    @Override
-    public String getProviderId() {
-        return (String) attributes.get("id");
-    }
+    private final Map<String, Object> attribute;
 
     @Override
     public String getProvider() {
@@ -24,12 +19,17 @@ public class KakaoUserInfo implements OAuth2UserInfo{
     }
 
     @Override
+    public String getProviderId() {
+        return attribute.get("sub").toString();
+    }
+
+    @Override
     public String getEmail() {
-        return (String) attributes.get("email");
+        return attribute.get("email").toString();
     }
 
     @Override
     public String getName() {
-        return (String) attributes.get("name");
+        return attribute.get("nickname").toString();
     }
 }

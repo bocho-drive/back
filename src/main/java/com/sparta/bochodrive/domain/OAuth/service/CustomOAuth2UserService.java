@@ -1,60 +1,87 @@
 package com.sparta.bochodrive.domain.OAuth.service;
 
-import com.sparta.bochodrive.domain.OAuth.dto.OAuthAttributes;
+import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.OAuth.dto.UserDto;
+import com.sparta.bochodrive.domain.OAuth.userinfo.GoogleUserInfo;
+import com.sparta.bochodrive.domain.OAuth.userinfo.KakaoUserInfo;
+import com.sparta.bochodrive.domain.OAuth.userinfo.OAuth2UserInfo;
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Optional;
 
-//사용자의 정보를 받아오는 service
 @Service
 @RequiredArgsConstructor
-public class CustomOAuth2UserService implements OAuth2UserService <OAuth2UserRequest, OAuth2User> {
-
-    //OAuthUserReqeust -> OAuth 제공자한테 accessToken을 보내서 사용자 정보를 요청
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        OAuth2UserService<OAuth2UserRequest,OAuth2User> delegate=new DefaultOAuth2UserService();
-        OAuth2User oAuth2User=delegate.loadUser(userRequest); //반환된 사용자 정보를 OAuth2User에 저장
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        System.out.println(oAuth2User);
 
-        String registrationId=userRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName=userRequest
-                .getClientRegistration()
-                .getProviderDetails()
-                .getUserInfoEndpoint()
-                .getUserNameAttributeName();
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2UserInfo oAuth2Response = null;
+        if (registrationId.equals("kakao")) {
 
-        OAuthAttributes attributes=OAuthAttributes.of(registrationId,userNameAttributeName,oAuth2User.getAttributes());
-        User user=saveOrUpdate(attributes);
+            oAuth2Response = new KakaoUserInfo(oAuth2User.getAttributes());
+        } else if (registrationId.equals("google")) {
+
+            oAuth2Response = new GoogleUserInfo(oAuth2User.getAttributes());
+        } else {
+
+            return null;
+        }
+
+        //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
+        String nickname = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
+
+        Optional<User> existData = userRepository.findByNickname(nickname);
+
+        if (existData == null) {
+
+            User user = new User();
+            user.setNickname(nickname);
+            user.setEmail(oAuth2Response.getEmail());
+            user.setUserRole(UserRole.USER);
+
+            userRepository.save(user);
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(oAuth2Response.getEmail());
+            userDto.setNickname(nickname);
+            userDto.setRole("ROLE_USER");
+
+            return new CustomOAuth2User(userDto);
+
+        } else {
+
+            User existDataIsTrue = existData.get();
+            existDataIsTrue.setEmail(oAuth2Response.getEmail());
+            existDataIsTrue.setNickname(oAuth2Response.getName());
+
+            userRepository.save(existDataIsTrue);
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(oAuth2Response.getEmail());
+            userDto.setNickname(oAuth2Response.getName());
+            userDto.setRole(existDataIsTrue.getUserRole().name());
+
+            return new CustomOAuth2User(userDto);
 
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getUserRole().name())),
-                attributes.getAttributes(),
-                attributes.getNameAttributeKey());
+        }
+
+
+
     }
-
-
-    private User saveOrUpdate(OAuthAttributes attributes) {
-        User user=userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName())).orElse(attributes.toEntity());
-        return userRepository.save(user);
-    }
-
-
 }

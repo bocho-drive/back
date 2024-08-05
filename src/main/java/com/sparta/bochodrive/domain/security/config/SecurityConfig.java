@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.security.config;
 
+import com.sparta.bochodrive.domain.OAuth.handler.CustomSuccessHandler;
 import com.sparta.bochodrive.domain.OAuth.service.CustomOAuth2UserService;
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customUserDetails;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
 
     @Bean
@@ -50,9 +52,8 @@ public class SecurityConfig {
         httpSecurity
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
-                );
+                                .userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler));
 
         // 필터 추가
         httpSecurity
