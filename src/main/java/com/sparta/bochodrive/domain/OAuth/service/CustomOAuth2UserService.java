@@ -21,15 +21,16 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService <OAuth2UserRequest, OAuth2User> {
 
+    //OAuthUserReqeust -> OAuth 제공자한테 accessToken을 보내서 사용자 정보를 요청
 
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2UserService<OAuth2UserRequest,OAuth2User> delegate=new DefaultOAuth2UserService();
-        OAuth2User oAuth2User=delegate.loadUser(userRequest);
+        OAuth2User oAuth2User=delegate.loadUser(userRequest); //반환된 사용자 정보를 OAuth2User에 저장
 
         String registrationId=userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName=userRequest
