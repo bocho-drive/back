@@ -3,11 +3,9 @@ package com.sparta.bochodrive.domain.security.config;
 import com.sparta.bochodrive.domain.OAuth.service.CustomOAuth2UserService;
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
-import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,11 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/auth/login").hasRole("ADMIN")
-                        .anyRequest().permitAll())
-                        .oauth2Login(oauth2 -> oauth2
-                                        .userInfoEndpoint(userInfo -> userInfo
-                                                .userService(customOAuth2UserService)
-                                        ));
+                        .anyRequest().permitAll());
 
         // OAuth2 설정 추가
         httpSecurity
