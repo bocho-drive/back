@@ -88,7 +88,8 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
     @Override
     @Transactional
     public void deleteDriveMatching(Long id, User user) {
-        //TODO 실제 삭제 처리가 아닌, deleteYN을 true로 변경
-        driveMatchingRepository.deleteById(id);
+        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        driveMatching.delete();
+        driveMatchingRepository.save(driveMatching);
     }
 }
