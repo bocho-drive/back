@@ -15,7 +15,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
 
         Server server = new Server();
-        server.setUrl("http://localhost:8080");
+        server.setUrl("https://api.tteokip.o-r.kr");
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("BearerAuth",
                         new SecurityScheme()
