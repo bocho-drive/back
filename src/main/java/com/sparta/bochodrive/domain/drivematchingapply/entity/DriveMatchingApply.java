@@ -1,14 +1,11 @@
 package com.sparta.bochodrive.domain.drivematchingapply.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
+import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyResponseDto;
+import com.sparta.bochodrive.domain.teacher.entity.Teachers;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @Entity
@@ -20,5 +17,21 @@ public class DriveMatchingApply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drive_matching_id")
+    @Setter
+    private DriveMatching driveMatching;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @Setter
+    private Teachers teachers;
+
+    public DriveMatchingApplyResponseDto toDto() {
+        return DriveMatchingApplyResponseDto.builder()
+                .id(this.id)
+                .driveMatchingId(driveMatching.getId())
+                .userId(teachers.getUserId())
+                .build();
+    }
 }
