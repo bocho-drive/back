@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 public class OAuthAttributes {
     private Map<String,Object> attributes; //google로부터 받은 사용자 정보가 저장된 map
-    private String nameAttributeKey;
+    private String nameAttributeKey; //인가코드
     private String name;
     private String email;
 
@@ -25,7 +25,13 @@ public class OAuthAttributes {
 
     }
     public static OAuthAttributes of(String registrationId,String userNameAtrributeName, Map<String,Object> attributes) {
-        return ofGoogle(userNameAtrributeName,attributes);
+
+        if("google".equals(registrationId)) {
+            return ofGoogle(userNameAtrributeName, attributes);
+        }else if("kakao".equals(registrationId)) {
+            return ofKakao(userNameAtrributeName, attributes);
+        }
+        return null;
     }
 
     private static OAuthAttributes ofGoogle(String userNameAtrributeName, Map<String, Object> attributes) {
@@ -36,6 +42,14 @@ public class OAuthAttributes {
                 .nameAtrributeKey(userNameAtrributeName)
                 .build();
 
+    }
+    private static OAuthAttributes ofKakao(String userNameAtrributeName, Map<String, Object> attributes) {
+        return OAuthAttributes.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .attributes(attributes)
+                .nameAtrributeKey(userNameAtrributeName)
+                .build();
     }
 
     //OAuth 객체를 user entity로 저장
