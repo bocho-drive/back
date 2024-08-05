@@ -20,6 +20,6 @@ public class DriveMatchingRequestDto {
     private String title;
     private String content;
     private Type type;
-    private Status status;
-    private boolean deleteYN;
+//    private Status status;
+//    private boolean deleteYN;
 }
