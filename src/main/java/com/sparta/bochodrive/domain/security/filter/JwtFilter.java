@@ -1,20 +1,26 @@
 package com.sparta.bochodrive.domain.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.global.exception.ErrorCode;
+import com.sparta.bochodrive.global.exception.UnauthorizedException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -53,14 +59,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
         // 토큰의 유효기간을 확인한다. JwtUtil 객체에서 구현해놓은 메소드를 통해서
-        if (jwtUtils.isExpired(token)) {
-            log.warn("JWT 토큰이 유효하지 않습니다.");
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
+        try {
+            if (jwtUtils.isExpired(token)) {
+                log.warn("JWT 토큰이 유효하지 않습니다.");
+                System.out.println("token expired");
+                filterChain.doFilter(request, response);
 
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+                //조건이 해당되면 메소드 종료 (필수)
+                return;
+            }
+        } catch (ExpiredJwtException e) {
+//            setErrorResponse(response, ErrorCode.TOKEN_EXPIRED);
+//            return;
+            throw new UnauthorizedException(ErrorCode.TOKEN_EXPIRED);
         }
+
 
 
         String username = jwtUtils.getUsername(token);
@@ -84,6 +97,21 @@ public class JwtFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String email) {
         UserDetails userDetails=customUserDetails.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private void setErrorResponse(
+            HttpServletResponse response,
+            ErrorCode errorCode
+    ){
+        ObjectMapper objectMapper = new ObjectMapper();
+        response.setStatus(errorCode.getStatus());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        ErrorResponse errorResponse = new ErrorResponse(errorCode.getStatus(), errorCode.getMessage());
+        try{
+            response.getWriter().write(objectMapper.writeValueAsString(errorCode.getMessage()));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,11 +1,13 @@
 package com.sparta.bochodrive.global.exception;
 
+import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
 
@@ -68,5 +70,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<RestApiException> IOExceptionHandler(IOException ex) {
         RestApiException restApiException = new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return new ResponseEntity<>((restApiException), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ServletException.class)
+    public ResponseEntity<String> handleServletException(ServletException ex, WebRequest request) {
+        // 예외 처리 로직
+        return new ResponseEntity<>("필터에서 예외 발생: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
