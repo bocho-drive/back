@@ -2,13 +2,11 @@ package com.sparta.bochodrive.domain.drivematchingapply.controller;
 
 import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyRequestDto;
 import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyResponseDto;
-import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
 import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

@@ -2,7 +2,8 @@ package com.sparta.bochodrive.domain.drivematching.dto;
 
 import com.sparta.bochodrive.domain.drivematching.entity.Status;
 import com.sparta.bochodrive.domain.drivematching.entity.Type;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 

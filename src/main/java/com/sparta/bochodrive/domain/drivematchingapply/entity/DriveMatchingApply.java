@@ -3,7 +3,6 @@ package com.sparta.bochodrive.domain.drivematchingapply.entity;
 
 import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
 import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyResponseDto;
-import com.sparta.bochodrive.domain.teacher.entity.Teachers;
 import com.sparta.bochodrive.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

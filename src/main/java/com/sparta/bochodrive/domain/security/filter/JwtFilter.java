@@ -1,10 +1,8 @@
 package com.sparta.bochodrive.domain.security.filter;
 
 import com.sparta.bochodrive.domain.security.enums.UserRole;
-import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
-import com.sparta.bochodrive.domain.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

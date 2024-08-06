@@ -1,21 +1,17 @@
 package com.sparta.bochodrive.domain.comment.controller;
 
 
-import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
+import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.service.CommentService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
-//import com.sparta.bochodrive.global.UserDetailsImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")

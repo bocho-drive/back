@@ -6,7 +6,6 @@ import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
-import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import lombok.RequiredArgsConstructor;

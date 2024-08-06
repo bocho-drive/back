@@ -3,7 +3,6 @@ package com.sparta.bochodrive.domain.challenge.entity;
 
 import com.sparta.bochodrive.domain.challenge.dto.ChallengeRequestDto;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
-import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;

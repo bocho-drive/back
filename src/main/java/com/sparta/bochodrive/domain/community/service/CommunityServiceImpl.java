@@ -12,14 +12,12 @@ import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
-
 import com.sparta.bochodrive.global.exception.NotFoundException;
 import com.sparta.bochodrive.global.exception.UnauthorizedException;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

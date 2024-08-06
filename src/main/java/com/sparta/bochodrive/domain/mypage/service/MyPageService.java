@@ -2,7 +2,6 @@ package com.sparta.bochodrive.domain.mypage.service;
 
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
-import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import org.springframework.data.domain.Page;
 
 public interface MyPageService {

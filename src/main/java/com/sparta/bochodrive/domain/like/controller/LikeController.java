@@ -1,14 +1,11 @@
 package com.sparta.bochodrive.domain.like.controller;
 
 import com.sparta.bochodrive.domain.like.dto.LikeRequestDto;
-import com.sparta.bochodrive.domain.like.entity.Like;
-import com.sparta.bochodrive.domain.like.repository.LikeRepository;
 import com.sparta.bochodrive.domain.like.service.LikeService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
