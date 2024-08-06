@@ -11,6 +11,6 @@ public class OAuth2Controller {
     @ResponseBody
     public String mainAPI() {
 
-        return "main route";
+        return "OAuth Login";
     }
 }
