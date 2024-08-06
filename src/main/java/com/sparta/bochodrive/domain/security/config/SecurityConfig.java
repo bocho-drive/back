@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/signin").permitAll()
                         .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/").permitAll()
                         .requestMatchers("/api/auth/login").hasRole("ADMIN")
                         .anyRequest().permitAll());
 
