@@ -9,6 +9,7 @@ import java.util.List;
 public interface DriveMatchingApplyRepository extends JpaRepository<DriveMatchingApply, Long> {
 
     List<DriveMatchingApply> findDriveMatchingApplyByDriveMatchingId(Long driveMatchingId);
+
 //    DriveMatchingApply[] findAllByTeachers(DriveMatchingApplyRequestDto driveMatchingApplyRequestDto);
 
 }

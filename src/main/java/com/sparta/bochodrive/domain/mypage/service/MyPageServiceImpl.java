@@ -8,17 +8,17 @@ import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
-import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
-import com.sparta.bochodrive.domain.user.entity.User;
-import com.sparta.bochodrive.domain.user.repository.UserRepository;
+import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
+import com.sparta.bochodrive.domain.drivematching.repository.DriveMatchingRepository;
+import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingListDto;
+import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
+import com.sparta.bochodrive.domain.drivematchingapply.repository.DriveMatchingApplyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -28,17 +28,28 @@ public class MyPageServiceImpl implements MyPageService {
     private final CommentRepository commentRepository;
     private final ChallengeVarifyRepository challengeVarifyRepository;
     private final CommunityRepository communityRepository;
-    private final UserRepository userRepository;
+    private final DriveMatchingRepository driveMatchingRepository;
+    private final DriveMatchingApplyRepository driveMatchingApplyRepository;
 
     // 게시글 목록 불러오기
     @Override
-    public MypageCommunityListResponseDto getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc) {
+    public Page<CommunityListResponseDto> getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc) {
 
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<Community> communities = communityRepository.findByUserIdAndDeleteYNFalse(userid, pageable);
+        return communities.map(this::convertCommunityToDto);
+    }
 
-        Optional<User> user = userRepository.findById(userid);
-        return new MypageCommunityListResponseDto(user.get(), communities);
+    private CommunityListResponseDto convertCommunityToDto(Community community) {
+        return CommunityListResponseDto.builder()
+                .id(community.getId())
+                .title(community.getTitle())
+                .author(community.getUser().getNickname())
+                .createdAt(community.getCreatedAt())
+                .verifiedYN(community.isVerifiedYN())
+                .viewCount(community.getViewCount())
+                .likeCount(community.getLikeCount())
+                .build();
     }
 
     // 댓글 목록 불러오기
@@ -54,8 +65,6 @@ public class MyPageServiceImpl implements MyPageService {
     private CommentResponseDto convertCommentToDto(Comment comment) {
         return CommentResponseDto.builder()
                 .id(comment.getId())
-                .userId(comment.getUser().getId())
-                .author(comment.getUser().getNickname())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .build();
@@ -85,6 +94,33 @@ public class MyPageServiceImpl implements MyPageService {
 
     }
 
+    @Override
+    public Page<DriveMatchingListDto> getMyMatchingAppies(Long userId, int page, int size, String sortBy, boolean isAsc) {
+        List<DriveMatchingListDto> result = new ArrayList<>();
+
+        Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
+        Page<DriveMatching> matchingList = driveMatchingRepository.findAllByUserId(userId, pageable);
+        for (DriveMatching driveMatching : matchingList) {
+            List<DriveMatchingApply> matchingApplyList = driveMatchingApplyRepository.findDriveMatchingApplyByDriveMatchingId(driveMatching.getId());
+            for (DriveMatchingApply matchingApply : matchingApplyList) {
+                result.add(convertDriveMatchingToDto(driveMatching, matchingApply));
+            }
+        }
+        return new PageImpl<>(result, pageable, result.size());
+    }
+    private DriveMatchingListDto convertDriveMatchingToDto(DriveMatching driveMatching, DriveMatchingApply driveMatchingApply) {
+        return DriveMatchingListDto.builder()
+                .matchingId(driveMatching.getId())
+                .title(driveMatching.getTitle())
+                .content(driveMatching.getContent())
+                .status(driveMatching.getStatus())
+                .deleteYn(driveMatching.getDeleteYN())
+                .applyId(driveMatchingApply.getId())
+                .teacherId(driveMatchingApply.getUser().getId())
+                .teacherNickname(driveMatchingApply.getUser().getNickname())
+                .build();
+
+    }
 
     private Pageable createPageRequest(int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction;

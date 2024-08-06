@@ -3,7 +3,7 @@ package com.sparta.bochodrive.domain.mypage.controller;
 
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
-import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
+import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingListDto;
 import com.sparta.bochodrive.domain.mypage.service.MyPageServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ public class MyPageController {
 
 
     @GetMapping("{id}/posts")
-    public ApiResponse<MypageCommunityListResponseDto> getMyPosts(@PathVariable("id") Long id,
+    public ApiResponse<Page<CommunityListResponseDto>> getMyPosts(@PathVariable("id") Long id,
                                                               @RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                                               @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
                                                               @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
 
-        MypageCommunityListResponseDto myPosts = myPageService.getMyPosts(id, page, size, sortBy, isAsc);
+        Page<CommunityListResponseDto> myPosts = myPageService.getMyPosts(id, page, size, sortBy, isAsc);
         return ApiResponse.ok(HttpStatus.OK.value(), "마이페이지 조회에 성공하였습니다.", myPosts);
     }
 
@@ -52,5 +52,16 @@ public class MyPageController {
         Page<CommunityListResponseDto> myChallenges = myPageService.getMyChallenges(id, page, size, sortBy, isAsc);
         return ApiResponse.ok(HttpStatus.OK.value(), "마이페이지 챌린지 인증 조회에 성공하였습니다.", myChallenges);
     }
+
+    @GetMapping("{id}/driveMatchings")
+    public ApiResponse<Page<DriveMatchingListDto>> getMyMatchings(@PathVariable("id") Long id,
+                                                                 @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                 @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                                                                 @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
+        Page<DriveMatchingListDto> myMatchingAppies = myPageService.getMyMatchingAppies(id, page, size, sortBy, isAsc);
+        return ApiResponse.ok(HttpStatus.OK.value(), "매칭 지원 조회에 성공하였습니다.", myMatchingAppies);
+    }
+
 
 }
