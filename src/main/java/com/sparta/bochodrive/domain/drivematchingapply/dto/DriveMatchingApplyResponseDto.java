@@ -20,5 +20,6 @@ public class DriveMatchingApplyResponseDto {
         this.id = driveMatchingApply.getId();
         this.driveMatchingId = driveMatchingApply.getDriveMatching().getId();
         this.userId = driveMatchingApply.getUser().getId();
+        this.nickname = driveMatchingApply.getUser().getNickname();
     }
 }
