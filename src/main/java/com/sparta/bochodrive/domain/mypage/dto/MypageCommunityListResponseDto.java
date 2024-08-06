@@ -3,7 +3,6 @@ package com.sparta.bochodrive.domain.mypage.dto;
 
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
-import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MypageCommunityListResponseDto {
-
-    private CommunityRepository communityRepository;
 
     private Long id;
     private String nickname;
