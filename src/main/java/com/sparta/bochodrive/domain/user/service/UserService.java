@@ -64,6 +64,7 @@ public class UserService {
                                                                    .accessToken(jwtUtils.createAccessToken(user.getEmail(), user.getUserRole().toString()))
                                                                    .userId(user.getId())
                                                                    .userRole(user.getUserRole())
+                                                                   .nickname(user.getNickname())
                                                                    .build();
 
         return res;

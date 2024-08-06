@@ -54,5 +54,6 @@ public class UserModel {
         private long userId;
         private String accessToken;
         private UserRole userRole;
+        private String nickname;
     }
 }
