@@ -43,22 +43,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
-        String nickname = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
+        String email = oAuth2Response.getProvider() + "_" + oAuth2Response.getEmail();
 
-        Optional<User> existData = userRepository.findByNickname(nickname);
+        Optional<User> existData = userRepository.findByEmail(email);
 
-        if (existData == null) {
+        if (!existData.isPresent()) {
 
             User user = new User();
-            user.setNickname(nickname);
-            user.setEmail(oAuth2Response.getEmail());
+            user.setEmail(email);
             user.setUserRole(UserRole.USER);
 
             userRepository.save(user);
 
             UserDto userDto = new UserDto();
-            userDto.setEmail(oAuth2Response.getEmail());
-            userDto.setNickname(nickname);
+            userDto.setEmail(email);
             userDto.setRole("ROLE_USER");
 
             return new CustomOAuth2User(userDto);
@@ -66,13 +64,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
 
             User existDataIsTrue = existData.get();
-            existDataIsTrue.setEmail(oAuth2Response.getEmail());
+            existDataIsTrue.setEmail(email);
             existDataIsTrue.setNickname(oAuth2Response.getName());
 
             userRepository.save(existDataIsTrue);
 
             UserDto userDto = new UserDto();
-            userDto.setEmail(oAuth2Response.getEmail());
+            userDto.setEmail(email);
             userDto.setNickname(oAuth2Response.getName());
             userDto.setRole(existDataIsTrue.getUserRole().name());
 

@@ -52,6 +52,7 @@ public class SecurityConfig {
         // OAuth2 설정 추가
         httpSecurity
                 .oauth2Login(oauth2 -> oauth2
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/api/auth/login/callback/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler));
