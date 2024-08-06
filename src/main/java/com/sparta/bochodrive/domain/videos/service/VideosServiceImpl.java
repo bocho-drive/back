@@ -54,7 +54,6 @@ public class VideosServiceImpl implements VideosService {
 
     @Override
     public Page<VideosResponseDto> getAllVideos(int page, int size, String sortBy, boolean isAsc) {
-        size = 10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<Videos> videoList = videosRepository.findAllByOrderByCreatedAtDesc(pageable);
