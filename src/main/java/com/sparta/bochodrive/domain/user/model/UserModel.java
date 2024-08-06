@@ -23,8 +23,6 @@ public class UserModel {
         @NotNull
         private UserRole userRole;
 
-//        private String verifyPassword;
-
     }
 
     @Getter
