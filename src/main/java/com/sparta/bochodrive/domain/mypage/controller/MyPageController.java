@@ -3,6 +3,7 @@ package com.sparta.bochodrive.domain.mypage.controller;
 
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.mypage.dto.MyPageChallengeVarifyListResponseDto;
 import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
 import com.sparta.bochodrive.domain.mypage.service.MyPageServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -44,12 +45,12 @@ public class MyPageController {
 
 
     @GetMapping("{id}/challenges")
-    public ApiResponse<Page<CommunityListResponseDto>> getMyChallenges(@PathVariable("id") Long id,
-                                                                   @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                   @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                   @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
-                                                                   @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
-        Page<CommunityListResponseDto> myChallenges = myPageService.getMyChallenges(id, page, size, sortBy, isAsc);
+    public ApiResponse<Page<MyPageChallengeVarifyListResponseDto>> getMyChallenges(@PathVariable("id") Long id,
+                                                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                                   @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                                   @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                                                                                   @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
+        Page<MyPageChallengeVarifyListResponseDto> myChallenges = myPageService.getMyChallenges(id, page, size, sortBy, isAsc);
         return ApiResponse.ok(HttpStatus.OK.value(), "마이페이지 챌린지 인증 조회에 성공하였습니다.", myChallenges);
     }
 

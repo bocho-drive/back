@@ -8,6 +8,7 @@ import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
+import com.sparta.bochodrive.domain.mypage.dto.MyPageChallengeVarifyListResponseDto;
 import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
@@ -64,7 +65,7 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 챌린지 인증 목록 불러오기
     @Override
-    public Page<CommunityListResponseDto> getMyChallenges(Long userId, int page, int size, String sortBy, boolean isAsc) {
+    public Page<MyPageChallengeVarifyListResponseDto> getMyChallenges(Long userId, int page, int size, String sortBy, boolean isAsc) {
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<ChallengeVarify> challengeVarifies = challengeVarifyRepository.findByUserId(userId, pageable);
         return challengeVarifies.map(this::convertChallengeVerifyToDto);
@@ -72,16 +73,9 @@ public class MyPageServiceImpl implements MyPageService {
 
 
 
-    private CommunityListResponseDto convertChallengeVerifyToDto(ChallengeVarify challengeVarify) {
-        return CommunityListResponseDto.builder()
-                .id(challengeVarify.getId())
-                .title(challengeVarify.getCommunity().getTitle())
-                .author(challengeVarify.getCommunity().getUser().getNickname())
-                .createdAt(challengeVarify.getCreatedAt())
-                .verifiedYN(challengeVarify.getCommunity().isVerifiedYN())
-                .viewCount(challengeVarify.getCommunity().getViewCount())
-                .likeCount(challengeVarify.getCommunity().getLikeCount())
-                .build();
+    private MyPageChallengeVarifyListResponseDto convertChallengeVerifyToDto(ChallengeVarify challengeVarify) {
+
+        return new MyPageChallengeVarifyListResponseDto(challengeVarify);
 
     }
 
