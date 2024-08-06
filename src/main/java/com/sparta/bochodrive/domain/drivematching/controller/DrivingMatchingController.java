@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.drivematching.controller;
 
+import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingDetailResponseDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingRequestDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingResponseVo;
 import com.sparta.bochodrive.domain.drivematching.service.DriveMatchingService;
@@ -37,8 +38,8 @@ public class DrivingMatchingController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<DriveMatchingResponseVo> getDriveMatching(@PathVariable("id") Long id) {
-        DriveMatchingResponseVo driveMatching = driveMatchingService.getDriveMatching(id);
+    public ApiResponse<DriveMatchingDetailResponseDto> getDriveMatching(@PathVariable("id") Long id) {
+        DriveMatchingDetailResponseDto driveMatching = driveMatchingService.getDriveMatching(id);
 
         return ApiResponse.ok(HttpStatus.OK.value(), "조회에 성공하였습니다..", driveMatching);
     }

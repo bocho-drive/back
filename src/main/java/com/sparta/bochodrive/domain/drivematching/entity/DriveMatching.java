@@ -58,4 +58,8 @@ public class DriveMatching extends TimeStamped {
         this.content = requestDto.getContent();
     }
 
+    public void delete() {
+        this.deleteYN = true;
+    }
+
 }

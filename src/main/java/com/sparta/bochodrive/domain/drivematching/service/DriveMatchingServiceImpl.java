@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.drivematching.service;
 
+import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingDetailResponseDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingRequestDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingResponseVo;
 import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
@@ -61,9 +62,20 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
     }
 
     @Override
-    public DriveMatchingResponseVo getDriveMatching(Long id) {
+    public DriveMatchingDetailResponseDto getDriveMatching(Long id) {
         DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return new DriveMatchingResponseVo(driveMatching);
+        return DriveMatchingDetailResponseDto.builder()
+                .id(driveMatching.getId())
+                .title(driveMatching.getTitle())
+                .userId(driveMatching.getUser().getId())
+                .studentId(driveMatching.getUser().getId())
+                .studentName(driveMatching.getUser().getNickname())
+                .teacherId(driveMatching.getTeacher() != null ? driveMatching.getTeacher().getId() : null)
+                .content(driveMatching.getContent())
+                .type(driveMatching.getType())
+                .status(driveMatching.getStatus())
+                .createdAt(driveMatching.getCreatedAt())
+                .build();
     }
 
     @Override
@@ -76,7 +88,8 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
     @Override
     @Transactional
     public void deleteDriveMatching(Long id, User user) {
-        //TODO 실제 삭제 처리가 아닌, deleteYN을 true로 변경
-        driveMatchingRepository.deleteById(id);
+        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        driveMatching.delete();
+        driveMatchingRepository.save(driveMatching);
     }
 }
