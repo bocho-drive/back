@@ -17,6 +17,7 @@ public class MyPageController {
 
     private final MyPageServiceImpl myPageService;
 
+
     @GetMapping("{id}/posts")
     public ApiResponse<Page<CommunityListResponseDto>> getMyPosts(@PathVariable("id") Long id,
                                                               @RequestParam(value = "page", defaultValue = "0") int page,
