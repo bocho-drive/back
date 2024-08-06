@@ -3,18 +3,16 @@ package com.sparta.bochodrive.domain.mypage.controller;
 
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
-import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.mypage.service.MyPageServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("my")
+@RequestMapping("/api/my")
 public class MyPageController {
 
     private final MyPageServiceImpl myPageService;
