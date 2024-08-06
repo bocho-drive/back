@@ -55,4 +55,16 @@ public class DriveMatchingApplyServiceImpl implements DriveMatchingApplyService{
     public void deleteDriveMatchingApply(Long id, DriveMatchingApplyRequestDto driveMatchingApplyRequestDto) {
         driveMatchingApplyRepository.deleteById(id);
     }
+
+    @Override
+    public boolean validPermission(Long id, User user) {
+        DriveMatchingApply driveMatching = getDriveMatching(id);
+        return driveMatching.getUser().getId().equals(user.getId());
+    }
+
+    @Override
+    public DriveMatchingApply getDriveMatching(Long id) {
+        return driveMatchingApplyRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
+    }
+
 }
