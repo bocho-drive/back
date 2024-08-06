@@ -2,7 +2,6 @@ package com.sparta.bochodrive.domain.vote.controller;
 
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.vote.dto.VoteRequestDto;
-
 import com.sparta.bochodrive.domain.vote.dto.VoteResponseDto;
 import com.sparta.bochodrive.domain.vote.service.VoteService;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -10,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

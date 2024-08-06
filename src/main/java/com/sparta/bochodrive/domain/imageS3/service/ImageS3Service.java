@@ -1,5 +1,5 @@
 package com.sparta.bochodrive.domain.imageS3.service;
-import com.amazonaws.services.cloudformation.model.Change;
+
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;

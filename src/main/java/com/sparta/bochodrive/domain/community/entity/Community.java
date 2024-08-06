@@ -14,9 +14,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.awt.*;
 import java.util.List;
 
 @Entity

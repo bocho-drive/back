@@ -22,10 +22,10 @@ public class VideosResponseDto {
 
     public VideosResponseDto(Videos videos) {
         this.id = videos.getId();
-        this.nickName = videos.getUser().getNickname();
+//        this.nickName = videos.getUser().getNickname();
         this.title = videos.getTitle();
         this.url = videos.getUrl();
-        this.createdAt = videos.getCreatedAt();
+//        this.createdAt = videos.getCreatedAt();
     }
 
 }

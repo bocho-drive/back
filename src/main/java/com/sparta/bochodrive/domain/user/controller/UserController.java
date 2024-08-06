@@ -1,9 +1,8 @@
 package com.sparta.bochodrive.domain.user.controller;
 
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
-import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.model.UserModel;
-import com.sparta.bochodrive.domain.user.model.UserModel.UserLoginDto;
+import com.sparta.bochodrive.domain.user.model.UserModel.UserLoginReqDto;
 import com.sparta.bochodrive.domain.user.model.UserModel.UserRegistDto;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import com.sparta.bochodrive.domain.user.service.UserService;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping()
@@ -35,22 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ApiResponse<UserModel.UserLoginResDto> postUserSignIn(@RequestBody UserLoginDto userLoginDto) {
-        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
-        );
-
-        //비번 맞는지 확인.
-        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-
-        UserModel.UserLoginResDto build = UserModel.UserLoginResDto.builder()
-                                                                   .accessToken(jwtUtils.createAccessToken(user.getEmail(), "USER"))
-                                                                   .userId(user.getId())
-                                                                   .build();
-
-        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.",build);
+    public ApiResponse<UserModel.UserLoginResDto> postUserSignIn(@RequestBody UserLoginReqDto userLoginDto) {
+        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.", userService.login(userLoginDto));
     }
 
 //    @PostMapping("/api/auth/signin")

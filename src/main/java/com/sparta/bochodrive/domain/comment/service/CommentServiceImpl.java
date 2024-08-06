@@ -1,7 +1,7 @@
 package com.sparta.bochodrive.domain.comment.service;
 
-import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.dto.CommentRequestDto;
+import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
 import com.sparta.bochodrive.domain.community.entity.Community;

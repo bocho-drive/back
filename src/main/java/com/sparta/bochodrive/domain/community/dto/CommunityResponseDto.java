@@ -8,9 +8,7 @@ import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.challenge.controller;
 
 import com.sparta.bochodrive.domain.challenge.dto.ChallengeRequestDto;
-import com.sparta.bochodrive.domain.challenge.entity.Challenge;
 import com.sparta.bochodrive.domain.challenge.service.ChallengeServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import jakarta.validation.Valid;

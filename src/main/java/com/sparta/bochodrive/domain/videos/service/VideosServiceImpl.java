@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.videos.service;
 
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.videos.dto.VideoResDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosRequestDto;
 import com.sparta.bochodrive.domain.videos.dto.VideosResponseDto;
 import com.sparta.bochodrive.domain.videos.entity.Videos;
@@ -53,7 +54,6 @@ public class VideosServiceImpl implements VideosService {
 
     @Override
     public Page<VideosResponseDto> getAllVideos(int page, int size, String sortBy, boolean isAsc) {
-        size = 10;
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<Videos> videoList = videosRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -62,8 +62,8 @@ public class VideosServiceImpl implements VideosService {
     }
 
     @Override
-    public VideosResponseDto getVideos(Long id) {
+    public VideoResDto getVideos(Long id) {
         Videos videos = videosRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return new VideosResponseDto(videos);
+        return new VideoResDto(videos);
     }
 }

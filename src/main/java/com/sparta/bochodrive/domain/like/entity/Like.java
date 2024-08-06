@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.like.entity;
 
 import com.sparta.bochodrive.domain.community.entity.Community;
-import com.sparta.bochodrive.domain.like.dto.LikeRequestDto;
 import com.sparta.bochodrive.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
