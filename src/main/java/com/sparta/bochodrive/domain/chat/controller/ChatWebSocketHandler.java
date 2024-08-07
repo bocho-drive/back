@@ -5,10 +5,17 @@ import com.sparta.bochodrive.domain.chat.service.ChatService;
 import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
 import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
+import com.sparta.bochodrive.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -16,15 +23,14 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.security.Principal;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Controller
+@MessageMapping
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ChatService chatService;
@@ -32,13 +38,27 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, Set<WebSocketSession>> chatRooms = new ConcurrentHashMap<>();
 
+
+
+    public CustomUserDetails getUserDetails(WebSocketSession session) {
+        Principal principal = session.getPrincipal();
+        if (principal instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+            return (CustomUserDetails) token.getPrincipal();
+        }
+        return null;
+    }
+
+    /**
+     * 웹소켓 연결이 성립된 후 호출되는 메서드
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         try {
             String roomId = getRoomId(session);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails details = (CustomUserDetails) authentication.getDetails();
-            driveMatchingApplyService.validPermission(Long.parseLong(roomId), details.getUser());
+            CustomUserDetails userDetails = getUserDetails(session);
+
+            driveMatchingApplyService.validPermission(Long.parseLong(roomId), userDetails.getUser());
 
             chatRooms.computeIfAbsent(roomId, k -> new HashSet<>()).add(session);
             log.info("{} 사용자가 방 {}에 접속했습니다.", session, roomId);
@@ -52,15 +72,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         try {
             String msg = message.getPayload();
             String roomId = getRoomId(session);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails details = (CustomUserDetails) authentication.getDetails();
-            driveMatchingApplyService.validPermission(Long.parseLong(roomId), details.getUser());
+            CustomUserDetails userDetails = getUserDetails(session);
 
-            chatService.sendMessage(Long.parseLong(roomId), msg, details);
+            driveMatchingApplyService.validPermission(Long.parseLong(roomId), userDetails.getUser());
+
+            chatService.sendMessage(Long.parseLong(roomId), msg, userDetails);
 
             Map<String, String> response = new HashMap<>();
             response.put("roomId", roomId);
-            response.put("sender", details.getUsername());
+            response.put("sender", userDetails.getUsername());
             response.put("message", msg);
 
             broadcastMessage(roomId, response);

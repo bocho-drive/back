@@ -64,7 +64,7 @@ public class DriveMatchingApplyServiceImpl implements DriveMatchingApplyService{
 
     @Override
     public DriveMatchingApply getDriveMatching(Long id) {
-        return driveMatchingApplyRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
+        return driveMatchingApplyRepository.findByDriveMatchingId(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
     }
 
 }

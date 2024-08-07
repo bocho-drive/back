@@ -13,6 +13,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
     private final ChatWebSocketHandler chatWebSocketHandler;
 
+    // id    drive_matching_id  user_id
+    // 10	 6	                11
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatWebSocketHandler, "/api/chat/msg/{roomId}").setAllowedOrigins("*");

@@ -33,7 +33,7 @@ public class ChatServiceImpl implements ChatService {
     public void sendMessage(Long roomId, String message, CustomUserDetails userDetails) {
         User user = userDetails.getUser();
 
-        // 방에 대한 사용자의 권한을 확인합니다.
+        // 방에 대한 사용자의 권한을 확인합니다. (필요 없음)
         driveMatchingApplyService.validPermission(roomId, user);
 
         // 사용자가 존재하는지 확인합니다.
