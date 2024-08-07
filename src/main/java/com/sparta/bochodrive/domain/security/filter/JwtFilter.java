@@ -57,7 +57,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 검증에서 문제가 없으면 "Bearer "를 분리해준다.
         String accessToken = jwtUtils.getAccessTokenFromHeader(request);
         String refreshToken= jwtUtils.getRefreshTokenFromCookie(request);
 
@@ -66,27 +65,13 @@ public class JwtFilter extends OncePerRequestFilter {
             boolean tokenValid = jwtUtils.validateToken(accessToken);
             if(!tokenValid){ //accessToken 유효하지 않을 때
                 if(!StringUtils.hasText(refreshToken) || !jwtUtils.validateToken(refreshToken)){ //refreshToken이 없거나, 만료되었을 경우
-                    CommonFuntion.addJsonBodyServletResponse( response,"로그인 다시 해주세요.");
+                    CommonFuntion.addJsonBodyServletResponse( response,"쿠키가 만료되었습니다. 로그인을 다시 해주세요.");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
                 } else {
                     // refreshToken이 유효할 경우 새로운 accessToken 발급
-                    String username = jwtUtils.getUsername(refreshToken);
+                    String email = jwtUtils.getUsername(refreshToken);
 
-
-                    CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(username);
-
-                    UserRole role = userDetails.getUserRole();
-                    String newAccessToken = jwtUtils.createAccessToken(username, role);
-                    UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
-                            .userId(userDetails.getUserId()) // username을 사용하여 userId 가져오기
-                            .userRole(role)
-                            .nickname(userDetails.getUser().getNickname()) // username을 사용하여 nickname 가져오기
-                            .accessToken(newAccessToken) // newAccessToken으로 변경
-                            .build();
-
-                    CommonFuntion.addJsonBodyServletResponse(response, body);
-                    response.setHeader("Authorization", "Bearer " + newAccessToken);
+                    generateNewAccessToken(response,email);
                     return;
                 }
 
@@ -114,6 +99,23 @@ public class JwtFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String email) {
         UserDetails userDetails=customerUserDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private void generateNewAccessToken(HttpServletResponse response,String email) throws IOException {
+
+        CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
+
+        UserRole role = userDetails.getUserRole();
+        String newAccessToken = jwtUtils.createAccessToken(email, role);
+        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
+                .userId(userDetails.getUserId()) // username을 사용하여 userId 가져오기
+                .userRole(role)
+                .nickname(userDetails.getUser().getNickname()) // username을 사용하여 nickname 가져오기
+                .accessToken(newAccessToken) // newAccessToken으로 변경
+                .build();
+
+        CommonFuntion.addJsonBodyServletResponse(response, body);
+
     }
 
 }
