@@ -77,12 +77,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .build();
 
 
-        //refreshToken 쿠키로 넣어주기
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        response.addCookie(refreshTokenCookie);
+        addRefreshTokenToCookie(response, refreshToken);
 
 
         // 응답값에 body json 추가
@@ -94,5 +89,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed){
         response.setStatus(401);
+    }
+
+    //토큰을 쿠키에 넣는 메소드
+    protected void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setMaxAge(120);
+        response.addCookie(refreshTokenCookie);
     }
 }
