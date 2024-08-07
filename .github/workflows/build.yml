@@ -4,7 +4,7 @@ on:
   push:
     branches: ["feature/refresh"]
   pull_request:
-    branches: ["develop"]
+    branches: ["feature/refresh"]
 
 jobs:
   build:
