@@ -39,7 +39,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final Map<String, Set<WebSocketSession>> chatRooms = new ConcurrentHashMap<>();
 
 
-
+    //!!! SecurityContextHolder를 사용했을 때는, context값이 null이 되었음 -> 질문사항
+    /** 웹소켓 세션에서 사용자 정보를 가져오는 메서드 */
     public CustomUserDetails getUserDetails(WebSocketSession session) {
         Principal principal = session.getPrincipal();
         if (principal instanceof UsernamePasswordAuthenticationToken) {
