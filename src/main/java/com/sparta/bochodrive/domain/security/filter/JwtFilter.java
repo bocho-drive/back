@@ -40,22 +40,22 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-//        //request에서 먼저 Authoriation 헤더를 찾는다.
-//        String authorization = request.getHeader("Authorization");
-//
-//
-//        log.info("Authorization 헤더: {}", authorization);
-//        //Authoriation 헤더에 "Bearer "가 있는지 검증
-//        if (authorization == null || !authorization.startsWith("Bearer ")) {
-//
-//            System.out.println("jwt 필터 : token null");
-//
-//            // doFilter를 통해서 필터 체인을 넘어간다. 다음 필터로 넘기는 것.
-//            filterChain.doFilter(request, response);
-//
-//            //조건이 해당되면 메소드 종료 (필수)
-//            return;
-//        }
+        //request에서 먼저 Authoriation 헤더를 찾는다.
+        String authorization = request.getHeader("Authorization");
+
+
+        log.info("Authorization 헤더: {}", authorization);
+        //Authoriation 헤더에 "Bearer "가 있는지 검증
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+
+            System.out.println("jwt 필터 : token null");
+
+            // doFilter를 통해서 필터 체인을 넘어간다. 다음 필터로 넘기는 것.
+            filterChain.doFilter(request, response);
+
+            //조건이 해당되면 메소드 종료 (필수)
+            return;
+        }
 
         // 검증에서 문제가 없으면 "Bearer "를 분리해준다.
         String accessToken = jwtUtils.getAccessTokenFromHeader(request);

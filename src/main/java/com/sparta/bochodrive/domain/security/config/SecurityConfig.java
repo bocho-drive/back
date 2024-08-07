@@ -63,6 +63,7 @@ public class SecurityConfig {
 
         httpSecurity
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils, customUserDetails), UsernamePasswordAuthenticationFilter.class);
+
         // 세션 설정
         httpSecurity
                 .sessionManagement((session) ->
