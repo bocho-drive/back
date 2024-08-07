@@ -1,7 +1,11 @@
 package com.sparta.bochodrive.domain.security.filter;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
+import com.sparta.bochodrive.domain.user.model.UserModel;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -27,16 +32,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public LoginFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtil;
+        this.setFilterProcessesUrl("/signin");
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+        UserModel.UserLoginReqDto requestDto = null;
+        try {
+            requestDto = new ObjectMapper().readValue(request.getInputStream(), UserModel.UserLoginReqDto.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String username = requestDto.getEmail();
+        String password = requestDto.getPassword();
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(username, password, null);
+
 
         return authenticationManager.authenticate(authToken);
     }
@@ -62,7 +76,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //refresh token 안쓸거기때문에 주석처리
         //String refreshToken = jwtUtils.createRefreshToken();
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("Authorization", accessToken);
+
 
     }
 
