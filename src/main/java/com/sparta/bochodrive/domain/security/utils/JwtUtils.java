@@ -60,10 +60,9 @@ public class JwtUtils {
     }
 
 
-    public String createAccessToken(String username, String role) {
+    public String createAccessToken(String username, UserRole role) {
         long expiredMs = 1000 * 60 * 60 * 24;    // 15분
         String token = BEARER_PREFIX + Jwts.builder()
-
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
