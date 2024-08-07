@@ -6,11 +6,14 @@ import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply
 import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
+import com.sparta.bochodrive.domain.user.repository.UserRepository;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class ChatServiceImpl implements ChatService {
     private final DriveMatchingApplyService driveMatchingApplyService;
     private final CommonFuntion commonFuntion;
     private final ChatRepository chatRepository;
-    //private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
      * 특정 방에 채팅 메시지를 전송합니다.
@@ -65,4 +68,14 @@ public class ChatServiceImpl implements ChatService {
     public DriveMatchingApply findRoomById(Long roomId) {
         return driveMatchingApplyService.getDriveMatching(roomId);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Chat> getChattingList(Long roomId, CustomUserDetails userDetails) {
+        //User user = userDetails.getUser();
+        User user = userRepository.findById(11L).get();
+        //driveMatchingApplyService.validPermission(roomId, user);
+        return chatRepository.findByDriveMatchingApplyOrderByCreatedAt(roomId);
+    }
+
 }

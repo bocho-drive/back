@@ -1,6 +1,5 @@
 package com.sparta.bochodrive.domain.chat.entity;
 
-import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
 import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.entity.TimeStamped;
