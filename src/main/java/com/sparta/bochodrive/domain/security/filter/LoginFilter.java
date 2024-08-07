@@ -8,6 +8,7 @@ import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
-@Slf4j
+@Slf4j(topic = "Authentication Filter")
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -65,6 +66,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UserRole userRole = userDetails.getUserRole();
         String accessToken = jwtUtils.createAccessToken(email, userRole);
+        String refreshToken = jwtUtils.createRefreshToken(email);
+
 
         UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
                 .userId(userDetails.getUserId())
@@ -72,6 +75,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .nickname(userDetails.getUser().getNickname())
                 .accessToken(accessToken)
                 .build();
+
+
+        //refreshToken 쿠키로 넣어주기
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        response.addCookie(refreshTokenCookie);
+
 
         // 응답값에 body json 추가
         CommonFuntion.addJsonBodyServletResponse(response, body);
