@@ -38,6 +38,10 @@ public class CustomUserDetails implements UserDetails {
 
     public long getUserId() { return user.getId(); }
 
+    public UserRole getUserRole() {
+        return user.getUserRole();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
