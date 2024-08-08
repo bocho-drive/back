@@ -6,12 +6,15 @@ import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
-@Slf4j
+@Slf4j(topic = "Authentication Filter")
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -65,6 +68,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UserRole userRole = userDetails.getUserRole();
         String accessToken = jwtUtils.createAccessToken(email, userRole);
+        String refreshToken = jwtUtils.createRefreshToken(email);
+
 
         UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
                 .userId(userDetails.getUserId())
@@ -73,8 +78,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 .accessToken(accessToken)
                 .build();
 
+
+        addRefreshTokenToCookie(response, refreshToken);
+
+        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
+
         // 응답값에 body json 추가
-        CommonFuntion.addJsonBodyServletResponse(response, body);
+        CommonFuntion.addJsonBodyServletResponse(response,res);
     }
 
 
@@ -82,5 +92,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed){
         response.setStatus(401);
+    }
+
+    //토큰을 쿠키에 넣는 메소드
+    protected void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setMaxAge(120);
+        response.addCookie(refreshTokenCookie);
     }
 }

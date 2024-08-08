@@ -1,8 +1,13 @@
 package com.sparta.bochodrive.domain.security.filter;
 
+
 import com.sparta.bochodrive.domain.security.enums.UserRole;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
+import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
+import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,18 +18,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-@Slf4j
+@Slf4j(topic = "AuthorizationFilter")
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final CustomerUserDetailsService customUserDetails;
+    private final CustomerUserDetailsService customerUserDetailsService;
 
-    public JwtFilter(JwtUtils jwtUtils,CustomerUserDetailsService customUserDetails) {
+
+
+    public JwtFilter(JwtUtils jwtUtils,CustomerUserDetailsService customerUserDetailsService) {
         this.jwtUtils = jwtUtils;
-        this.customUserDetails=customUserDetails;
+        this.customerUserDetailsService=customerUserDetailsService;
     }
 
     @Override
@@ -32,6 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //request에서 먼저 Authoriation 헤더를 찾는다.
         String authorization = request.getHeader("Authorization");
+
 
         log.info("Authorization 헤더: {}", authorization);
         //Authoriation 헤더에 "Bearer "가 있는지 검증
@@ -46,28 +55,29 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 검증에서 문제가 없으면 "Bearer "를 분리해준다.
-        String token = authorization.split(" ")[1];
+        String accessToken = jwtUtils.getAccessTokenFromHeader(request);
+        String refreshToken= jwtUtils.getRefreshTokenFromCookie(request);
 
 
-        // 토큰의 유효기간을 확인한다. JwtUtil 객체에서 구현해놓은 메소드를 통해서
-        if (jwtUtils.isExpired(token)) {
-            log.warn("JWT 토큰이 유효하지 않습니다.");
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+        if (StringUtils.hasText(accessToken)) {
+            boolean isAccessTokenValid = jwtUtils.validateToken(response, accessToken);
+            if (!isAccessTokenValid) { // accessToken 유효하지 않을 때
+                if (!StringUtils.hasText(refreshToken) || !jwtUtils.validateToken(response, refreshToken)) {
+                    return;
+                } else {
+                    // refreshToken이 유효할 경우 새로운 accessToken 발급
+                    String email = jwtUtils.getUsername(refreshToken);
+                    generateNewAccessToken(response, email);
+                    return;
+                }
+            }
         }
 
 
-        String username = jwtUtils.getUsername(token);
-        log.info("JWT 토큰에서 추출한 사용자 이름: {}", username);
-        UserRole role = jwtUtils.getRole(token);
+        //accessToken 유효할 때
 
-
+        String username = jwtUtils.getUsername(accessToken);
         setAuthentication(username);
-
         //검증이 완료됏으니 다음 필터로 넘긴다.
         filterChain.doFilter(request, response);
 
@@ -80,8 +90,25 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private Authentication createAuthentication(String email) {
-        UserDetails userDetails=customUserDetails.loadUserByUsername(email);
+        UserDetails userDetails=customerUserDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private void generateNewAccessToken(HttpServletResponse response,String email) throws IOException {
+
+        CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
+
+        UserRole role = userDetails.getUserRole();
+        String newAccessToken = jwtUtils.createAccessToken(email, role);
+        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
+                .userId(userDetails.getUserId()) // username을 사용하여 userId 가져오기
+                .userRole(role)
+                .nickname(userDetails.getUser().getNickname()) // username을 사용하여 nickname 가져오기
+                .accessToken(newAccessToken) // newAccessToken으로 변경
+                .build();
+
+        CommonFuntion.addJsonBodyServletResponse(response, body);
+
     }
 
 }
