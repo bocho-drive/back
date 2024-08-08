@@ -10,7 +10,7 @@ public class MyPageChallengeVarifyListResponseDto extends CommunityListResponseD
 
     public MyPageChallengeVarifyListResponseDto(ChallengeVarify challengeVarify) {
         super(challengeVarify);
-        this.challengeId = challengeVarify.getId();
+        this.challengeId = challengeVarify.getChallenge().getId();
     }
 }
 
