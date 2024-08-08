@@ -2,8 +2,9 @@ package com.sparta.bochodrive.domain.mypage.controller;
 
 
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
-import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.mypage.dto.MyPageChallengeVarifyListResponseDto;
+import com.sparta.bochodrive.domain.mypage.dto.MyProfileResponseDto;
 import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
 import com.sparta.bochodrive.domain.mypage.service.MyPageServiceImpl;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -19,20 +20,29 @@ public class MyPageController {
 
     private final MyPageServiceImpl myPageService;
 
+    @GetMapping("/{id}")
+    public ApiResponse<MyProfileResponseDto> getMyProfile(@PathVariable Long id) {
+        MyProfileResponseDto myProfile = myPageService.getMyProfile(id);
+        return ApiResponse.ok(HttpStatus.OK.value(), "마이페이지 프로필 조회 성공하였습니다", myProfile);
+
+    }
+
 
     @GetMapping("{id}/posts")
     public ApiResponse<MypageCommunityListResponseDto> getMyPosts(@PathVariable("id") Long id,
-                                                              @RequestParam(value = "page", defaultValue = "0") int page,
-                                                              @RequestParam(value = "size", defaultValue = "10") int size,
-                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
-                                                              @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
+                                                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                  @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                  @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+                                                                  @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
+                                                                  @RequestParam(value = "category", defaultValue = "GENERAL") CategoryEnum category) {
 
-        MypageCommunityListResponseDto myPosts = myPageService.getMyPosts(id, page, size, sortBy, isAsc);
+        MypageCommunityListResponseDto myPosts = myPageService.getMyPosts(id, page, size, sortBy, isAsc, category);
         return ApiResponse.ok(HttpStatus.OK.value(), "마이페이지 조회에 성공하였습니다.", myPosts);
     }
 
 
-    @GetMapping("{id}/comments")
+
+    @GetMapping("/{id}/comments")
     public ApiResponse<Page<CommentResponseDto>> getMyComments(@PathVariable("id") Long id,
                                                                @RequestParam(value = "page", defaultValue = "0") int page,
                                                                @RequestParam(value = "size", defaultValue = "10") int size,
@@ -44,7 +54,7 @@ public class MyPageController {
     }
 
 
-    @GetMapping("{id}/challenges")
+    @GetMapping("/{id}/challenges")
     public ApiResponse<Page<MyPageChallengeVarifyListResponseDto>> getMyChallenges(@PathVariable("id") Long id,
                                                                                    @RequestParam(value = "page", defaultValue = "0") int page,
                                                                                    @RequestParam(value = "size", defaultValue = "10") int size,

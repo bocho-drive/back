@@ -5,13 +5,16 @@ import com.sparta.bochodrive.domain.challengevarify.repository.ChallengeVarifyRe
 import com.sparta.bochodrive.domain.comment.dto.CommentResponseDto;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.comment.repository.CommentRepository;
-import com.sparta.bochodrive.domain.community.dto.CommunityListResponseDto;
+import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import com.sparta.bochodrive.domain.community.entity.Community;
 import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.mypage.dto.MyPageChallengeVarifyListResponseDto;
+import com.sparta.bochodrive.domain.mypage.dto.MyProfileResponseDto;
 import com.sparta.bochodrive.domain.mypage.dto.MypageCommunityListResponseDto;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
+import com.sparta.bochodrive.global.exception.ErrorCode;
+import com.sparta.bochodrive.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,15 +34,24 @@ public class MyPageServiceImpl implements MyPageService {
     private final CommunityRepository communityRepository;
     private final UserRepository userRepository;
 
+
+    @Override
+    public MyProfileResponseDto getMyProfile(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+        return new MyProfileResponseDto(user.get());
+    }
+
     // 게시글 목록 불러오기
     @Override
-    public MypageCommunityListResponseDto getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc) {
+    public MypageCommunityListResponseDto getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category) {
 
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
-        Page<Community> communities = communityRepository.findByUserIdAndDeleteYNFalse(userid, pageable);
+        Page<Community> communities = communityRepository.findByUserIdAndCategoryAndDeleteYNFalse(userid, category, pageable);
 
-        Optional<User> user = userRepository.findById(userid);
-        return new MypageCommunityListResponseDto(user.get(), communities);
+        return new MypageCommunityListResponseDto(category, communities);
     }
 
     // 댓글 목록 불러오기
