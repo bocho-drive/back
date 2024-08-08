@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.OAuth.service;
 
 import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
-import com.sparta.bochodrive.domain.OAuth.dto.UserDto;
 import com.sparta.bochodrive.domain.OAuth.userinfo.GoogleUserInfo;
 import com.sparta.bochodrive.domain.OAuth.userinfo.KakaoUserInfo;
 import com.sparta.bochodrive.domain.OAuth.userinfo.OAuth2UserInfo;
@@ -45,41 +44,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String email = oAuth2Response.getProvider() + "_" + oAuth2Response.getEmail();
 
-        Optional<User> existData = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
 
-        if (!existData.isPresent()) {
+        // 사용자가 없으면, 회원가입 진행
+        if (!user.isPresent()) {
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setUserRole(UserRole.USER);
 
-            User user = new User();
-            user.setEmail(email);
-            user.setUserRole(UserRole.USER);
+            userRepository.save(newUser);
 
-            userRepository.save(user);
-
-            UserDto userDto = new UserDto();
-            userDto.setEmail(email);
-            userDto.setRole("ROLE_USER");
-
-            return new CustomOAuth2User(userDto);
-
+            return new CustomOAuth2User(newUser);
         } else {
+            // 회원정보 업데이트
+            User updateUser = user.get();
+            updateUser.setEmail(email);
+            updateUser.setNickname(oAuth2Response.getName());
 
-            User existDataIsTrue = existData.get();
-            existDataIsTrue.setEmail(email);
-            existDataIsTrue.setNickname(oAuth2Response.getName());
-
-            userRepository.save(existDataIsTrue);
-
-            UserDto userDto = new UserDto();
-            userDto.setEmail(email);
-            userDto.setNickname(oAuth2Response.getName());
-            userDto.setRole(existDataIsTrue.getUserRole().name());
-
-            return new CustomOAuth2User(userDto);
-
-
+            userRepository.save(updateUser);
+            return new CustomOAuth2User(updateUser);
         }
-
-
 
     }
 }

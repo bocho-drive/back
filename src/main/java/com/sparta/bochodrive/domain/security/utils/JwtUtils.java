@@ -66,14 +66,22 @@ public class JwtUtils {
     }
 
 
-    public Boolean isExpired(String token) {
-        return getUserInfoFromToken(token).getExpiration().before(new Date());
+    public boolean isExpired(String token) throws IOException {
+        try {
+            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            // 다른 예외 처리
+            return false;
+        }
     }
 
 
     public String createAccessToken(String username, UserRole role) {
 
-        String token = BEARER_PREFIX + Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
@@ -96,33 +104,19 @@ public class JwtUtils {
 
     }
 
-    public String createJwt(String username, String role, Long expiredMs) {
-        return Jwts.builder()
-                .claim("username", username)
-                .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(key, signatureAlgorithm)
-                .compact();
-    }
 
-    // 토큰 검증
-    public boolean validateToken(HttpServletResponse response, String token) throws IOException {
+    public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            CommonFuntion.addJsonBodyServletResponse(response, ApiResponse.error(ErrorCode.INVAILD_JWT.getStatus(), ErrorCode.INVAILD_JWT.getMessage()));
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.error("Invalid JWT signature.");
         } catch (ExpiredJwtException e) {
-            CommonFuntion.addJsonBodyServletResponse(response, ApiResponse.error(ErrorCode.EXPIRED_JWT.getStatus(), ErrorCode.EXPIRED_JWT.getMessage()));
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.error("Expired JWT token.");
         } catch (UnsupportedJwtException e) {
-            CommonFuntion.addJsonBodyServletResponse(response, ApiResponse.error(ErrorCode.UNSUPPORTED_JWT.getStatus(), ErrorCode.UNSUPPORTED_JWT.getMessage()));
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.error("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
-            CommonFuntion.addJsonBodyServletResponse(response, ApiResponse.error(ErrorCode.EMPTY_JWT.getStatus(), ErrorCode.EMPTY_JWT.getMessage()));
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.error("JWT claims is empty.");
         }
         return false;
     }
@@ -154,6 +148,13 @@ public class JwtUtils {
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+
+    // 토큰 검증 후 오류 메시지를 응답으로 전송하는 메서드
+    public void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        CommonFuntion.addJsonBodyServletResponse(response, ApiResponse.error(errorCode.getStatus(), errorCode.getMessage()));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
 }
