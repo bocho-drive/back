@@ -2,7 +2,7 @@ name: Bocho-community
 
 on:
   push:
-    branches: ["feature/refresh"]
+    branches: ["develop"]
   pull_request:
     branches: ["develop"]
 
