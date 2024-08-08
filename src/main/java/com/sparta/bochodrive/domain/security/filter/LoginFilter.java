@@ -6,6 +6,7 @@ import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,9 +81,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         addRefreshTokenToCookie(response, refreshToken);
 
+        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
 
         // 응답값에 body json 추가
-        CommonFuntion.addJsonBodyServletResponse(response, body);
+        CommonFuntion.addJsonBodyServletResponse(response,res);
     }
 
 

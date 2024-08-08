@@ -1,12 +1,12 @@
 package com.sparta.bochodrive.domain.security.filter;
 
-import ch.qos.logback.core.util.StringUtil;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
+
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,8 +33,6 @@ public class JwtFilter extends OncePerRequestFilter {
     public JwtFilter(JwtUtils jwtUtils,CustomerUserDetailsService customerUserDetailsService) {
         this.jwtUtils = jwtUtils;
         this.customerUserDetailsService=customerUserDetailsService;
-
-
     }
 
     @Override
@@ -61,22 +59,17 @@ public class JwtFilter extends OncePerRequestFilter {
         String refreshToken= jwtUtils.getRefreshTokenFromCookie(request);
 
 
-        if(StringUtils.hasText(accessToken)){
-            boolean tokenValid = jwtUtils.validateToken(accessToken);
-            if(!tokenValid){ //accessToken 유효하지 않을 때
-                if(!StringUtils.hasText(refreshToken) || !jwtUtils.validateToken(refreshToken)){ //refreshToken이 없거나, 만료되었을 경우
-                    CommonFuntion.addJsonBodyServletResponse( response,"쿠키가 만료되었습니다. 로그인을 다시 해주세요.");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (StringUtils.hasText(accessToken)) {
+            boolean isAccessTokenValid = jwtUtils.validateToken(response, accessToken);
+            if (!isAccessTokenValid) { // accessToken 유효하지 않을 때
+                if (!StringUtils.hasText(refreshToken) || !jwtUtils.validateToken(response, refreshToken)) {
+                    return;
                 } else {
                     // refreshToken이 유효할 경우 새로운 accessToken 발급
                     String email = jwtUtils.getUsername(refreshToken);
-
-                    generateNewAccessToken(response,email);
+                    generateNewAccessToken(response, email);
                     return;
                 }
-
-
-
             }
         }
 
