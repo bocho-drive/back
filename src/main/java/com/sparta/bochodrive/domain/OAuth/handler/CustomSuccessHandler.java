@@ -67,7 +67,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         CommonFuntion.addJsonBodyServletResponse(response,res);
 
         // 5. RT를 쿠키("refreshToken")에 세팅한다.
-        response.addCookie(createCookie("refreshToken", refreshToken));
+        LoginFilter.addRefreshTokenToCookie(response, refreshToken);
 
         // 6. 프론트 리다이렉트 URL을 설정해준다.
         response.sendRedirect(redirectURL);
@@ -75,15 +75,5 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     }
 
 
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60*60*60);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
-    }
 
 }

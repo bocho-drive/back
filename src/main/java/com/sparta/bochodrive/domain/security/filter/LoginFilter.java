@@ -95,7 +95,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     //토큰을 쿠키에 넣는 메소드
-    protected void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+    public static void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(true);
