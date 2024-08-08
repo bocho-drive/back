@@ -48,7 +48,9 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public Page<MypageCommunityListResponseDto> getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category) {
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
-        Page<Community> communities = communityRepository.findByUserIdAndCategoryAndDeleteYNFalse(userid, category, pageable);
+
+        CategoryEnum[] categoryEnums = {CategoryEnum.GENERAL, CategoryEnum.VOTE,CategoryEnum.TIP};
+        Page<Community> communities = communityRepository.findByUserIdAndCategoryInAndDeleteYNFalse(userid, categoryEnums, pageable);
         return communities.map(MypageCommunityListResponseDto::new);
     }
 
