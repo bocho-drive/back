@@ -1,7 +1,13 @@
 package com.sparta.bochodrive.domain.OAuth.handler;
 
 import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.security.enums.UserRole;
+import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
+import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
+import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
+import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -26,46 +32,46 @@ import java.util.Iterator;
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
+    private final CustomerUserDetailsService customerUserDetailsService;
+
+//    spring.security.oauth2.client.redirectURL
+    @Value("{$spring.security.oauth2.client.redirectURL}")
+    private String redirectURL;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,  Authentication authResult) throws IOException, ServletException {
 
-        //OAuth2User
-        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
+        // 1. authResult에서 이메일정보를 가져온다.
+        CustomOAuth2User user = (CustomOAuth2User) authResult.getPrincipal();
+        String email=user.getName();
 
-        String username = customUserDetails.getNickname();
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
+        // 2. 이메일 주소로 사용자 정보를 가져온다.
+        CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
+        UserRole userRole = userDetails.getUserRole();
 
-        String token = jwtUtils.createJwt(username, role, 60*60*60L);
+        // 3. 사용자 정보로 토큰 발급
+        String accessToken = jwtUtils.createAccessToken(email, userRole);
+        String refreshToken = jwtUtils.createRefreshToken(email);
 
-        response.addCookie(createCookie("Authorization", token));
-        // 프론트 url
-        response.sendRedirect("http://localhost:3000/");
 
-    }
+        // 4. AT을 res body에 담아준다.
+        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
+                .userId(userDetails.getUserId())
+                .userRole(userRole)
+                .nickname(userDetails.getUser().getNickname())
+                .accessToken(accessToken)
+                .build();
+        //jsonbody 형식으로 보내주기
+        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(), "로그인이 완료되었습니다.",body);
+        CommonFuntion.addJsonBodyServletResponse(response,res);
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        // 5. RT를 쿠키("refreshToken")에 세팅한다.
+        response.addCookie(createCookie("refreshToken", refreshToken));
 
-        //OAuth2User
-        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
+        // 6. 프론트 리다이렉트 URL을 설정해준다.
+        response.sendRedirect(redirectURL);
 
-        String username = customUserDetails.getNickname();
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
-
-        String token = jwtUtils.createJwt(username, role, 60*60*60L);
-
-        response.addCookie(createCookie("Authorization", token));
-        // 프론트 url
-        response.sendRedirect("http://localhost:3000/");
     }
 
 
@@ -73,7 +79,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60);
-        //cookie.setSecure(true);
+        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
