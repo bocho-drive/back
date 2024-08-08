@@ -19,6 +19,9 @@ public class ApiResponse<T> {
         this.statusCode = statusCode;
         this.message = message;
     }
+    public ApiResponse(String message) {
+        this.message = message;
+    }
 
     public static <T> ApiResponse<T> ok(int statusCode, String message, T data) {
         return new ApiResponse<>(statusCode, message, data);
@@ -30,4 +33,8 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> error(int statusCode, String message) {
         return new ApiResponse<>(statusCode, message);
     }
+    public static <T> ApiResponse<T> error(int statusCode, String message,T data) {
+        return new ApiResponse<>(statusCode, message,data);
+    }
+
 }

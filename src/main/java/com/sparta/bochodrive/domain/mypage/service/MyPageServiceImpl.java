@@ -46,49 +46,26 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 게시글 목록 불러오기
     @Override
-    public MypageCommunityListResponseDto getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category) {
-
+    public Page<MypageCommunityListResponseDto> getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category) {
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<Community> communities = communityRepository.findByUserIdAndCategoryAndDeleteYNFalse(userid, category, pageable);
-
-        return new MypageCommunityListResponseDto(category, communities);
+        return communities.map(MypageCommunityListResponseDto::new);
     }
 
     // 댓글 목록 불러오기
     @Override
     public Page<CommentResponseDto> getMyComments(Long userId, int page, int size, String sortBy, boolean isAsc) {
-
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<Comment> comments = commentRepository.findByUserIdAndDeleteYNFalse(userId, pageable);
-        return comments.map(this::convertCommentToDto);
+        return comments.map(CommentResponseDto::new);
     }
-
-
-    private CommentResponseDto convertCommentToDto(Comment comment) {
-        return CommentResponseDto.builder()
-                .id(comment.getId())
-                .userId(comment.getUser().getId())
-                .author(comment.getUser().getNickname())
-                .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
-                .build();
-    }
-
 
     // 챌린지 인증 목록 불러오기
     @Override
     public Page<MyPageChallengeVarifyListResponseDto> getMyChallenges(Long userId, int page, int size, String sortBy, boolean isAsc) {
         Pageable pageable = createPageRequest(page, size, sortBy, isAsc);
         Page<ChallengeVarify> challengeVarifies = challengeVarifyRepository.findByUserId(userId, pageable);
-        return challengeVarifies.map(this::convertChallengeVerifyToDto);
-    }
-
-
-
-    private MyPageChallengeVarifyListResponseDto convertChallengeVerifyToDto(ChallengeVarify challengeVarify) {
-
-        return new MyPageChallengeVarifyListResponseDto(challengeVarify);
-
+        return challengeVarifies.map(MyPageChallengeVarifyListResponseDto::new);
     }
 
 

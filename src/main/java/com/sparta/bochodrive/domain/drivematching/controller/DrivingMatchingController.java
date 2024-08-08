@@ -14,20 +14,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/drive_matchings")
+@RequestMapping()
 @RequiredArgsConstructor
 @Slf4j
 public class DrivingMatchingController {
     private final DriveMatchingService driveMatchingService;
 
-    @PostMapping
-    public ApiResponse<DriveMatchingResponseVo> addDrivingMatching(@RequestBody DriveMatchingRequestDto driveMatchingRequestDto,
-                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
-        DriveMatchingResponseVo result = driveMatchingService.addDriveMatching(driveMatchingRequestDto, userDetails.getUser());
-        return ApiResponse.ok(HttpStatus.CREATED.value(), "매칭글 등록에 성공하셨습니다.", result);
-    }
-
-    @GetMapping
+    @GetMapping("/drive_matchings")
     public ApiResponse<Page<DriveMatchingResponseVo>> getAllDriveMatching(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                           @RequestParam(value = "size", defaultValue = "10") int size,
                                                                           @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
@@ -37,14 +30,21 @@ public class DrivingMatchingController {
         return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.", driveMatchingList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/drive_matchings/{id}")
     public ApiResponse<DriveMatchingDetailResponseDto> getDriveMatching(@PathVariable("id") Long id) {
         DriveMatchingDetailResponseDto driveMatching = driveMatchingService.getDriveMatching(id);
 
         return ApiResponse.ok(HttpStatus.OK.value(), "조회에 성공하였습니다..", driveMatching);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/api/drive_matchings")
+    public ApiResponse<DriveMatchingResponseVo> addDrivingMatching(@RequestBody DriveMatchingRequestDto driveMatchingRequestDto,
+                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
+        DriveMatchingResponseVo result = driveMatchingService.addDriveMatching(driveMatchingRequestDto, userDetails.getUser());
+        return ApiResponse.ok(HttpStatus.CREATED.value(), "매칭글 등록에 성공하셨습니다.", result);
+    }
+
+    @PutMapping("/api/drive_matchings/{id}")
     public ApiResponse updateDriveMatching(@PathVariable("id") Long id,
                                            @RequestBody DriveMatchingRequestDto driveMatchingRequestDto,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -53,7 +53,7 @@ public class DrivingMatchingController {
         return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/drive_matchings/{id}")
     public ApiResponse deleteDriveMatching(@PathVariable("id") Long id,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         driveMatchingService.deleteDriveMatching(id,  userDetails.getUser());

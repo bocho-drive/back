@@ -11,7 +11,7 @@ public interface MyPageService {
     MyProfileResponseDto getMyProfile(Long id);
 
     // 게시글 목록 불러오기
-    MypageCommunityListResponseDto getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category);
+    Page<MypageCommunityListResponseDto> getMyPosts(Long userid, int page, int size, String sortBy, boolean isAsc, CategoryEnum category);
 
     // 댓글 목록 불러오기
     Page<CommentResponseDto> getMyComments(Long userId, int page, int size, String sortBy, boolean isAsc);

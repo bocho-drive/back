@@ -10,13 +10,13 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @NoArgsConstructor
-public class MypageCommunityListResponseDto {
+public class MypageCommunityListResponseDto extends CommunityListResponseDto {
 
     private CategoryEnum category;
-    private Page<CommunityListResponseDto> communityListResponseDto;
 
-    public MypageCommunityListResponseDto(CategoryEnum category, Page<Community> communities) {
-        this.category = category;
-        this.communityListResponseDto = communities.map(CommunityListResponseDto::new);
+
+    public MypageCommunityListResponseDto(Community communities) {
+        super(communities);
+        this.category = communities.getCategory();
     }
 }

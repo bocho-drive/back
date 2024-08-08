@@ -6,12 +6,16 @@ import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
+import com.sparta.bochodrive.global.entity.ApiResponse;
+import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
-@Slf4j
+@Slf4j(topic = "Authentication Filter")
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -63,18 +67,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 이메일 주소로 사용자 정보를 가져온다.
         CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
 
-        UserRole userRole = userDetails.getUserRole();
-        String accessToken = jwtUtils.createAccessToken(email, userRole);
+        UserRole role = userDetails.getUserRole();
+        String accessToken = jwtUtils.createAccessToken(email, role);
+        String refreshToken = jwtUtils.createRefreshToken(email);
 
-        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
-                .userId(userDetails.getUserId())
-                .userRole(userRole)
-                .nickname(userDetails.getUser().getNickname())
-                .accessToken(accessToken)
-                .build();
+
+        UserModel.UserLoginResDto body=generateNewAccessToken(response,userDetails,accessToken,role);
+        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
 
         // 응답값에 body json 추가
-        CommonFuntion.addJsonBodyServletResponse(response, body);
+        CommonFuntion.addJsonBodyServletResponse(response,res);
+
+        addRefreshTokenToCookie(response, refreshToken);
+
     }
 
 
@@ -82,5 +87,32 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed){
         response.setStatus(401);
+    }
+
+    //토큰을 쿠키에 넣는 메소드
+    public static void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setMaxAge(120);
+        response.addCookie(refreshTokenCookie);
+    }
+
+
+    //accessToken response 생성
+    public static UserModel.UserLoginResDto generateNewAccessToken(HttpServletResponse response,
+                                              CustomUserDetails userDetails,
+                                              String accessToken, UserRole role) throws IOException {
+
+        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
+                .userId(userDetails.getUserId()) // username을 사용하여 userId 가져오기
+                .userRole(role)
+                .nickname(userDetails.getUser().getNickname()) // username을 사용하여 nickname 가져오기
+                .accessToken(accessToken) // newAccessToken으로 변경
+                .build();
+        return body;
+
+
     }
 }
