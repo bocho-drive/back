@@ -23,6 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -37,16 +38,16 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customerUserDetailsService;
 
-//    spring.security.oauth2.client.redirectURL
-    @Value("{$spring.security.oauth2.client.redirectURL}")
+    //    spring.security.oauth2.client.redirectURL
+    @Value("${spring.security.oauth2.client.redirectURL}")
     private String redirectURL;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,  Authentication authResult) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authResult) throws IOException, ServletException {
 
         // 1. authResult에서 이메일정보를 가져온다.
         CustomOAuth2User user = (CustomOAuth2User) authResult.getPrincipal();
-        String email=user.getName();
+        String email = user.getName();
 
 
         // 2. 이메일 주소로 사용자 정보를 가져온다.
@@ -66,15 +67,21 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                 .accessToken(accessToken)
                 .build();
         //jsonbody 형식으로 보내주기
-        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(), "로그인이 완료되었습니다.",body);
-        CommonFuntion.addJsonBodyServletResponse(response,res);
+        ApiResponse<UserModel.UserLoginResDto> res = ApiResponse.ok(HttpStatus.OK.value(), "로그인이 완료되었습니다.", body);
+        CommonFuntion.addJsonBodyServletResponse(response, res);
 
         // 5. RT를 쿠키("refreshToken")에 세팅한다.
         LoginFilter.addRefreshTokenToCookie(response, refreshToken);
 
         // 6. 프론트 리다이렉트 URL을 설정해준다.
-        response.sendRedirect(redirectURL);
+        response.sendRedirect(getRedirectURL(redirectURL,accessToken));
 
+    }
+
+    private String getRedirectURL(String targetUrl,String token) {
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("access_token",token)
+                .build().toUriString();
     }
 
 
