@@ -22,8 +22,4 @@ public class CommunityRequestDto {
     private String content;
     private CategoryEnum category;
     private List<MultipartFile> image;
-
-
-
-
 }
