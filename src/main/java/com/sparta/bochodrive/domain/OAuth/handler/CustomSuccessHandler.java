@@ -2,6 +2,7 @@ package com.sparta.bochodrive.domain.OAuth.handler;
 
 import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
+import com.sparta.bochodrive.domain.security.filter.LoginFilter;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
@@ -15,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
