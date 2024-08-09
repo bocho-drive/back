@@ -33,7 +33,7 @@ public class JwtUtils {
 
 //    // 토큰 만료시간
     private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60; // 60분
-    private static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
+    public static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
 
 //    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
 //    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분

@@ -31,6 +31,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private static final int COOKIE_EXPIRED_TIME = (int) (JwtUtils.REFRESH_TOKEN_TIME / 1000);
 
     public LoginFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtil, CustomerUserDetailsService customerUserDetailsService) {
         this.authenticationManager = authenticationManager;
@@ -95,7 +96,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setMaxAge(120);
+        refreshTokenCookie.setMaxAge(COOKIE_EXPIRED_TIME);
         response.addCookie(refreshTokenCookie);
     }
 
