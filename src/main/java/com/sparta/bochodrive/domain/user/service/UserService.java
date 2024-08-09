@@ -49,6 +49,13 @@ public class UserService {
         return result;
     }
 
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
+        );
+    }
+
+
     /** 로그인 */
 //    public UserModel.UserLoginResDto login(UserModel.UserLoginReqDto userLoginDto) {
 //        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(

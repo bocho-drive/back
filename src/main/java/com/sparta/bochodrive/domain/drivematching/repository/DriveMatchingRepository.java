@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface DriveMatchingRepository extends JpaRepository<DriveMatching, Long> {
 
     Page<DriveMatching> findAllByOrderByCreatedAt(Pageable pageable);
+
+    Page<DriveMatching> findAllByUserId(Long userId, Pageable pageable);
 }
