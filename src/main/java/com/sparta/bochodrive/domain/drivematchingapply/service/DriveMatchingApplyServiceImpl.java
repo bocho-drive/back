@@ -58,16 +58,16 @@ public class DriveMatchingApplyServiceImpl implements DriveMatchingApplyService{
 
     @Override
     public boolean validPermission(Long id, User user) {
-        DriveMatchingApply driveMatching = getDriveMatching(id);
+        DriveMatchingApply driveMatching = getDriveMatchingByMatchingId(id);
         return driveMatching.getUser().getId().equals(user.getId());
     }
 
     @Override
-    public DriveMatchingApply getDriveMatching(Long id) {
+    public DriveMatchingApply getDriveMatchingByMatchingId(Long id) {
         return driveMatchingApplyRepository.findByDriveMatchingId(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
     }
 
-    public DriveMatchingApply getDriveMatchingApply(Long id) {
+    public DriveMatchingApply getDriveMatchingApplyById(Long id) {
         return driveMatchingApplyRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHATROOM_NOT_FOUND));
     }
 

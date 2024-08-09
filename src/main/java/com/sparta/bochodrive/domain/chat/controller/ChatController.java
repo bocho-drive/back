@@ -1,6 +1,6 @@
 package com.sparta.bochodrive.domain.chat.controller;
 
-import com.sparta.bochodrive.domain.chat.dto.ChatResponse;
+import com.sparta.bochodrive.domain.chat.dto.ChatResponseDto;
 import com.sparta.bochodrive.domain.chat.service.ChatService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
@@ -19,12 +21,12 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping("/{matchingApplyId}")
-    public ApiResponse getMyChatRoom(@PathVariable("matchingApplyId") Long matchingApplyId,
-                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ApiResponse.ok(HttpStatus.OK.value(), "채팅방 리스트", chatService.getChattingList(matchingApplyId, userDetails)
-                .stream()
-                .map(ChatResponse::from)
-                .toList());
+    public ApiResponse<List<ChatResponseDto>> getMyChatRoom(@PathVariable("matchingApplyId") Long matchingApplyId,
+                                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<ChatResponseDto> list = chatService.getChattingList(matchingApplyId, userDetails)
+                                             .stream().map(ChatResponseDto::new).toList();
+
+        return ApiResponse.ok(HttpStatus.OK.value(), "채팅방 리스트", list);
     }
 
     // 채팅방에 들어갈 수 있는 url 생성해주는 API
