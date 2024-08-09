@@ -32,11 +32,11 @@ public class JwtUtils {
     public static final String BEARER_PREFIX = "Bearer ";
 
 //    // 토큰 만료시간
-//    private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
-//    private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L; // 30일
+    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60; // 60분
+    private static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
 
-    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
-    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분
+//    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
+//    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분
 
 
     @Value("${spring.jwt.secret}")
