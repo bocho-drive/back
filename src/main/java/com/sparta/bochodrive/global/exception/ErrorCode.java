@@ -25,7 +25,10 @@ public enum ErrorCode {
     EXPIRED_ACCESSTOKEN(401,"accessToken이 재발급되었습니다."),
     EXPIRED_REFRESHTOKEN(401,"쿠키가 만료되었습니다. 다시 로그인하세요."),
     UNSUPPORTED_JWT(401,"Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
-    EMPTY_JWT(401,"JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+    EMPTY_JWT(401,"JWT claims is empty, 잘못된 JWT 토큰 입니다."),
+    CHATROOM_NOT_FOUND(404, "존재하지 않는 채팅방입니다."),
+    CHAT_NOT_AUTH(404, "사용자의 채팅방을 찾을 수 없습니다.");
+
 
 
     private final int status;

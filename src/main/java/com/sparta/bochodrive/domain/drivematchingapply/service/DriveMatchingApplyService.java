@@ -17,4 +17,5 @@ public interface DriveMatchingApplyService {
     void deleteDriveMatchingApply(Long id, DriveMatchingApplyRequestDto driveMatchingApplyRequestDto);
     boolean validPermission(Long id, User user);
     DriveMatchingApply getDriveMatching(Long id);
+    DriveMatchingApply getDriveMatchingApply(Long id);
 }

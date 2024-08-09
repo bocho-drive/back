@@ -14,16 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/chat/")
+@RequestMapping("/api/chat")
 public class ChatController {
     private final ChatService chatService;
 
-    @GetMapping("{roomId}")
-    public ApiResponse getMyChatRoom(@PathVariable("roomId") Long roomId,
+    @GetMapping("/{matchingApplyId}")
+    public ApiResponse getMyChatRoom(@PathVariable("matchingApplyId") Long matchingApplyId,
                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ApiResponse.ok(HttpStatus.OK.value(), "채팅방 리스트", chatService.getChattingList(roomId, userDetails)
+        return ApiResponse.ok(HttpStatus.OK.value(), "채팅방 리스트", chatService.getChattingList(matchingApplyId, userDetails)
                 .stream()
                 .map(ChatResponse::from)
                 .toList());
     }
+
+    // 채팅방에 들어갈 수 있는 url 생성해주는 API
+    @GetMapping("/approval/{matchingApplyId}")
+    public ApiResponse<String> getAccessKey(
+            @PathVariable("matchingApplyId") Long matchingApplyId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ApiResponse.ok(HttpStatus.OK.value(), "채팅접속키 발급", chatService.getAccessKey(matchingApplyId, userDetails.getUserId()));
+    }
+
 }

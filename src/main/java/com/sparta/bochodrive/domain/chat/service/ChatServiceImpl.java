@@ -5,8 +5,11 @@ import com.sparta.bochodrive.domain.chat.repository.ChatRepository;
 import com.sparta.bochodrive.domain.drivematchingapply.entity.DriveMatchingApply;
 import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
+import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;
+import com.sparta.bochodrive.global.exception.ErrorCode;
+import com.sparta.bochodrive.global.exception.NotFoundException;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ public class ChatServiceImpl implements ChatService {
     private final CommonFuntion commonFuntion;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
     /**
      * 특정 방에 채팅 메시지를 전송합니다.
@@ -56,26 +60,30 @@ public class ChatServiceImpl implements ChatService {
         log.info("방 {}에 메시지를 전송했습니다: {}", roomId, message);
     }
 
-    /**
-     * 채팅 방 ID로 채팅 방을 찾습니다.
-     *
-     * @param roomId 채팅 방 ID
-     * @return 주어진 방 ID에 해당하는 DriveMatchingApply 엔티티
-     * @throws IllegalArgumentException 방을 찾을 수 없는 경우
-     */
     @Override
     @Transactional(readOnly = true)
-    public DriveMatchingApply findRoomById(Long roomId) {
-        return driveMatchingApplyService.getDriveMatching(roomId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Chat> getChattingList(Long roomId, CustomUserDetails userDetails) {
+    public List<Chat> getChattingList(Long matchingApplyId, CustomUserDetails userDetails) {
         //User user = userDetails.getUser();
-        User user = userRepository.findById(11L).get();
-        //driveMatchingApplyService.validPermission(roomId, user);
-        return chatRepository.findByDriveMatchingApplyOrderByCreatedAt(roomId);
+//        User user = userRepository.findById(11L).get();
+        //driveMatchingApplyService.validPermission(matchingApplyId, user);
+        return chatRepository.findByDriveMatchingApplyOrderByCreatedAt(matchingApplyId);
     }
 
+    @Override
+    public String getAccessKey(Long matchingApplyId, Long userId) {
+        // 매칭신청내역 검증
+        DriveMatchingApply driveMatchingApply = driveMatchingApplyService.getDriveMatchingApply(matchingApplyId);
+
+        boolean isAble = false;
+
+        // 해당 매칭의 사용자 검증
+        if(!driveMatchingApply.getDriveMatching().getUser().getId().equals(userId)) isAble = true;
+        // 해당 매칭신청의 사용자 검증
+        if(!driveMatchingApply.getUser().getId().equals(userId)) isAble = true;
+
+        if(!isAble) throw new NotFoundException(ErrorCode.CHAT_NOT_AUTH);
+
+        // 접근키 생성
+        return jwtUtils.createWebSocketToken(driveMatchingApply.getId(), userId);
+    }
 }
