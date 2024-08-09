@@ -9,10 +9,12 @@ import lombok.Getter;
 public class MyPageChallengeVarifyListResponseDto extends CommunityListResponseDto {
 
     private final Long challengeId;
+    private final Long communityId;
 
     public MyPageChallengeVarifyListResponseDto(ChallengeVarify challengeVarify) {
         super(challengeVarify);
         this.challengeId = challengeVarify.getChallenge().getId();
+        this.communityId = challengeVarify.getCommunity().getId();
     }
 }
 
