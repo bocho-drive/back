@@ -76,4 +76,9 @@ public class User extends TimeStamped {
                 .userRole(this.userRole)
                 .build();
     }
+
+    public User update(String name) {
+        this.nickname=name;
+        return this;
+    }
 }

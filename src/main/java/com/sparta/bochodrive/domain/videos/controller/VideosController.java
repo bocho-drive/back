@@ -14,33 +14,33 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/videos")
+@RequestMapping()
 @RequiredArgsConstructor
 @Slf4j
 public class VideosController {
     private final VideosService videosService;
 
-    @PostMapping
+    @PostMapping("/api/videos")
     public ApiResponse<VideosResponseDto> addVideos(@RequestBody VideosRequestDto videosRequestDto,
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         VideosResponseDto videosResponseDto = videosService.addVideos(videosRequestDto, customUserDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "연수관련 영상 등록에 성공하였습니다.", videosResponseDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/videos/{id}")
     public ApiResponse<?> deleteVideos(@PathVariable("id") Long videosId,
                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
         videosService.deleteVideos(videosId, userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/videos/{id}")
     public ApiResponse<VideoResDto> getVideos(@PathVariable("id") Long videosId) {
         VideoResDto videos = videosService.getVideos(videosId);
         return ApiResponse.ok(HttpStatus.OK.value(), "영상 조회에 성공하였습니다.", videos);
     }
 
-    @GetMapping
+    @GetMapping("/videos")
     public ApiResponse<Page<VideosResponseDto>> getAllVideos(@RequestParam(value = "page", defaultValue = "0") int page,
                                                              @RequestParam(value = "size", defaultValue = "10") int size,
                                                              @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,

@@ -2,6 +2,7 @@ package com.sparta.bochodrive.domain.comment.dto;
 
 
 import com.sparta.bochodrive.domain.comment.entity.Comment;
+import com.sparta.bochodrive.domain.community.entity.CategoryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +21,17 @@ public class CommentResponseDto {
     private String content;
     private LocalDateTime createdAt;
 
+    private Long communityId;
+    private CategoryEnum category;
+
     public CommentResponseDto(Comment savedComment) {
         this.id = savedComment.getId();
         this.userId = savedComment.getUser().getId();
         this.author=savedComment.getUser().getNickname();
         this.content = savedComment.getContent();
         this.createdAt = savedComment.getCreatedAt();
+
+        this.communityId = savedComment.getCommunity().getId();
+        this.category = savedComment.getCommunity().getCategory();
     }
 }
