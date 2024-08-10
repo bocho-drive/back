@@ -14,6 +14,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
             "FROM Chat c " +
             "JOIN FETCH c.user u " +
             "WHERE c.driveMatchingApply.id = :driveMatchingApplyId " +
-            "ORDER BY c.createdAt ASC")
+            "ORDER BY c.createdAt DESC")
     List<Chat> findByDriveMatchingApplyOrderByCreatedAt(@Param("driveMatchingApplyId") Long driveMatchingApplyId);
 }

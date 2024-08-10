@@ -26,7 +26,7 @@ public class ChatController {
         List<ChatResponseDto> list = chatService.getChattingList(matchingApplyId, userDetails)
                                              .stream().map(ChatResponseDto::new).toList();
 
-        return ApiResponse.ok(HttpStatus.OK.value(), "채팅방 리스트", list);
+        return ApiResponse.ok(HttpStatus.OK.value(), "이전 채팅 목록 조회", list);
     }
 
     // 채팅방에 들어갈 수 있는 url 생성해주는 API
