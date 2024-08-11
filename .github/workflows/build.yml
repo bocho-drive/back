@@ -2,7 +2,7 @@ name: Bocho-community
 
 on:
   push:
-    branches: ["feature/docker-ecr"]
+    branches: ["develop"]
   pull_request:
     branches: ["develop"]
 
