@@ -19,5 +19,6 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
     Page<Community> findByUserIdAndDeleteYNFalse(Long userId, Pageable pageable);
 
     Page<Community> findByUserIdAndCategoryAndDeleteYNFalse(Long userId, CategoryEnum category, Pageable pageable);
+    Page<Community> findByUserIdAndCategoryInAndDeleteYNFalse(Long userId, CategoryEnum[] categoryEnums, Pageable pageable);
 
 }

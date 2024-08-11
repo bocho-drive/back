@@ -1,7 +1,6 @@
 package com.sparta.bochodrive.domain.security.utils;
 
 import com.sparta.bochodrive.domain.security.enums.UserRole;
-import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.function.CommonFuntion;
@@ -32,11 +31,11 @@ public class JwtUtils {
     public static final String BEARER_PREFIX = "Bearer ";
 
 //    // 토큰 만료시간
-//    private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L; // 60분
-//    private static final long REFRESH_TOKEN_TIME = 30 * 24 * 60 * 60 * 1000L; // 30일
+    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60; // 60분
+    public static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
 
-    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
-    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분
+//    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
+//    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분
 
 
     @Value("${spring.jwt.secret}")
@@ -101,7 +100,17 @@ public class JwtUtils {
                 .signWith(key, signatureAlgorithm)
                 .compact();
         return token;
+    }
 
+    public String createWebSocketToken(Long applyId, Long userId) {
+        String token = Jwts.builder()
+                .claim("applyId", applyId)
+                .claim("userId", userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_TIME))
+                .signWith(key, signatureAlgorithm)
+                .compact();
+        return token;
     }
 
 

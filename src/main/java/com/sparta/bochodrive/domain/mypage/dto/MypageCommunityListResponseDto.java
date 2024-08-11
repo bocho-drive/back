@@ -14,7 +14,6 @@ public class MypageCommunityListResponseDto extends CommunityListResponseDto {
 
     private CategoryEnum category;
 
-
     public MypageCommunityListResponseDto(Community communities) {
         super(communities);
         this.category = communities.getCategory();
