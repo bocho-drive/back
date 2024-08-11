@@ -40,10 +40,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker 이미지 생성
-        run: docker build -t bevvy/bochodrive ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
+        run: docker build -t ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
 
       - name : ECR에 도커 이미지 push
-        run : docker push bevvy/bochodrive
+        run : docker push ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
 
       - name: connect to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -55,8 +55,8 @@ jobs:
           script: |
             docker stop bochodrive || true
             docker rm bochodrive || true
-            docker pull bevvy/bochodrive
-            docker run -d --name bochodrive -p 3000:3000 bevvy/bochodrive
+            docker pull ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
+            docker run -d --name bochodrive -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
             
             
 
