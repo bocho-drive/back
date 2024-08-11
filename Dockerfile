@@ -8,7 +8,7 @@ FROM openjdk:17
 COPY build/libs/*.jar project.jar
 
 # 4. Expose the port the app runs on
-EXPOSE 8080
+EXPOSE 3000
 
 # 5. Run the jar file
 ENTRYPOINT ["java", "-jar", "project.jar"]

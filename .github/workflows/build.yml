@@ -56,5 +56,5 @@ jobs:
             mv /home/ec2-user/back/tobe/project.jar /home/ec2-user/back/current/project.jar
             cd /home/ec2-user/back/current
             sudo fuser -k -n tcp 3000 || true
-            nohup java -jar project.jar > ./output.log 2>&1 & 
+            nohup java -jar project.jar > ./output.log 2>&1 &
             rm -rf /home/ec2-user/back/tobe
