@@ -40,13 +40,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker 이미지 생성
-        run: docker build -t bocho-drive .
+        run: docker build -t bocho-ecr .
 
       - name: Docker 이미지에 Tag 붙이기
-        run: docker tag bocho-drive ${{ steps.login-ecr.outputs.registry }}/bocho-drive:latest
+        run: docker tag bocho-ecr ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
       - name : ECR에 도커 이미지 push
-        run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-drive:latest
+        run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
       - name: connect to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -56,7 +56,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            docker stop bocho-drive || true
-            docker rm bocho-drive || true
-            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-drive:latest
-            docker run -d --name bochodrive -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-drive:latest
+            docker stop bocho-ecr || true
+            docker rm bocho-ecr || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
