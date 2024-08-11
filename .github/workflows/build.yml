@@ -13,35 +13,40 @@ jobs:
       - name: 깃헙 레포지토리에 올린 파일 불러오기
         uses: actions/checkout@v4
 
-      - name: sudo 권한 주기
-        run: sudo -s
-
-      - name: Install JAVA
+      - name : JDK 17버전 설치
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: gradlew 실행 권한 주기
-        run: chmod +x gradlew
-
       - name: application.properties 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
+
+      - name: gradlew 실행 권한 주기
+        run: chmod +x gradlew
 
       - name: 테스트 및 빌드
         run: ./gradlew clean build
 
-      - name: 빌드된 파일 이름 변경
-        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
-
-      - name: transfer jar file using scp
-        uses: appleboy/scp-action@v0.1.7
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host : ${{ secrets.EC2_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: project.jar
-          target: /home/ec2-user/back/tobe
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to ECR
+        id : login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Docker 이미지 생성
+        run: docker build -t bochodrive .
+
+      - name: Docker 이미지에 Tag 붙이기
+        run: docker tag bochodrive ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
+
+      - name : ECR에 도커 이미지 push
+        run : docker push ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
 
       - name: connect to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -51,10 +56,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf /home/ec2-user/back/current
-            mkdir /home/ec2-user/back/current
-            mv /home/ec2-user/back/tobe/project.jar /home/ec2-user/back/current/project.jar
-            cd /home/ec2-user/back/current
-            sudo fuser -k -n tcp 3000 || true
-            nohup java -jar project.jar > ./output.log 2>&1 &
-            rm -rf /home/ec2-user/back/tobe
+            docker stop bochodrive || true
+            docker rm bochodrive || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
+            docker run -d --name bochodrive -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bochodrive:latest
