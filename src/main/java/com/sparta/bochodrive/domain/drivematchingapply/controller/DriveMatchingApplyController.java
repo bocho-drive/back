@@ -5,6 +5,7 @@ import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyRes
 import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,15 +35,18 @@ public class DriveMatchingApplyController {
     }
 
     @PostMapping("/{id}")
-    public ApiResponse addDrivingMatchingApply(@PathVariable("id") Long id,
-                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
-        driveMatchingApplyService.addDriveMatchingApply(id, DriveMatchingApplyRequestDto.builder().userId(userDetails.getUserId()).build());
+    public ApiResponse<Null> addDrivingMatchingApply(@PathVariable("id") Long id,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+        DriveMatchingApplyRequestDto driveMatchingApplyRequestDto = DriveMatchingApplyRequestDto.builder()
+                .driveMatchingId(id)
+                .userId(userDetails.getUserId()).build();
+        driveMatchingApplyService.addDriveMatchingApply(driveMatchingApplyRequestDto);
         return ApiResponse.ok(HttpStatus.OK.value(), "지원에 성공하였습니다.");
     }
     @DeleteMapping("/{id}")
-    public ApiResponse deleteDrivingMatchingApply(@PathVariable("id") Long id,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
-        driveMatchingApplyService.deleteDriveMatchingApply(id, DriveMatchingApplyRequestDto.builder().userId(userDetails.getUserId()).build());
+    public ApiResponse<Null> deleteDrivingMatchingApply(@PathVariable("id") Long id,
+                                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        driveMatchingApplyService.deleteDriveMatchingApply(id);
         return ApiResponse.ok(HttpStatus.OK.value(), "지원삭제에 성공하였습니다.");
     }
 }

@@ -21,11 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatServiceImpl implements ChatService {
-    private final DriveMatchingApplyService driveMatchingApplyService;
 
-    
+    private final DriveMatchingApplyService driveMatchingApplyService;
     private final JwtUtils jwtUtils;
-    
     private final ChatRepository chatRepository;
     
 
