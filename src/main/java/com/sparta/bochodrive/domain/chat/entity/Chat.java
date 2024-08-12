@@ -24,7 +24,7 @@ public class Chat extends TimeStamped {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drive_matching_id")
+    @JoinColumn(name = "drive_matching_apply_id")
     private DriveMatchingApply driveMatchingApply;
 
     private String message;
