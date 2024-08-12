@@ -7,7 +7,6 @@ import com.sparta.bochodrive.domain.drivematching.entity.DriveMatching;
 import com.sparta.bochodrive.domain.drivematching.entity.Status;
 import com.sparta.bochodrive.domain.drivematching.entity.Type;
 import com.sparta.bochodrive.domain.drivematching.repository.DriveMatchingRepository;
-import com.sparta.bochodrive.domain.teacher.repository.TeachersRepository;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.exception.NotFoundException;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DriveMatchingServiceImpl implements DriveMatchingService{
 
     private final DriveMatchingRepository driveMatchingRepository;
-    private final TeachersRepository teachersRepository;
 
 
     @Override
@@ -56,7 +54,7 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<DriveMatching> driveMatchingList = driveMatchingRepository.findAllByOrderByCreatedAt(pageable);
 
-        return driveMatchingList.map(driveMatching -> new DriveMatchingResponseVo(driveMatching));
+        return driveMatchingList.map(DriveMatchingResponseVo::new);
     }
 
     @Override
@@ -79,14 +77,16 @@ public class DriveMatchingServiceImpl implements DriveMatchingService{
     @Override
     @Transactional
     public void updateDriveMatching(Long id, DriveMatchingRequestDto driveMatchingRequestDto, User user) {
-        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         driveMatching.update(driveMatchingRequestDto);
     }
 
     @Override
     @Transactional
     public void deleteDriveMatching(Long id, User user) {
-        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        DriveMatching driveMatching = driveMatchingRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         driveMatching.delete();
         driveMatchingRepository.save(driveMatching);
     }
