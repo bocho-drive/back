@@ -1,6 +1,5 @@
 package com.sparta.bochodrive.domain.challengevarify.service;
 
-
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
 import com.sparta.bochodrive.domain.challenge.repository.ChallengeRepository;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
@@ -28,7 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -60,7 +58,12 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         // ChallengeVarify 객체 생성 후 저장
-        ChallengeVarify challengeVarify = new ChallengeVarify(user, savedCommunity, challenge);
+        ChallengeVarify challengeVarify = ChallengeVarify.builder()
+                .user(user)
+                .community(savedCommunity)
+                .challenge(challenge)
+                .build();
+
         ChallengeVarify challengeVarifySaved = challengeVarifyRepository.save(challengeVarify);
 
         // 이미지 업로드
@@ -91,8 +94,6 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
 
-
-
         community.setViewCount(community.getViewCount()+1);
         communityRepository.save(community);
 
@@ -108,7 +109,6 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         else{
             isAuthor=false;
         }
-
         return new CommunityResponseDto(challengeVarify,isAuthor);
     }
 
@@ -119,7 +119,6 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<ChallengeVarify> challengeVarifyPage = challengeVarifyRepository.findAllByCommunityDeleteYnFalseOrderByCreatedDateDesc(pageable);
         return challengeVarifyPage.map(CommunityListResponseDto::new);
-
     }
 
     @Override
@@ -162,17 +161,12 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
 
-
         if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
         challengeVarify.getCommunity().setDeleteYn(true);
         challengeVarifyRepository.save(challengeVarify);
-
-
     }
-
-
 
     public ChallengeVarify findChallengeVarifyById(Long communityId) {
         return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
