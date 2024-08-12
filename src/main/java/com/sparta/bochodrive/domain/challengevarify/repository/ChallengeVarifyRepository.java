@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ChallengeVarifyRepository extends JpaRepository<ChallengeVarify, Long> {
     Page<ChallengeVarify> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    @Query("SELECT cv FROM ChallengeVarify cv WHERE cv.community.deleteYN = false ORDER BY cv.createdAt DESC")
+    @Query("SELECT cv FROM ChallengeVarify cv WHERE cv.community.deleteYN = false and cv.user.id = :userId ORDER BY cv.createdAt DESC")
     Page<ChallengeVarify> findByUserId(Long userId, Pageable pageable);
 
 
