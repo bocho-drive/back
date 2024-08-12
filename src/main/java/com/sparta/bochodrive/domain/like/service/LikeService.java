@@ -6,6 +6,5 @@ import com.sparta.bochodrive.domain.user.entity.User;
 public interface LikeService {
     void addLike(LikeRequestDto likeRequestDto, User user);
     void deleteLike(LikeRequestDto likeRequestDto,User user);
-
-
+    Boolean isLike(Long likeId, User user);
 }

@@ -36,6 +36,15 @@ public class LikeController {
 
     }
 
+    @GetMapping()
+    public ApiResponse<Boolean> isLike(
+            @RequestParam(value = "communityId") Long communityId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        Boolean isLike = likeService.isLike(communityId, customUserDetails.getUser());
+        return ApiResponse.ok(HttpStatus.OK.value(), "좋아요 여부 조회에 성공하셨습니다.", isLike);
+    }
+
 
 }
 

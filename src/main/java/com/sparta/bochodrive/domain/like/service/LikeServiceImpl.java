@@ -67,8 +67,14 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
+    @Override
+    public Boolean isLike(Long communityId, User user) {
+        // 사용자가 해당 커뮤니티에 누른 좋아요를 찾음
+        Optional<Like> likeOptional = likeRepository.findByUserAndCommunity(user, findCommunityById(communityId));
 
-
+        // 좋아요가 존재하면 true, 존재하지 않으면 false 반환
+        return likeOptional.isPresent();
+    }
 
     //community 찾는 메소드
     private Community findCommunityById(Long id) {
