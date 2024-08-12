@@ -14,7 +14,6 @@ import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -22,15 +21,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class LikeServiceImpl implements LikeService {
+
     private final LikeRepository likeRepository;
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFuntion;
 
     @Override
     public void addLike(LikeRequestDto likeRequestDto, User user) {
-
-
-
 
         commonFuntion.existsById(user.getId());
 
@@ -39,15 +36,20 @@ public class LikeServiceImpl implements LikeService {
         if(likeRepository.findByUserAndCommunity(user,community).isPresent()){
             throw new DuplicateVoteException(ErrorCode.LIKE_NOT_DUPLICATE);
         }
-        Like like=new Like(user,community);
+
+        Like like = Like.builder()
+                .user(user)
+                .community(community)
+                .build();
+
         likeRepository.save(like);
         community.setLikeCount(community.getLikeCount()+1);
         communityRepository.save(community);
-
     }
 
     @Override
     public void deleteLike(LikeRequestDto likeRequestDto, User user) {
+
         commonFuntion.existsById(user.getId());
 
         // 커뮤니티 ID를 LikeRequestDto에서 가져옴
