@@ -58,6 +58,19 @@ public class DriveMatching extends TimeStamped {
         this.content = requestDto.getContent();
     }
 
+    public void matching(Teachers teacher) {
+        this.teacher = teacher;
+        this.updateStatus(Status.PROGRESS);
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
+
+        if(status.equals(Status.CANCEL)) {
+            this.teacher = null;
+        }
+    }
+
     public void delete() {
         this.deleteYN = true;
     }
