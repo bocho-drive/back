@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.community.controller;
 
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
+import com.sparta.bochodrive.domain.community.dto.CommunityResponseDto;
 import com.sparta.bochodrive.domain.community.service.CommunityService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
@@ -56,6 +57,19 @@ public class CommunityController {
         communityService.deletePost(id,userDetails.getUser());
         return ApiResponse.ok(HttpStatus.OK.value(), "삭제에 성공하였습니다.");
 
+    }
+
+    // 게시글 상세 조회
+    @GetMapping("/{id}")
+    public ApiResponse<CommunityResponseDto> getPost(@PathVariable("id") Long id,
+                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        log.info("게시글 상세 조회 요청: id = {}", id);
+
+
+        CommunityResponseDto post = communityService.getPost(id,customUserDetails);
+        log.info("게시글 상세 조회 성공: {}", post);
+
+        return ApiResponse.ok(HttpStatus.OK.value(), "게시글 조회에 성공하였습니다.", post);
     }
 
 }

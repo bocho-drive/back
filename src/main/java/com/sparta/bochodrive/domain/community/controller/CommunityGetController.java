@@ -33,16 +33,5 @@ public class CommunityGetController {
         return ApiResponse.ok(HttpStatus.OK.value(), "목록 조회에 성공하였습니다.", posts);
     }
 
-    // 게시글 상세 조회
-    @GetMapping("/{id}")
-    public ApiResponse<CommunityResponseDto> getPost(@PathVariable("id") Long id,
-                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        log.info("게시글 상세 조회 요청: id = {}", id);
 
-
-        CommunityResponseDto post = communityService.getPost(id,customUserDetails);
-        log.info("게시글 상세 조회 성공: {}", post);
-
-        return ApiResponse.ok(HttpStatus.OK.value(), "게시글 조회에 성공하였습니다.", post);
-    }
 }
