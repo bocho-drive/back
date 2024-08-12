@@ -3,9 +3,11 @@ package com.sparta.bochodrive.domain.drivematching.controller;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingDetailResponseDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingRequestDto;
 import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingResponseVo;
+import com.sparta.bochodrive.domain.drivematching.dto.DriveMatchingStatusRequestDto;
 import com.sparta.bochodrive.domain.drivematching.service.DriveMatchingService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.global.entity.ApiResponse;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -52,6 +54,16 @@ public class DrivingMatchingController {
 
         return ApiResponse.ok(HttpStatus.OK.value(), "수정에 성공하였습니다.");
     }
+
+    @PutMapping("/api/drive_matchings/status/{id}")
+    public ApiResponse updateDriveMatchingStatus(@PathVariable("id") Long id,
+                                                       @RequestBody DriveMatchingStatusRequestDto dto,
+                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+        driveMatchingService.updateDriveMatchingStatus(id, dto, userDetails.getUser());
+
+        return ApiResponse.ok(HttpStatus.OK.value(), "매칭상태를 업데이트하였습니다.");
+    }
+
 
     @DeleteMapping("/api/drive_matchings/{id}")
     public ApiResponse deleteDriveMatching(@PathVariable("id") Long id,

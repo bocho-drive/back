@@ -16,6 +16,7 @@ public class DriveMatchingDetailResponseDto {
     private Long studentId;
     private String studentName;
     private Long teacherId;
+    private Long teacherUserId;
     private String content;
     private Type type;
     private Status status;

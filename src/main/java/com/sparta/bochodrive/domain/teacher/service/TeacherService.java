@@ -20,4 +20,10 @@ public class TeacherService {
         // 강사 회원가입
         teachersRepository.save(teachers);
     }
+
+    public Teachers findByUserId(long userId) {
+        return teachersRepository.findByUserId(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저는 강사가 아닙니다.")
+        );
+    }
 }
