@@ -31,7 +31,6 @@ public class VoteServiceImpl implements VoteService {
     private final CommonFuntion commonFuntion;
     private final CommunityServiceImpl communityService;
 
-
     @Override
     public void participateVote(VoteRequestDto voteRequestDto, User user) {
 
@@ -45,13 +44,14 @@ public class VoteServiceImpl implements VoteService {
 
         Community community = communityService.findCommunityById(voteRequestDto.getCommunityId());
 
-        Vote vote = new Vote(voteRequestDto, community, user);
+        Vote vote = Vote.builder()
+                .agreeYn(voteRequestDto.isAgreeYn())
+                .community(community)
+                .user(user)
+                .build();
 
         voteRepository.save(vote);
-
     }
-
-
 
     //투표 취소
     @Override
@@ -60,8 +60,6 @@ public class VoteServiceImpl implements VoteService {
         Vote vote=voteRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.VOTE_NOT_FOUND));
         voteRepository.delete(vote);
     }
-
-
 
     @Override
     public List<VoteResponseDto> getVoteInfo(Long communityId) {
