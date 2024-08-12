@@ -3,7 +3,6 @@ package com.sparta.bochodrive.domain.chat.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.bochodrive.domain.chat.dto.ChatResponseDto;
 import com.sparta.bochodrive.domain.chat.service.ChatService;
-import com.sparta.bochodrive.domain.drivematchingapply.service.DriveMatchingApplyService;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.entity.User;
@@ -31,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ChatService chatService;
-    private final DriveMatchingApplyService driveMatchingApplyService;
     private final ObjectMapper objectMapper;
     private final Map<String, Set<WebSocketSession>> chatRooms = new ConcurrentHashMap<>();
     private final JwtUtils jwtUtils;

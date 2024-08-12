@@ -9,9 +9,13 @@ import java.util.Optional;
 
 public interface DriveMatchingApplyRepository extends JpaRepository<DriveMatchingApply, Long> {
 
-    List<DriveMatchingApply> findDriveMatchingApplyByDriveMatchingId(Long driveMatchingId);
+    List<DriveMatchingApply> findDriveMatchingApplyByDriveMatchingIdAndDeleteYnFalse(Long driveMatchingId);
 
     Optional<DriveMatchingApply> findByDriveMatchingId(Long driveMatchingId);
+
+    Optional<DriveMatchingApply> findByDriveMatchingIdAndUserIdAndDeleteYnFalse(Long driveMatchingId, Long userId);
+
+
 
 //    DriveMatchingApply[] findAllByTeachers(DriveMatchingApplyRequestDto driveMatchingApplyRequestDto);
 

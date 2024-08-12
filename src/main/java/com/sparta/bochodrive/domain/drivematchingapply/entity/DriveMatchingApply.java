@@ -6,12 +6,16 @@ import com.sparta.bochodrive.domain.drivematchingapply.dto.DriveMatchingApplyRes
 import com.sparta.bochodrive.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "drive_matching_apply")
+@SQLDelete(sql = "UPDATE drive_matching_apply SET delete_yn = true WHERE id = ?")
 public class DriveMatchingApply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +29,6 @@ public class DriveMatchingApply {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public DriveMatchingApplyResponseDto toDto() {
-        return DriveMatchingApplyResponseDto.builder()
-                .id(this.id)
-                .driveMatchingId(driveMatching.getId())
-                .userId(user.getId())
-                .build();
-    }
+    @Builder.Default
+    private boolean deleteYn = false;
 }

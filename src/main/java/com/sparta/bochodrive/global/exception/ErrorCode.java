@@ -27,7 +27,8 @@ public enum ErrorCode {
     UNSUPPORTED_JWT(401,"Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
     EMPTY_JWT(401,"JWT claims is empty, 잘못된 JWT 토큰 입니다."),
     CHATROOM_NOT_FOUND(404, "존재하지 않는 채팅방입니다."),
-    CHAT_NOT_AUTH(404, "사용자의 채팅방을 찾을 수 없습니다.");
+    CHAT_NOT_AUTH(404, "사용자의 채팅방을 찾을 수 없습니다."),
+    DRIVE_MATCHING_APPLY_ALREADY_EXIST(400, "이미 신청한 드라이브 매칭입니다.");
 
 
 
