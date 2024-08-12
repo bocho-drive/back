@@ -64,7 +64,13 @@ public class CommunityServiceImpl implements CommunityService {
                 try {
                     String url = imageS3Service.upload(image);
                     String filename = imageS3Service.getFileName(url);
-                    ImageS3 imageS3 = new ImageS3(url, filename, savedCommunity);
+
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(savedCommunity)
+                            .build();
+
                     imageS3Repository.save(imageS3);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -116,8 +122,7 @@ public class CommunityServiceImpl implements CommunityService {
             isAuthor=false;
         }
 
-        CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,isAuthor);
-        return communityResponseDto;
+        return new CommunityResponseDto(community,isAuthor);
     }
 
     //게시글 수정
@@ -144,7 +149,13 @@ public class CommunityServiceImpl implements CommunityService {
                 try{
                     String url=imageS3Service.upload(image);
                     String filename=imageS3Service.getFileName(url);
-                    ImageS3 imageS3=new ImageS3(url,filename,community);
+
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(community)
+                            .build();
+
                     imageS3Repository.save(imageS3);
                 }catch (IOException e){
                     e.printStackTrace();
@@ -179,7 +190,7 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 id 찾는 메소드
     public Community findCommunityById(Long id) {
         return communityRepository.findById(id).orElseThrow(
-                ()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
+                ()-> new NotFoundException(ErrorCode.POST_NOT_FOUND));
     }
 
 

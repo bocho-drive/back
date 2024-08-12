@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -50,7 +51,13 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         commonFuntion.existsById(user.getId());
 
         // 게시글 객체 생성 후 저장
-        Community community = new Community(requestDto, user);
+        Community community = Community.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .category(requestDto.getCategory())
+                .user(user)
+                .build();
+
         Community savedCommunity = communityRepository.save(community);
 
         // 챌린지 찾기
@@ -73,7 +80,11 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 try {
                     String url = imageS3Service.upload(file);
                     String filename = imageS3Service.getFileName(url);
-                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarifySaved.getCommunity());
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(challengeVarifySaved.getCommunity())
+                            .build();
                     imageS3Repository.save(imageS3);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -99,12 +110,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
         boolean isAuthor;
         if(customUserDetails!=null){
-            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
-                isAuthor=false;
-            }
-            else{
-                isAuthor=true;
-            }
+            isAuthor= customUserDetails.getUser().getId().equals(community.getUser().getId());
         }
         else{
             isAuthor=false;
@@ -141,7 +147,13 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 try {
                     String url = imageS3Service.upload(file);
                     String filename = imageS3Service.getFileName(url);
-                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarify.getCommunity());
+
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(community)
+                            .build();
+
                     imageS3Repository.save(imageS3);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -169,6 +181,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     }
 
     public ChallengeVarify findChallengeVarifyById(Long communityId) {
-        return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
+        return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(
+                ()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
     }
 }
