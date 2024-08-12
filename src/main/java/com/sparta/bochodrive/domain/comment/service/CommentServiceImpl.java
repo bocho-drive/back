@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommunityRepository communityRepository;
     private final CommonFuntion commonFunction;
 
-
     @Override
     public CommentResponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
@@ -39,7 +37,12 @@ public class CommentServiceImpl implements CommentService {
         Community community = findCommunityById(commentRequestDto.getCommunityId());
         log.info("커뮤니티 검증 완료: {}", community.getId());
 
-        Comment comment = new Comment(commentRequestDto, user, community);
+        Comment comment = Comment.builder()
+                .community(community)
+                .user(user)
+                .content(commentRequestDto.getContent())
+                .deleteYN(false)
+                .build();
         log.info("생성된 댓글 엔티티: {}", comment);
 
         Comment savedComment = commentRepository.save(comment);
@@ -47,8 +50,6 @@ public class CommentServiceImpl implements CommentService {
 
         return new CommentResponseDto(savedComment);
     }
-
-
 
     @Override
     public List<CommentResponseDto> getComments(Long communitiesId) {
@@ -71,8 +72,6 @@ public class CommentServiceImpl implements CommentService {
         }
         comment.update(commentRequestDto);
         commentRepository.save(comment);
-
-
     }
 
     @Override
@@ -84,10 +83,8 @@ public class CommentServiceImpl implements CommentService {
         if(!comment.getUser().getId().equals(user.getId())){
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
-        comment.setDeleteYN(true);
+        comment.updateDeleteYN(true);
         commentRepository.save(comment);
-
-
     }
 
     private Community findCommunityById(Long id) {
@@ -98,8 +95,8 @@ public class CommentServiceImpl implements CommentService {
                     return new IllegalArgumentException("Invalid community ID");
                 });
     }
+
     public Comment findCommentById(Long commentId) {
-        Comment comment=commentRepository.findById(commentId).orElseThrow(()->new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
-        return comment;
+        return commentRepository.findById(commentId).orElseThrow(()->new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
     }
 }
