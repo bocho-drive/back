@@ -1,6 +1,5 @@
 package com.sparta.bochodrive.domain.community.entity;
 
-
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
 import com.sparta.bochodrive.domain.comment.entity.Comment;
 import com.sparta.bochodrive.domain.community.dto.CommunityRequestDto;
@@ -11,16 +10,16 @@ import com.sparta.bochodrive.domain.vote.entity.Vote;
 import com.sparta.bochodrive.global.entity.TimeStamped;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name="communities")
 public class Community extends TimeStamped {
 
@@ -41,18 +40,16 @@ public class Community extends TimeStamped {
     private String content;
 
     @Column(nullable = false)
-    private int viewCount = 0;
+    private int viewCount;
 
     @Column(nullable = false)
-    private int likeCount = 0;
-
-
-    @Column(nullable = false)
-    private boolean verifiedYN = false;
-
+    private int likeCount;
 
     @Column(nullable = false)
-    private boolean deleteYN = false;
+    private boolean verifiedYN;
+
+    @Column(nullable = false)
+    private boolean deleteYN;
 
     //유저
     @ManyToOne(fetch = FetchType.LAZY)
@@ -71,24 +68,25 @@ public class Community extends TimeStamped {
     @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     private List<Vote> votes;
 
-
     //좋아요
     @OneToMany(mappedBy = "community")
     private List<Like> likes;
-
 
     //이미지
     @OneToMany(mappedBy = "community", cascade = CascadeType.PERSIST)
     private List<ImageS3> images;
 
-
-    public Community(CommunityRequestDto communityRequestDto, User user) {
-        this.title = communityRequestDto.getTitle();
-        this.content = communityRequestDto.getContent();
-        this.category = communityRequestDto.getCategory();
+    @Builder
+    public Community(String title, String content, CategoryEnum category, User user) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
         this.user = user;
+        this.viewCount = 0;
+        this.likeCount = 0;
+        this.verifiedYN = false;
+        this.deleteYN = false;
     }
-
 
     public void update(CommunityRequestDto communityRequestDto) {
         this.title = communityRequestDto.getTitle();
@@ -99,5 +97,4 @@ public class Community extends TimeStamped {
     public void setDeleteYn(boolean b) {
         this.deleteYN = b;
     }
-
 }

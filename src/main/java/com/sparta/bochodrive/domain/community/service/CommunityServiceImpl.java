@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -49,7 +48,14 @@ public class CommunityServiceImpl implements CommunityService {
 
         // 이미지 파일 리스트 가져오기
         List<MultipartFile> requestImages = communityRequestDto.getImage();
-        Community community = new Community(communityRequestDto, user);
+
+        Community community = Community.builder()
+                .title((communityRequestDto.getTitle()))
+                .content(communityRequestDto.getContent())
+                .category(communityRequestDto.getCategory())
+                .user(user)
+                .build();
+
         Community savedCommunity = communityRepository.save(community);
 
         // 이미지 파일이 null이거나 비어 있지 않은지 확인
@@ -65,7 +71,6 @@ public class CommunityServiceImpl implements CommunityService {
                 }
             }
         }
-
         return savedCommunity.getId();
     }
 
@@ -93,14 +98,11 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public CommunityResponseDto getPost(Long id, CustomUserDetails customUserDetails) {
 
-
         //존재하는 커뮤니티인지 확인 여부
         Community community=findCommunityById(id);
 
-
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
-
 
         //조회수 +1
         community.setViewCount(community.getViewCount()+1); //조회수 +1
@@ -108,12 +110,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         boolean isAuthor;
         if(customUserDetails!=null){
-            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
-                isAuthor=false;
-            }
-            else{
-                isAuthor=true;
-            }
+            isAuthor= customUserDetails.getUser().getId().equals(community.getUser().getId());
         }
         else{
             isAuthor=false;
@@ -121,8 +118,8 @@ public class CommunityServiceImpl implements CommunityService {
 
         CommunityResponseDto communityResponseDto = new CommunityResponseDto(community,isAuthor);
         return communityResponseDto;
-
     }
+
     //게시글 수정
     @Override
     public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
@@ -152,15 +149,11 @@ public class CommunityServiceImpl implements CommunityService {
                 }catch (IOException e){
                     e.printStackTrace();
                 }
-
             }
-
         }
         community.update(communityRequestDto);//update
         Community save=communityRepository.save(community);
         return save.getId();
-
-
     }
 
     //게시글 삭제
@@ -169,27 +162,24 @@ public class CommunityServiceImpl implements CommunityService {
 
         commonFuntion.existsById(user.getId());
 
-
         Community community=findCommunityById(id);
 
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
 
-
         if(!community.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
+
         //진짜로 글을 삭제하는게 아니므로 -> 이미지도 삭제할 필요가 없음
         community.setDeleteYn(true);
         communityRepository.save(community);
-
     }
-
 
     //게시글 id 찾는 메소드
     public Community findCommunityById(Long id) {
-        Community community=communityRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return community;
+        return communityRepository.findById(id).orElseThrow(
+                ()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
     }
 
 
