@@ -71,6 +71,7 @@
 
 ## Backend 주요 기술
 1. 로그인 : JWT 토큰 방식, spring security
+   
 2. websocket
 3. imageS3 upload
 ## Trouble Shooting🔥
