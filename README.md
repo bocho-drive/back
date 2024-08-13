@@ -4,11 +4,11 @@
 ## 팀원 소개
 <table>
   <tr>
-    <th align="center">FE 팀장</th>
-    <th align="center">FE 팀원</th>
-    <th align="center">BE 부팀장</th>
-    <th align="center">BE 팀원</th>
-    <th align="center">BE 팀원</th>
+    <th align="center">박찬영</th>
+    <th align="center">홍채현</th>
+    <th align="center">조수인</th>
+    <th align="center">김영아</th>
+    <th align="center">전효열</th>
   </tr>
   <tr>
       <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub></td>
