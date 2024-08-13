@@ -59,36 +59,36 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            # Pull the latest Docker image
-            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-
-            # Run the new version in the Green environment (port 3001)
-            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-
-            # Perform health checks on the Green environment
-            # For example, wait and check if it's responding correctly
-            sleep 10
-                    
-            if curl -s http://localhost:3001 | grep "expected_content"; then
-              echo "Green environment is healthy."
-
-              # Update NGINX or load balancer configuration to point to the Green environment
-              # Example for NGINX:
-              sudo sed -i 's/:8080/:8081/' /etc/nginx/nginx.conf
-              sudo systemctl reload nginx
-
-              # Optionally, stop and remove the old Blue environment
-              docker stop bocho-ecr || true
-              docker rm bocho-ecr || true
-
-              # Rename the Green container to take over the Blue container's role (if needed)
-              docker rename bocho-ecr-green bocho-ecr
-            
-            else
-              echo "Green environment failed to start, keeping Blue environment active."
-              docker stop bocho-ecr-green || true
-              docker rm bocho-ecr-green || true
-            fi
+#            # Pull the latest Docker image
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#
+#            # Run the new version in the Green environment (port 3001)
+#            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#
+#            # Perform health checks on the Green environment
+#            # For example, wait and check if it's responding correctly
+#            sleep 10
+#
+#            if curl -s http://localhost:3001 | grep "expected_content"; then
+#              echo "Green environment is healthy."
+#
+#              # Update NGINX or load balancer configuration to point to the Green environment
+#              # Example for NGINX:
+#              sudo sed -i 's/:8080/:8081/' /etc/nginx/nginx.conf
+#              sudo systemctl reload nginx
+#
+#              # Optionally, stop and remove the old Blue environment
+#              docker stop bocho-ecr || true
+#              docker rm bocho-ecr || true
+#
+#              # Rename the Green container to take over the Blue container's role (if needed)
+#              docker rename bocho-ecr-green bocho-ecr
+#
+#            else
+#              echo "Green environment failed to start, keeping Blue environment active."
+#              docker stop bocho-ecr-green || true
+#              docker rm bocho-ecr-green || true
+#            fi
 
 
 
@@ -113,7 +113,7 @@ jobs:
 #            docker rm bocho-ecr-old || true
 
 #########
-#            docker stop bocho-ecr || true
-#            docker rm bocho-ecr || true
-#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-#            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+            docker stop bocho-ecr || true
+            docker rm bocho-ecr || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
