@@ -1,6 +1,6 @@
 ## 🚗보초 운전🚕
 ● 배포 링크 : https://www.bocho.p-e.kr/
-
+● 팀 노션 : https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74
 ### 📆Period
 2024.07.19 ~ 2024.08.15</br></br></br>
 
@@ -28,6 +28,9 @@
     <td align="center">BackEnd</td>
   </tr>
 </table></br></br>
+
+## Service Architecture
+수인님 써주셈요!
 
 ## 🛠️Tools
 #### backend
