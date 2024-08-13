@@ -88,7 +88,7 @@
   <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
 </span>
 <span>
-  <img src="https://img.shields.io/badge/Spring Data Jpa-02303A?style=for-the-badge&logo=Spring Data Jpa&logoColor=white">
+  <img src="https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=Socket.io&logoColor=white">
 </span>
 
 #### Infrastructure
