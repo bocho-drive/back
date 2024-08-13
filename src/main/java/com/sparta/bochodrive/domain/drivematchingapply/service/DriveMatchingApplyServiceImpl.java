@@ -39,10 +39,7 @@ public class DriveMatchingApplyServiceImpl implements DriveMatchingApplyService{
 
     @Override
     public void addDriveMatchingApply(DriveMatchingApplyRequestDto req) {
-        Teachers teachers = teachersRepository.findByUserId(req.getUserId());
-        if(teachers == null) {
-            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
-        }
+        Teachers teachers = teachersRepository.findByUserId(req.getUserId()).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Optional<DriveMatchingApply> byDriveMatchingIdAndUserId = driveMatchingApplyRepository.findByDriveMatchingIdAndUserIdAndDeleteYnFalse(req.getDriveMatchingId(), req.getUserId());
         if(byDriveMatchingIdAndUserId.isPresent()) {
