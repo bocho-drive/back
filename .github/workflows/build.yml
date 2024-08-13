@@ -59,8 +59,33 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-        
-            docker stop bocho-ecr || true
-            docker rm bocho-ecr || true
-            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+            
+              CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "3000")
+            
+              if [ "$CURRENT_PORT" = "3000" ]; then
+                NEW_PORT=3001
+              else
+                NEW_PORT=3000
+              fi
+            
+              echo "New port selected: ${NEW_PORT}"
+              echo "New port selected: ${NEW_PORT}"
+              echo "New port selected: ${NEW_PORT}"
+              echo "New port selected: ${NEW_PORT}"
+              echo "New port selected: ${NEW_PORT}"
+              echo "New port selected: ${NEW_PORT}"
+            
+            
+              if [ "$(docker ps -q -f name=bocho-ecr-${NEW_PORT})" ]; then
+                docker stop bocho-ecr-${NEW_PORT}
+                docker rm bocho-ecr-${NEW_PORT}
+              fi
+            
+              docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+              docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+            
+            
+              docker stop bocho-ecr || true
+              docker rm bocho-ecr || true
+
+              docker rename bocho-ecr-green bocho-ecr
