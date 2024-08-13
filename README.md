@@ -44,8 +44,11 @@
   <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
 </span>
 
-
 #### Infrastructure
 
 #### Dev tools
+<span>
+  <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white
+">
+</span>
 
