@@ -6,8 +6,8 @@
   <tr>
     <th>FE 팀장</th>
     <th>FE 팀원</th>
-    <th>BE 부팀장/th>
-    <th>BE 팀원/th>
+    <th>BE 부팀장</th>
+    <th>BE 팀원</th>
     <th>BE 팀원</th>
   </tr>
   <tr>
