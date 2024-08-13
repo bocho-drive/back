@@ -18,27 +18,29 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 public class ChallengeServiceImpl implements ChallengService {
-    private final ChallengeRepository challengeRepository;
 
+    private final ChallengeRepository challengeRepository;
 
     //챌린지 작성
     @Override
-
     public ChallengeResponseDto addChallenge(ChallengeRequestDto requestDto) {
 
-        Challenge challenge = new Challenge(requestDto);
+        Challenge challenge = Challenge.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .build();
+
         Challenge savedChallenge = challengeRepository.save(challenge);
         return new ChallengeResponseDto(savedChallenge);
     }
+
     //챌린지 목록 조회
     @Override
     public Page<ChallengeResponseDto> getChallengeList(int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        Page<Challenge> challengePage;
-
-        challengePage = challengeRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Challenge> challengePage = challengeRepository.findAllByOrderByCreatedAtDesc(pageable);
         return challengePage.map(ChallengeResponseDto::new);
     }
 
@@ -51,7 +53,6 @@ public class ChallengeServiceImpl implements ChallengService {
 
     //챌린지 수정
     @Override
-
     public void updateChallenge(Long id, ChallengeRequestDto requestDto) {
         Challenge challenge = findChallengeById(id);
         challenge.update(requestDto);
@@ -65,8 +66,6 @@ public class ChallengeServiceImpl implements ChallengService {
         Challenge challenge = findChallengeById(id);
         challengeRepository.delete(challenge);
     }
-
-
 
     public Challenge findChallengeById(Long id) {
         return challengeRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));

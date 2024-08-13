@@ -1,6 +1,5 @@
 package com.sparta.bochodrive.domain.challengevarify.service;
 
-
 import com.sparta.bochodrive.domain.challenge.entity.Challenge;
 import com.sparta.bochodrive.domain.challenge.repository.ChallengeRepository;
 import com.sparta.bochodrive.domain.challengevarify.entity.ChallengeVarify;
@@ -52,7 +51,13 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         commonFuntion.existsById(user.getId());
 
         // 게시글 객체 생성 후 저장
-        Community community = new Community(requestDto, user);
+        Community community = Community.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .category(requestDto.getCategory())
+                .user(user)
+                .build();
+
         Community savedCommunity = communityRepository.save(community);
 
         // 챌린지 찾기
@@ -60,7 +65,12 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
 
         // ChallengeVarify 객체 생성 후 저장
-        ChallengeVarify challengeVarify = new ChallengeVarify(user, savedCommunity, challenge);
+        ChallengeVarify challengeVarify = ChallengeVarify.builder()
+                .user(user)
+                .community(savedCommunity)
+                .challenge(challenge)
+                .build();
+
         ChallengeVarify challengeVarifySaved = challengeVarifyRepository.save(challengeVarify);
 
         // 이미지 업로드
@@ -70,7 +80,11 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 try {
                     String url = imageS3Service.upload(file);
                     String filename = imageS3Service.getFileName(url);
-                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarifySaved.getCommunity());
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(challengeVarifySaved.getCommunity())
+                            .build();
                     imageS3Repository.save(imageS3);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -91,24 +105,16 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
 
-
-
         community.setViewCount(community.getViewCount()+1);
         communityRepository.save(community);
 
         boolean isAuthor;
         if(customUserDetails!=null){
-            if(!customUserDetails.getUser().getId().equals(community.getUser().getId())){
-                isAuthor=false;
-            }
-            else{
-                isAuthor=true;
-            }
+            isAuthor= customUserDetails.getUser().getId().equals(community.getUser().getId());
         }
         else{
             isAuthor=false;
         }
-
         return new CommunityResponseDto(challengeVarify,isAuthor);
     }
 
@@ -119,7 +125,6 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<ChallengeVarify> challengeVarifyPage = challengeVarifyRepository.findAllByCommunityDeleteYnFalseOrderByCreatedDateDesc(pageable);
         return challengeVarifyPage.map(CommunityListResponseDto::new);
-
     }
 
     @Override
@@ -142,7 +147,13 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
                 try {
                     String url = imageS3Service.upload(file);
                     String filename = imageS3Service.getFileName(url);
-                    ImageS3 imageS3 = new ImageS3(url, filename, challengeVarify.getCommunity());
+
+                    ImageS3 imageS3 = ImageS3.builder()
+                            .uploadUrl(url)
+                            .fileName(filename)
+                            .community(community)
+                            .build();
+
                     imageS3Repository.save(imageS3);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -162,19 +173,15 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
 
-
         if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
         }
         challengeVarify.getCommunity().setDeleteYn(true);
         challengeVarifyRepository.save(challengeVarify);
-
-
     }
 
-
-
     public ChallengeVarify findChallengeVarifyById(Long communityId) {
-        return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
+        return challengeVarifyRepository.findByCommunityId(communityId).orElseThrow(
+                ()-> new NotFoundException(ErrorCode.CHALLENGE_NOT_FOUND));
     }
 }

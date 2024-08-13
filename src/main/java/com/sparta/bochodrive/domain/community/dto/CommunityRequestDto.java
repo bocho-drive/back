@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 
@@ -16,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 public class CommunityRequestDto {
-
 
     private String title;
     private String content;
