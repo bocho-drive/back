@@ -6,7 +6,7 @@
 함께라면 첫 운전도 두렵지 않아요! 운전, 같이 즐겨봐요! 🚗💨
 
 ● 배포 링크 : https://www.bocho.p-e.kr/</br>
-● 팀 노션 : https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74
+● 팀 노션 : https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74</br>
 
 
 ### 📆Period
