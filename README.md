@@ -36,6 +36,26 @@
     <td align="center">BackEnd</td>
   </tr>
 </table></br></br>
+       
+#### backend 역할 분담
+<tr>
+ <td>이름</td>
+ <td>역할 분담</td>
+</tr>
+<tr>
+ <td>조수인</td>
+ <td></td>
+</tr>
+<tr>
+ <td>김영아</td>
+ <td></td>
+</tr>
+
+<tr>
+ <td>전효열</td>
+ <td></td>
+</tr>
+
 
 ## Service Architecture
 수인님 써주셈요!
