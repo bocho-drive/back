@@ -70,9 +70,9 @@
 <span>
   <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"> 
 </span>
-#FF9900
+
 <span>
-  <img src="https://img.shields.io/badge/Amazon EC2-007396?style=for-the-badge&logo=Amazon EC2&logoColor=white">
+  <img src="https://img.shields.io/badge/Amazon EC2-#FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white">
 </span>
 
 
