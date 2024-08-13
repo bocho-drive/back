@@ -1,4 +1,4 @@
-package com.sparta.bochodrive.domain.OAuth.userinfo;
+package com.sparta.bochodrive.domain.oauth.userinfo;
 
 public interface OAuth2UserInfo {
 

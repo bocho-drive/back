@@ -1,4 +1,4 @@
-package com.sparta.bochodrive.domain.OAuth.dto;
+package com.sparta.bochodrive.domain.oauth.dto;
 
 import lombok.RequiredArgsConstructor;
 import com.sparta.bochodrive.domain.user.entity.User;

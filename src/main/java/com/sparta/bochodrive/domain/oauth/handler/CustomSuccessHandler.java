@@ -1,6 +1,6 @@
-package com.sparta.bochodrive.domain.OAuth.handler;
+package com.sparta.bochodrive.domain.oauth.handler;
 
-import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.oauth.dto.CustomOAuth2User;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
@@ -9,9 +9,7 @@ import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.function.CommonFuntion;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 
 
 @Slf4j
