@@ -35,8 +35,7 @@
     <td align="center">BackEnd</td>
     <td align="center">BackEnd</td>
   </tr>
-</table></br></br>
-       
+</table></br>
 #### backend 역할 분담
 <table>
  <tr>
