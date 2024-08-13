@@ -1,7 +1,7 @@
 # 🚗 보초 운전 🚕
-## 소개
+### 소개
 
-## 팀원 소개
+### 팀원 소개
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Dolphin-PC"><b>박찬영</b></a><br /></td>
