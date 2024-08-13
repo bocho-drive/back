@@ -87,3 +87,4 @@ jobs:
               docker rm bocho-ecr || true
 
               docker rename bocho-ecr-green bocho-ecr
+
