@@ -38,7 +38,8 @@
 </table></br></br>
        
 #### backend 역할 분담
-<tr>
+<table>
+ <tr>
  <td>이름</td>
  <td>역할 분담</td>
 </tr>
@@ -55,6 +56,8 @@
  <td>전효열</td>
  <td></td>
 </tr>
+</table>
+
 
 
 ## Service Architecture
