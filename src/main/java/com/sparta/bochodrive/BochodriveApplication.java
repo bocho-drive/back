@@ -18,4 +18,5 @@ public class BochodriveApplication {
     void started(){
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
+
 }
