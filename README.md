@@ -1,4 +1,4 @@
-## 🚗보초 운전🚕
+## 🚘보초 운전🚘
 #### 여러분의 든든한 가이드, 보초 운전
  <img src="https://github.com/user-attachments/assets/48f4100d-6bbb-4cf5-9215-a4820a2d4bb1"></br>
 운전, 처음이라 떨리시죠? 걱정 마세요! 보초 운전 커뮤니티가 있습니다. </br>
