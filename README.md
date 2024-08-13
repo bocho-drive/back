@@ -1,8 +1,8 @@
 # 🚗 보초 운전 🚕
-### 소개
+## Info
 
 
-### 팀원 소개
+## Team
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Dolphin-PC"><b>박찬영</b></a><br /></td>
@@ -27,7 +27,8 @@
   </tr>
 </table>
 
-### 기술 스택
+##🛠️Tool
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white">
 <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white">
+
