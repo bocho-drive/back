@@ -19,10 +19,7 @@ public class CommonFuntion {
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
 
-    //인가된 user가 userRepository에 없을 때 사용하는 메소드
-    public void existsById(Long id) {
-        userRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
-    }
+
     public void deleteCommunity(Long id) {
         Community community = communityRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.POST_NOT_FOUND));
         if(community.isDeleteYN()==true){

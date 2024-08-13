@@ -43,7 +43,7 @@ public class VideosServiceImpl implements VideosService {
     @Override
     @Transactional
     public void deleteVideos(Long id, User user) {
-        commonFuntion.existsById(user.getId());
+
         Videos videos = videosRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         if (!videos.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
