@@ -11,11 +11,11 @@
     <td align="center"><a href=""><sub><b>전효열</b></sub></a><br /></td>
   </tr>
   <tr>
-      <td align="center"><img src="width="100px;" alt=""/><br /><sub></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /></td>
-      <td align="center"><img src="" width="100px;" alt=""/><br /></td>
+      <td align="center"><img src="width="150px;" alt=""/><br /><sub></td>
+      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
+      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
+      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
+      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
     </tr>
   <tr>
     <td align="center">FrondEnd/Leader</td>
