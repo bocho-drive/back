@@ -67,12 +67,12 @@ jobs:
                 NEW_PORT=3000
               fi
             
-              echo NEW_PORT
-              echo NEW_PORT
-              echo NEW_PORT
-              echo NEW_PORT
-              echo NEW_PORT
-              echo NEW_PORT
+            echo "New port selected: ${NEW_PORT}"
+            echo "New port selected: ${NEW_PORT}"
+            echo "New port selected: ${NEW_PORT}"
+            echo "New port selected: ${NEW_PORT}"
+            echo "New port selected: ${NEW_PORT}"
+            echo "New port selected: ${NEW_PORT}"
                     
               docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
               docker run -d --name bocho-ecr-${NEW_PORT} -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
@@ -87,3 +87,6 @@ jobs:
                 echo "새 컨테이너가 정상적으로 실행되지 않았습니다." >&2
                 exit 1
               fi
+                                
+                                
+                                
