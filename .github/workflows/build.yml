@@ -64,6 +64,8 @@ jobs:
               CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "3000")
             
               echo "New port selected: 2"
+              CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "error")
+              echo "Current port is: $CURRENT_PORT"
               if [ "$CURRENT_PORT" = "3000" ]; then
                 echo "New port selected: 2-1"
                 NEW_PORT=3001
