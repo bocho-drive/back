@@ -7,10 +7,7 @@
 
 ● 배포 링크 : https://www.bocho.p-e.kr/</br>
 ● 팀 노션 :<a href="https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74"><b>보초운전 노션</b></a> 
-
-</br></br>
-### 📆Period
-2024.07.19 ~ 2024.08.15</br></br></br>
+●📆Period : 2024.07.19 ~ 2024.08.15</br></br></br>
 
 ### 🚜Project Members
 <table>
