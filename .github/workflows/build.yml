@@ -51,54 +51,68 @@ jobs:
       - name : ECR에 도커 이미지 push
         run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
-      - name: Make zip file
-        run: |
-          mkdir deploy
-          cp ./build/libs/*.jar ./deploy/
-          zip -r -qq -j ./spring-build.zip ./deploy
+      - name: connect to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+#            # Pull the latest Docker image
+            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
-      - name: Upload to S3
-        run: |
-          aws s3 cp \
-            --region ap-northeast-2 \
-            ./spring-build.zip s3://bocho-deploy
+            # Run the new version in the Green environment (port 3001)
+            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+
+            # Perform health checks on the Green environment
+            # For example, wait and check if it's responding correctly
+            sleep 10
+            if curl -s http://localhost:3001 | grep "expected_content"; then
+              echo "Green environment is healthy."
+
+              # Update NGINX or load balancer configuration to point to the Green environment
+              # Example for NGINX:
+              sudo sed -i 's/:8080/:8081/' /etc/nginx/nginx.conf
+              sudo systemctl reload nginx
+
+              # Optionally, stop and remove the old Blue environment
+              docker stop bocho-ecr || true
+              docker rm bocho-ecr || true
+
+              # Rename the Green container to take over the Blue container's role (if needed)
+              docker rename bocho-ecr-green bocho-ecr
+            
+            else
+              echo "Green environment failed to start, keeping Blue environment active."
+              docker stop bocho-ecr-green || true
+              docker rm bocho-ecr-green || true
+            fi
 
 
-###
-#      - name: Make zip file
-#        run: zip -r ./<자신이 만들 ZIP 파일 이름>.zip .
-#        shell: bash
-#
-#      # 만들어 놓은 S3에 해당 zip 파일 저장
-#      - name: Upload to S3
-#        run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./<자신이 만든 ZIP 파일 이름>.zip s3://<만들어 놓은 버킷 이름>/<자신이 만든 ZIP 파일 이름>.zip
-#
-#      # AWS CodeDeploy에 배포
-#      - name: Deploy
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        run: |
-#          aws deploy create-deployment \
-#          --application-name <AWS codeDeploy 애플리케이션 이름> \
-#          --deployment-group-name <codeDeploy group 이름> \
-#          --file-exists-behavior OVERWRITE \
-#          --s3-location bucket=<만들어 놓은 버킷 이름>,bundleType=zip,key=<자신이 만든 ZIP 파일 이름>.zip \
-#          --region ${{ secrets.AWS_REGION }}
 
+#########
+##            # 새로운 컨테이너 실행
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#
+#
+#            # 서비스가 정상인지 확인하는 로직을 여기에 추가할 수 있음
+#            # 예를 들어, HTTP 요청을 통해 응답 확인 등...
+#
+#
+#            # 기존 컨테이너(bocho-ecr) 중지
+#            docker stop bocho-ecr || true
+#
+#            # 새 컨테이너의 포트를 3000으로 변경
+#            docker rename bocho-ecr-green bocho-ecr
+#            docker container update --publish 3000:3000 bocho-ecr
+#
+#            # 기존 컨테이너 삭제
+#            docker rm bocho-ecr-old || true
 
-###
-#
-#
-#      - name : 압축
-#        run : tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts
-#
-#      - name: S3에 프로젝트 폴더 업로드하기
-#        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://bocho-deploy/$GITHUB_SHA.tar.gz
-#
-#      - name: Code Deploy를 활용해 EC2에 프로젝트 코드 배포
-#        run: aws deploy create-deployment
-#          --application-name instagram-server
-#          --deployment-config-name CodeDeployDefault.AllAtOnce
-#          --deployment-group-name develop
-#          --s3-location bucket=bocho-deploy,bundleType=tgz,key=$GITHUB_SHA.tar.gz
+#########
+#            docker stop bocho-ecr || true
+#            docker rm bocho-ecr || true
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
