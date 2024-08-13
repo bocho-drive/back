@@ -59,53 +59,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-#              CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "3000")
-#
-#              if [ "$CURRENT_PORT" = "3000" ]; then
-#                NEW_PORT=3001
-#              else
-#                NEW_PORT=3000
-#              fi
-#
-#              docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-#              docker run -d --name bocho-ecr-${NEW_PORT} -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-#
-#              sleep 10
-#              if curl -s http://localhost:${NEW_PORT}/health; then
-#                docker stop bocho-ecr || true
-#                docker rm bocho-ecr || true
-#
-#                docker rename bocho-ecr-${NEW_PORT} bocho-ecr
-#              else
-#                echo "새 컨테이너가 정상적으로 실행되지 않았습니다." >&2
-#                exit 1
-#              fi
-                                
-                                
-                                
-                    
 
-#########
-##            # 새로운 컨테이너 실행
-#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-#            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-#
-#
-#            # 서비스가 정상인지 확인하는 로직을 여기에 추가할 수 있음
-#            # 예를 들어, HTTP 요청을 통해 응답 확인 등...
-#
-#
-#            # 기존 컨테이너(bocho-ecr) 중지
-#            docker stop bocho-ecr || true
-#
-#            # 새 컨테이너의 포트를 3000으로 변경
-#            docker rename bocho-ecr-green bocho-ecr
-#            docker container update --publish 3000:3000 bocho-ecr
-#
-#            # 기존 컨테이너 삭제
-#            docker rm bocho-ecr-old || true
-
-#########
             docker stop bocho-ecr || true
             docker rm bocho-ecr || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
