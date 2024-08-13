@@ -5,10 +5,10 @@
 <table>
   <tr>
     <td align="center"><a href="https://github.com/Dolphin-PC"><b>박찬영</b></a><br /></td>
-    <td align="center"><a href="https://github.com/hyeon9808"><sub><b>홍채현</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/whtndls"><sub><b>조수인</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/young219257"><sub><b>김영아</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/hyoyeolking"><sub><b>전효열</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/hyeon9808"><b>홍채현</b></a><br /></td>
+    <td align="center"><a href="https://github.com/whtndls"><b>조수인</b></a><br /></td>
+    <td align="center"><a href="https://github.com/young219257"><b>김영아</b></a><br /></td>
+    <td align="center"><a href="https://github.com/hyoyeolking"><b>전효열</b></a><br /></td>
   </tr>
   <tr>
       <td align="center"><img src="https://github.com/user-attachments/assets/683f52f8-d8e4-4e9e-ac1f-a5ed7d4b032a" width="150px;" alt=""/><br /><sub></td>
