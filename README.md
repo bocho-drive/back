@@ -4,10 +4,9 @@
 운전, 처음이라 떨리시죠? 걱정 마세요! 보초 운전 커뮤니티가 있습니다. </br>
 여긴 초보 운전자들이 모여, 기초부터 안전한 운전 팁까지 서로 공유하고 성장하는 공간이에요. </br>
 함께라면 첫 운전도 두렵지 않아요! 운전, 같이 즐겨봐요! 🚗💨
-<table>
- <tr><td>배포링크</td><td> https://www.bocho.p-e.kr/</td></tr>
- <tr><td>팀 노션</td><td><a href="https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74"><b>보초운전 노션</b></a></td></tr>
-</table>
+● 배포 링크 :  https://www.bocho.p-e.kr/
+● 팀 노션 :  <a href="https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74"><b>보초운전 노션</b></a>
+
 
 #### 📆Period 
 2024.07.19 ~ 2024.08.15</br></br></br>
