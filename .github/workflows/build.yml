@@ -74,6 +74,7 @@ jobs:
               docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
               docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
               
+              echo "엔지닉스 설정"
               sleep 10
               nginx -s reload
               
