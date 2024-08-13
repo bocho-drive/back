@@ -8,7 +8,7 @@
       <td align="center"><a href="https://github.com/Dolphin-PC"><img src="" width="150px;" alt=""/><br /><sub><b>FE 팀장 : 박찬영 </b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/hyeon9808"><img src="" width="150px;" alt=""/><br /><sub><b>FE 팀원 : 홍채현 </b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/whtndls"><img src="" width="150px;" alt=""/><br /><sub><b>BE 부팀장 : 조수인 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/young219257"><img src="https://github.com/user-attachments/assets/1866a3b5-f0cd-424b-be88-ab6c2ff3e0c9" width="150px;" alt=""/><br /><sub><b>BE 팀원 : 김영아 </b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/young219257"><img src="https://github.com/user-attachments/assets/1866a3b5-f0cd-424b-be88-ab6c2ff3e0c9" width="200px;" alt=""/><br /><sub><b>BE 팀원 : 김영아 </b></sub></a><br /></td>
       <td align="center"><a href="https://github.com/hyoyeolking"><img src="" width="150px;" alt=""/><br /><sub><b>BE 팀원 : 전효열 </b></sub></a><br /></td>
     </tr>  </tbody>
 </table>
