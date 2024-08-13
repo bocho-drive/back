@@ -38,7 +38,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.jwtUtils = jwtUtil;
         this.customerUserDetailsService = customerUserDetailsService;
 
-        this.setFilterProcessesUrl("/signin");
+        this.setFilterProcessesUrl("/signin"); //filter로 들어올 url 지정
     }
 
     @Override
@@ -65,21 +65,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String email = ((CustomUserDetails) authResult.getPrincipal()).getUsername();
 
-        // 이메일 주소로 사용자 정보를 가져온다.
+        // 1. 이메일 주소로 사용자 정보를 가져온다.
         CustomUserDetails userDetails = customerUserDetailsService.loadUserByUsername(email);
-
         UserRole role = userDetails.getUserRole();
+
+        //2. accessToken, refreshToken 생성
         String accessToken = jwtUtils.createAccessToken(email, role);
         String refreshToken = jwtUtils.createRefreshToken(email);
 
+        //3. RT를 cookie에 담아준다.
+        addRefreshTokenToCookie(response, refreshToken);
 
-        UserModel.UserLoginResDto body=generateNewAccessToken(response,userDetails,accessToken,role);
+        //4. AT를 body에 담아준다.
+        UserModel.UserLoginResDto body=generateNewAccessToken(userDetails,accessToken,role);
         ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
 
-        // 응답값에 body json 추가
+        //5. 응답값에 body json 추가
         CommonFuntion.addJsonBodyServletResponse(response,res);
 
-        addRefreshTokenToCookie(response, refreshToken);
+
 
     }
 
@@ -101,8 +105,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
 
-    //accessToken response 생성
-    public static UserModel.UserLoginResDto generateNewAccessToken(HttpServletResponse response,
+    //accessToken를 resDto에 담아주는 메소드
+    public static UserModel.UserLoginResDto generateNewAccessToken(
                                               CustomUserDetails userDetails,
                                               String accessToken, UserRole role) throws IOException {
 
