@@ -59,8 +59,61 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-
-            docker stop bocho-ecr || true
-            docker rm bocho-ecr || true
+            # Pull the latest Docker image
             docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+
+            # Run the new version in the Green environment (port 3001)
+            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+
+            # Perform health checks on the Green environment
+            # For example, wait and check if it's responding correctly
+            sleep 10
+                    
+            if curl -s http://localhost:3001 | grep "expected_content"; then
+              echo "Green environment is healthy."
+
+              # Update NGINX or load balancer configuration to point to the Green environment
+              # Example for NGINX:
+              sudo sed -i 's/:8080/:8081/' /etc/nginx/nginx.conf
+              sudo systemctl reload nginx
+
+              # Optionally, stop and remove the old Blue environment
+              docker stop bocho-ecr || true
+              docker rm bocho-ecr || true
+
+              # Rename the Green container to take over the Blue container's role (if needed)
+              docker rename bocho-ecr-green bocho-ecr
+            
+            else
+              echo "Green environment failed to start, keeping Blue environment active."
+              docker stop bocho-ecr-green || true
+              docker rm bocho-ecr-green || true
+            fi
+
+
+
+#########
+##            # 새로운 컨테이너 실행
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#            docker run -d --name bocho-ecr-green -p 3001:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#
+#
+#            # 서비스가 정상인지 확인하는 로직을 여기에 추가할 수 있음
+#            # 예를 들어, HTTP 요청을 통해 응답 확인 등...
+#
+#
+#            # 기존 컨테이너(bocho-ecr) 중지
+#            docker stop bocho-ecr || true
+#
+#            # 새 컨테이너의 포트를 3000으로 변경
+#            docker rename bocho-ecr-green bocho-ecr
+#            docker container update --publish 3000:3000 bocho-ecr
+#
+#            # 기존 컨테이너 삭제
+#            docker rm bocho-ecr-old || true
+
+#########
+#            docker stop bocho-ecr || true
+#            docker rm bocho-ecr || true
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
