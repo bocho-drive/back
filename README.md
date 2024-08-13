@@ -11,10 +11,11 @@
     <td align="center"><a href=""><sub><b>전효열</b></sub></a><br /></td>
   </tr>
   <tr>
-      <td align="center"><img src="width="150px;" alt=""/><br /><sub></td>
+      <td align="center"><img src="" width="150px;" alt=""/><br /><sub></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
-      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/3cd98041-a12d-466c-ba02-311eeb942fa0
+" width="150px;" alt=""/><br /></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
     </tr>
   <tr>
