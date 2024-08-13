@@ -14,7 +14,7 @@
       <td align="center"><img src="" width="150px;" alt=""/><br /><sub></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
-      <td align="center"><img src="" width="150px;" alt=""/><br /></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/4bb46790-6183-44cc-b51b-270d36c71710" width="150px;" alt=""/><br /></td>
       <td align="center"><img src="" width="150px;" alt=""/><br /></td>
     </tr>
   <tr>
