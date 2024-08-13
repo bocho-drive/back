@@ -59,7 +59,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-#            # Pull the latest Docker image
+            # Pull the latest Docker image
             docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
             # Run the new version in the Green environment (port 3001)
@@ -68,6 +68,7 @@ jobs:
             # Perform health checks on the Green environment
             # For example, wait and check if it's responding correctly
             sleep 10
+                    
             if curl -s http://localhost:3001 | grep "expected_content"; then
               echo "Green environment is healthy."
 
