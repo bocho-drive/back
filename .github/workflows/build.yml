@@ -71,7 +71,8 @@ jobs:
                 echo "Current container is running on port 3001"
                 NEW_PORT=3000
               else
-                NEW_PORT=3000
+                echo "Unexpected current port: $CURRENT_PORT. Exiting."
+                exit 1
               fi
               
               echo "New port selected: $NEW_PORT"
@@ -96,5 +97,3 @@ jobs:
               docker rename bocho-ecr-green bocho-ecr
               
               echo "Deployment completed successfully."
-
-
