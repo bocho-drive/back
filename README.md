@@ -1,6 +1,9 @@
 ## 🚗보초 운전🚕
 ● 배포 링크 : https://www.bocho.p-e.kr/</br>
 ● 팀 노션 : https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74
+
+## Info
+프론트랑 통일
 ### 📆Period
 2024.07.19 ~ 2024.08.15</br></br></br>
 
@@ -32,7 +35,7 @@
 ## Service Architecture
 수인님 써주셈요!
 
-## 🛠️Tools
+## Tools
 #### backend
 <span>
   <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" style="margin-right: 10px;">
