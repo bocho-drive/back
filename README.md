@@ -4,11 +4,11 @@
 ## 팀원 소개
 <table>
   <tr>
-    <td align="center"><a href=""><sub><b>박찬영</b></sub></a><br /></td>
-    <td align="center"><a href=""><sub><b>홍채현</b></sub></a><br /></td>
-    <td align="center"><a href=""><sub><b>조수인</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Dolphin-PC"><sub><b>박찬영</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/hyeon9808"><sub><b>홍채현</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/whtndls"><sub><b>조수인</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/young219257"><sub><b>김영아</b></sub></a><br /></td>
-    <td align="center"><a href=""><sub><b>전효열</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/hyoyeolking"><sub><b>전효열</b></sub></a><br /></td>
   </tr>
   <tr>
       <td align="center"><img src="" width="150px;" alt=""/><br /><sub></td>
