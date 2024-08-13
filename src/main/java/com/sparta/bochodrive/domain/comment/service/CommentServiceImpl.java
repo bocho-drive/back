@@ -31,8 +31,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponseDto addComments(CommentRequestDto commentRequestDto, User user) {
 
-        commonFunction.existsById(user.getId());
-        log.info("사용자 ID 검증 완료: {}", user.getId());
+
 
         Community community = findCommunityById(commentRequestDto.getCommunityId());
         log.info("커뮤니티 검증 완료: {}", community.getId());
@@ -62,7 +61,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void updateComment(Long commentId, CommentRequestDto commentRequestDto, User user) {
 
-        commonFunction.existsById(user.getId());
         Comment comment = findCommentById(commentId);
         log.info("comment : {}",comment.getId());
 
@@ -77,7 +75,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId,User user)  {
 
-        commonFunction.existsById(user.getId());
         Comment comment = findCommentById(commentId);
 
         if(!comment.getUser().getId().equals(user.getId())){

@@ -43,8 +43,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Long addPost(CommunityRequestDto communityRequestDto, User user) {
 
-        // 사용자 ID가 userRepository에 있는지 확인
-        commonFuntion.existsById(user.getId());
+
 
         // 이미지 파일 리스트 가져오기
         List<MultipartFile> requestImages = communityRequestDto.getImage();
@@ -129,7 +128,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public Long updatePost(Long id, CommunityRequestDto communityRequestDto,User user) {
 
-        commonFuntion.existsById(user.getId()); //userId가 userRepository에 존재하는지에 관한 예외처리
+
         Community community=findCommunityById(id);
 
         //deleteYn=true인지 확인하는 로직
@@ -170,8 +169,6 @@ public class CommunityServiceImpl implements CommunityService {
     //게시글 삭제
     @Override
     public void deletePost(Long id, User user)  {
-
-        commonFuntion.existsById(user.getId());
 
         Community community=findCommunityById(id);
 

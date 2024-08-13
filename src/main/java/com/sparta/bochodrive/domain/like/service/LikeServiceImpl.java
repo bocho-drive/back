@@ -29,8 +29,6 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void addLike(LikeRequestDto likeRequestDto, User user) {
 
-        commonFuntion.existsById(user.getId());
-
         Community community=findCommunityById(likeRequestDto.getCommunityId());
 
         if(likeRepository.findByUserAndCommunity(user,community).isPresent()){
@@ -49,8 +47,6 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public void deleteLike(LikeRequestDto likeRequestDto, User user) {
-
-        commonFuntion.existsById(user.getId());
 
         // 커뮤니티 ID를 LikeRequestDto에서 가져옴
         Long communityId = likeRequestDto.getCommunityId();

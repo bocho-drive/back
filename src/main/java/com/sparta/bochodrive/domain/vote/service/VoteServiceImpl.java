@@ -34,7 +34,6 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public void participateVote(VoteRequestDto voteRequestDto, User user) {
 
-        commonFuntion.existsById(user.getId());
 
         // 중복 투표 예외처리 로직
         Optional<Vote> existingVote = voteRepository.findByUserIdAndCommunityId(voteRequestDto.getUserId(), voteRequestDto.getCommunityId());
@@ -56,7 +55,7 @@ public class VoteServiceImpl implements VoteService {
     //투표 취소
     @Override
     public void cancelVote(Long id, User user) {
-        commonFuntion.existsById(user.getId());
+
         Vote vote=voteRepository.findById(id).orElseThrow(()->new NotFoundException(ErrorCode.VOTE_NOT_FOUND));
         voteRepository.delete(vote);
     }

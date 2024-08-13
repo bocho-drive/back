@@ -47,8 +47,6 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
     @Override
     public Long addChallengeVarify(CommunityRequestDto requestDto, Long challengeId, User user) {
 
-        // 사용자 ID가 userRepository에 있는지 확인
-        commonFuntion.existsById(user.getId());
 
         // 게시글 객체 생성 후 저장
         Community community = Community.builder()
@@ -129,7 +127,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
     @Override
     public Long updateChallengeVarify(Long communityId, CommunityRequestDto requestDto, User user) {
-        commonFuntion.existsById(user.getId());
+
         ChallengeVarify challengeVarify = findChallengeVarifyById(communityId);
 
         Community community=challengeVarify.getCommunity();
@@ -167,11 +165,12 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
 
     @Override
     public void deleteChallengeVarify(Long communityId, User user) {
-        commonFuntion.existsById(user.getId());
+
         ChallengeVarify challengeVarify = findChallengeVarifyById(communityId);
 
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
+
 
         if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
