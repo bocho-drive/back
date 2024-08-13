@@ -109,9 +109,9 @@
   <img src="https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white">
 </span>
 <span>
-  <img src="https://img.shields.io/badge/github%20NGINX-009639?style=for-the-badge&logo=NGINX-&logoColor=white">
+  <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX-&logoColor=white">
 </span>
-#009639
+
 
 #### Dev tools
 <span>
