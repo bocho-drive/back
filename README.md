@@ -4,7 +4,7 @@
 ## 팀원 소개
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Dolphin-PC"><sub><b>박찬영</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Dolphin-PC"><b>박찬영</b></a><br /></td>
     <td align="center"><a href="https://github.com/hyeon9808"><sub><b>홍채현</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/whtndls"><sub><b>조수인</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/young219257"><sub><b>김영아</b></sub></a><br /></td>
