@@ -51,6 +51,7 @@ jobs:
       - name : ECR에 도커 이미지 push
         run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
+
       - name: connect to EC2
         uses: appleboy/ssh-action@master
         with:
@@ -59,33 +60,41 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            
+              echo "Checking current port..."
               CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "3000")
-            
+              echo "Current port is: $CURRENT_PORT"
+              
               if [ "$CURRENT_PORT" = "3000" ]; then
+                echo "Current container is running on port 3000"
                 NEW_PORT=3001
-              else
+              elif [ "$CURRENT_PORT" = "3001" ]; then
+                echo "Current container is running on port 3001"
                 NEW_PORT=3000
+              else
+                echo "Unexpected current port: $CURRENT_PORT. Exiting."
+                exit 1
               fi
-            
-              echo "New port selected: ${NEW_PORT}"
-              echo "New port selected: ${NEW_PORT}"
-              echo "New port selected: ${NEW_PORT}"
-              echo "New port selected: ${NEW_PORT}"
-              echo "New port selected: ${NEW_PORT}"
-              echo "New port selected: ${NEW_PORT}"
-            
-            
+              
+              echo "New port selected: $NEW_PORT"
+              
               if [ "$(docker ps -q -f name=bocho-ecr-${NEW_PORT})" ]; then
+                echo "Stopping and removing existing container on port ${NEW_PORT}..."
                 docker stop bocho-ecr-${NEW_PORT}
                 docker rm bocho-ecr-${NEW_PORT}
               fi
-            
+              
+              echo "Pulling the latest Docker image..."
               docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+              
+              echo "Running new container on port ${NEW_PORT}..."
               docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-            
-            
+              
+              echo "Stopping and removing the old container..."
               docker stop bocho-ecr || true
               docker rm bocho-ecr || true
-
+              
+              echo "Renaming new container to bocho-ecr..."
               docker rename bocho-ecr-green bocho-ecr
+              
+              echo "Deployment completed successfully."
+
