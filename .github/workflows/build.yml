@@ -74,9 +74,6 @@ jobs:
               
               docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
               docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-              
-              
-              sleep 20
             
               docker stop bocho-ecr || true
               docker rm bocho-ecr || true
