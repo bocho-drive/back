@@ -89,7 +89,6 @@
 </span>
 
 
-
 #### Infrastructure
 
 <span>
@@ -110,6 +109,9 @@
 </span>
 <span>
   <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX-&logoColor=white">
+</span>
+<span>
+  <img src="https://img.shields.io/badge/Amazon RDS-527FFF?style=for-the-badge&logo=Amazon RDS-&logoColor=white">
 </span>
 
 
