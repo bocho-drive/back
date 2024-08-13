@@ -97,3 +97,4 @@ jobs:
               docker rename bocho-ecr-green bocho-ecr
               
               echo "Deployment completed successfully."
+            
