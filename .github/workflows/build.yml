@@ -65,11 +65,15 @@ jobs:
             
               echo "New port selected: 2"
               if [ "$CURRENT_PORT" = "3000" ]; then
+                
                 NEW_PORT=3001
+                echo "New port selected: 2-1"
               else
                 NEW_PORT=3000
+                echo "New port selected: 2-2"
               fi
             
+              echo "Current port is: $CURRENT_PORT"
               echo "New port selected: 3"
               echo "New port selected: ${NEW_PORT}"
               echo "New port selected: ${NEW_PORT}"
