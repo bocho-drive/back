@@ -4,6 +4,7 @@
 
 ## Info
 프론트랑 통일
+
 ### 📆Period
 2024.07.19 ~ 2024.08.15</br></br></br>
 
@@ -63,4 +64,8 @@
 <span>
   <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white">
 </span>
+
+## Backend 주요 기술
+
+## Trouble Shooting🔥
 
