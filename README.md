@@ -3,12 +3,25 @@
 
 ## 팀원 소개
 <table>
-    <tbody>
-    <tr>
-     
-      <td align="center"><a href="https://github.com/hyeon9808"><img src="https://github.com/user-attachments/assets/ab747dde-03c9-40a0-af89-38d831165233" width="160px;" alt=""/><br /></td>
-      <td align="center"><a href="https://github.com/whtndls"><img src="" width="160px;" alt=""/><br /><sub><b>BE 부팀장 : 조수인 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/young219257"><img src="https://github.com/user-attachments/assets/3bac7823-7daa-4cbd-9479-0561908e9ce2" width="160px;" alt=""/><br /><sub><b>BE 팀원 : 김영아 </b></sub></a><br /></td>
-      <td align="center"><a href="https://github.com/hyoyeolking"><img src="" width="160px;" alt=""/><br /><sub><b>BE 팀원 : 전효열 </b></sub></a><br /></td>
-    </tr></tbody>
+  <tr>
+    <th>FE 팀장</th>
+    <th>FE 팀원</th>
+    <th>BE 부팀장/th>
+    <th>BE 팀원/th>
+    <th>BE 팀원</th>
+  </tr>
+  <tr>
+    <td><img src="image1_url" alt="Image 1" width="100"></td>
+    <td><img src="image2_url" alt="Image 2" width="100"></td>
+    <td><img src="image3_url" alt="Image 3" width="100"></td>
+    <td><img src="image4_url" alt="Image 4" width="100"></td>
+    <td><img src="image5_url" alt="Image 5" width="100"></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/user/repo1">Repo 1</a></td>
+    <td><a href="https://github.com/user/repo2">Repo 2</a></td>
+    <td><a href="https://github.com/user/repo3">Repo 3</a></td>
+    <td><a href="https://github.com/user/repo4">Repo 4</a></td>
+    <td><a href="https://github.com/user/repo5">Repo 5</a></td>
+  </tr>
 </table>
