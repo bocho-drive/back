@@ -20,7 +20,7 @@
   <tr>
     <td align="center">FrondEnd/Leader</td>
     <td align="center">FrondEnd</td>
-    <td align="center">BackEnd/Leader</td>
+    <td align="center">BackEnd/Vice Leader</td>
     <td align="center">BackEnd</td>
     <td align="center">BackEnd</td>
   </tr>
