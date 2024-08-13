@@ -67,12 +67,8 @@ jobs:
               if [ "$CURRENT_PORT" = "3000" ]; then
                 echo "Current container is running on port 3000"
                 NEW_PORT=3001
-              elif [ "$CURRENT_PORT" = "3001" ]; then
-                echo "Current container is running on port 3001"
-                NEW_PORT=3000
               else
-                echo "Unexpected current port: $CURRENT_PORT. Exiting."
-                exit 1
+                NEW_PORT=3000
               fi
               
               echo "New port selected: $NEW_PORT"
