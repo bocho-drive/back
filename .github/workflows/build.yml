@@ -2,7 +2,7 @@ name: Bocho-community
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["feature/nonstop"]
   pull_request:
     branches: ["develop"]
 
@@ -51,15 +51,54 @@ jobs:
       - name : ECR에 도커 이미지 push
         run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
-      - name: connect to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            docker stop bocho-ecr || true
-            docker rm bocho-ecr || true
-            docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-            docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+      - name: Make zip file
+        run: |
+          mkdir deploy
+          cp ./build/libs/*.jar ./deploy/
+          zip -r -qq -j ./spring-build.zip ./deploy
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp \
+            --region ap-northeast-2 \
+            ./spring-build.zip s3://bocho-deploy
+
+
+###
+#      - name: Make zip file
+#        run: zip -r ./<자신이 만들 ZIP 파일 이름>.zip .
+#        shell: bash
+#
+#      # 만들어 놓은 S3에 해당 zip 파일 저장
+#      - name: Upload to S3
+#        run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./<자신이 만든 ZIP 파일 이름>.zip s3://<만들어 놓은 버킷 이름>/<자신이 만든 ZIP 파일 이름>.zip
+#
+#      # AWS CodeDeploy에 배포
+#      - name: Deploy
+#        env:
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#        run: |
+#          aws deploy create-deployment \
+#          --application-name <AWS codeDeploy 애플리케이션 이름> \
+#          --deployment-group-name <codeDeploy group 이름> \
+#          --file-exists-behavior OVERWRITE \
+#          --s3-location bucket=<만들어 놓은 버킷 이름>,bundleType=zip,key=<자신이 만든 ZIP 파일 이름>.zip \
+#          --region ${{ secrets.AWS_REGION }}
+
+
+###
+#
+#
+#      - name : 압축
+#        run : tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts
+#
+#      - name: S3에 프로젝트 폴더 업로드하기
+#        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://bocho-deploy/$GITHUB_SHA.tar.gz
+#
+#      - name: Code Deploy를 활용해 EC2에 프로젝트 코드 배포
+#        run: aws deploy create-deployment
+#          --application-name instagram-server
+#          --deployment-config-name CodeDeployDefault.AllAtOnce
+#          --deployment-group-name develop
+#          --s3-location bucket=bocho-deploy,bundleType=tgz,key=$GITHUB_SHA.tar.gz
