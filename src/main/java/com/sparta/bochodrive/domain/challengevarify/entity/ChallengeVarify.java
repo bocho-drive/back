@@ -6,11 +6,13 @@ import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.entity.CreatedTimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="challenge_varifies")
@@ -19,7 +21,6 @@ public class ChallengeVarify extends CreatedTimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     //게시글
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,14 +35,5 @@ public class ChallengeVarify extends CreatedTimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id",nullable = false)
     private User user;
-
-
-    public ChallengeVarify(User user, Community community, Challenge challenge) {
-        this.community=community;
-        this.user = user;
-        this.challenge = challenge;
-    }
-
-
 
 }

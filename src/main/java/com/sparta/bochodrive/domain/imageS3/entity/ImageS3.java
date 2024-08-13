@@ -2,14 +2,12 @@ package com.sparta.bochodrive.domain.imageS3.entity;
 
 import com.sparta.bochodrive.domain.community.entity.Community;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageS3 {
@@ -27,11 +25,4 @@ public class ImageS3 {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="community_id",nullable = false)
     private Community community;
-
-    public ImageS3( String url, String filename,Community community) {
-
-        this.uploadUrl = url;
-        this.fileName = filename;
-        this.community = community;
-    }
 }

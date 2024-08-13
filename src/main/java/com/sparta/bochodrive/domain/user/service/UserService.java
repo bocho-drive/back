@@ -56,26 +56,5 @@ public class UserService {
     }
 
 
-    /** 로그인 */
-//    public UserModel.UserLoginResDto login(UserModel.UserLoginReqDto userLoginDto) {
-//        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(
-//                () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
-//        );
-//
-//        //비번 맞는지 확인.
-//        if(!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-//            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-//        }
-//
-//        UserModel.UserLoginResDto res = UserModel.UserLoginResDto.builder()
-////                                                                   .accessToken(jwtUtils.createAccessToken(user.getEmail(), user.getUserRole().toString()))
-//                                                                   .userId(user.getId())
-//                                                                   .userRole(user.getUserRole())
-//                                                                   .nickname(user.getNickname())
-//                                                                   .build();
-//
-//        return res;
-//    }
-
 
 }

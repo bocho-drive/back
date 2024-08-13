@@ -25,14 +25,4 @@ public class UserController {
         return ApiResponse.ok(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
     }
 
-//    @PostMapping("/signin")
-//    public ApiResponse<UserModel.UserLoginResDto> postUserSignIn(@RequestBody UserLoginReqDto userLoginDto) {
-//        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.", userService.login(userLoginDto));
-//    }
-
-//    @PostMapping("/api/auth/signin")
-//    public ApiResponse<?> postAuthSignIn(@RequestBody UserLoginReqDto userLoginReqDto) {
-//        return ApiResponse.ok(HttpStatus.OK.value(), "로그인에 성공하였습니다.", userService.login(userLoginReqDto));
-//    }
-
 }
