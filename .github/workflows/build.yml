@@ -80,12 +80,10 @@ jobs:
               fi
                     
               docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-              docker run -d --name bocho-ecr-${NEW_PORT} -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+              docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
             
             
               docker stop bocho-ecr || true
               docker rm bocho-ecr || true
 
-              docker rename bocho-ecr-${NEW_PORT} bocho-ecr
-
-
+              docker rename bocho-ecr-green bocho-ecr
