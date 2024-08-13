@@ -6,7 +6,7 @@
 함께라면 첫 운전도 두렵지 않아요! 운전, 같이 즐겨봐요! 🚗💨</br></br>
 
 ## Info
-● 프로젝트 브로셔 : https://dolphin-pc.notion.site/8-13-21-be75fecc932b4a8b88d86d2b1835252c?pvs=4</br>
+● 프로젝트 브로셔 : <a href="https://dolphin-pc.notion.site/8-13-21-be75fecc932b4a8b88d86d2b1835252c?pvs=4"><b>보초운전 브로셔</b></br>
 ● 배포 링크 :  https://www.bocho.p-e.kr/</br>
 ● 팀 노션 :  <a href="https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74"><b>보초운전 노션</b></a></br>
 #### 📆Period 
