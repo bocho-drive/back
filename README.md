@@ -11,17 +11,20 @@
     <th>BE 팀원</th>
   </tr>
   <tr>
-    <td><img src="image1_url" alt="Image 1" width="100"></td>
-    <td><img src="image2_url" alt="Image 2" width="100"></td>
-    <td><img src="image3_url" alt="Image 3" width="100"></td>
-    <td><img src="image4_url" alt="Image 4" width="100"></td>
-    <td><img src="image5_url" alt="Image 5" width="100"></td>
-  </tr>
+      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>FE 팀장 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>FE 팀원 : </b></sub></a><br /></td>
+     <tr/>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 부팀장 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : </b></sub></a><br /></td>
+      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE 팀원 : </b></sub></a><br /></td>
+    </tr>
   <tr>
-    <td><a href="https://github.com/user/repo1">Repo 1</a></td>
-    <td><a href="https://github.com/user/repo2">Repo 2</a></td>
-    <td><a href="https://github.com/user/repo3">Repo 3</a></td>
-    <td><a href="https://github.com/user/repo4">Repo 4</a></td>
-    <td><a href="https://github.com/user/repo5">Repo 5</a></td>
+    <td>박찬영</td>
+    <td>홍채현</td>
+    <td>조수인</td>
+    <td>김영아</td>
+    <td>전효열</td>
   </tr>
 </table>
