@@ -30,12 +30,9 @@ public class JwtUtils {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
-//    // 토큰 만료시간
+   // 토큰 만료시간
     private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60; // 60분
     public static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 30일
-
-//    private static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L; // 1분
-//    private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; // 2분
 
 
     @Value("${spring.jwt.secret}")
@@ -58,24 +55,6 @@ public class JwtUtils {
         return getUserInfoFromToken(token).getSubject();
     }
 
-
-    public UserRole getRole(String token) {
-        String roleString = getUserInfoFromToken(token).get("role", String.class);
-        return UserRole.valueOf(roleString);
-    }
-
-
-    public boolean isExpired(String token) throws IOException {
-        try {
-            Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
-            return false;
-        } catch (ExpiredJwtException e) {
-            return true;
-        } catch (JwtException e) {
-            // 다른 예외 처리
-            return false;
-        }
-    }
 
 
     public String createAccessToken(String username, UserRole role) {
