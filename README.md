@@ -37,6 +37,12 @@
   </tr>
 </table>
 
+## Service Architecture
+수인님~
+## Backend 주요 기술
+1. 로그인(OAuth + refreshToken)
+2. 웹소켓
+3. 이미지S3
 ## ⚠️Trouble Shooting
 ### 🚨  **issue 1**
 
