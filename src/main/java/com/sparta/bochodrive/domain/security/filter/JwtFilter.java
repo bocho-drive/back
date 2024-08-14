@@ -87,7 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 /**RT가 local에 저장된 RT랑 다른 경우**/
                 Optional<RefreshToken> refreshTokenOptional=refreshTokenRepository.findValidRefreshToken(refreshToken, LocalDateTime.now());
-                if(!refreshTokenOptional.isPresent()){
+                if(refreshTokenOptional.isEmpty()){
                     throw new NotFoundException(ErrorCode.INVAILD_JWT);
                 }
 
