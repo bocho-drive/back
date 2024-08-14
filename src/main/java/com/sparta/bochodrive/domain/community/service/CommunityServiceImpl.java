@@ -9,6 +9,7 @@ import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
@@ -175,16 +176,17 @@ public class CommunityServiceImpl implements CommunityService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
 
-        if(!user.getUserRole().equals("ADMIN")){
+        if(!user.getUserRole().equals(UserRole.ADMIN)){
             if(!community.getUser().getId().equals(user.getId())) {
                 throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
             }
         }
 
-
         //진짜로 글을 삭제하는게 아니므로 -> 이미지도 삭제할 필요가 없음
         community.setDeleteYn(true);
         communityRepository.save(community);
+
+
     }
 
     //게시글 id 찾는 메소드

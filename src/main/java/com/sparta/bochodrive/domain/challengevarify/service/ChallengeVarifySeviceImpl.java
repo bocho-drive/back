@@ -12,6 +12,7 @@ import com.sparta.bochodrive.domain.community.repository.CommunityRepository;
 import com.sparta.bochodrive.domain.imageS3.entity.ImageS3;
 import com.sparta.bochodrive.domain.imageS3.repository.ImageS3Repository;
 import com.sparta.bochodrive.domain.imageS3.service.ImageS3Service;
+import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.global.exception.ErrorCode;
@@ -171,7 +172,7 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
 
-        if(!user.getUserRole().equals("ADMIN")){
+        if(!user.getUserRole().equals(UserRole.ADMIN)){
             if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId()) ) {
                 throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
             }
