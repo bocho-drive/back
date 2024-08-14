@@ -112,6 +112,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
+        log.warn("모든 토큰이 유효하지 않으면 에러 응답 전송", accessToken, refreshToken, LocalDateTime.now());
         // 모든 토큰이 유효하지 않으면 에러 응답 전송
         jwtUtils.sendErrorResponse(response, ErrorCode.EXPIRED_REFRESHTOKEN);
 
