@@ -60,11 +60,27 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+              CURRENT_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort }}' bocho-ecr || echo "3000")
               
-        
-
+              if [ "$CURRENT_PORT" = "3000" ]; then
+                NEW_PORT=3001
+              elif [ "$CURRENT_PORT" = "3001" ]; then
+                NEW_PORT=3000
+              else
+                echo "Unexpected current port: $CURRENT_PORT. Exiting."
+                exit 1
+              fi
+              
+              docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+              docker run -d --name bocho-ecr-green -p ${NEW_PORT}:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+              
+              echo "엔지닉스 설정"
+              sleep 10
+              nginx -s reload
+              
+              
               docker stop bocho-ecr || true
               docker rm bocho-ecr || true
-              docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-              docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
-
+              
+              docker rename bocho-ecr-green bocho-ecr
+        
