@@ -143,11 +143,11 @@
 
 로그인 시 accessToken을 발급할 때 loginFilter에서 token을 발급하지 않고 controller에서 직접 accessToken을 발급하고 있었다. 
 
-###### ❓ cause
+##### ❓ cause
 
 클라이언트가 로그인 요청을 보내면 loginFilter를 거치지 않고 바로 controller로 가는 문제가 발생되고 있었다.
 
-###### ❗ solution</br>
+##### ❗ solution</br>
 `this.setFilterProcessesUrl("/signin");`
 
 위의 코드를 통해 `UsernamePasswordAuthenticationFilter`가 로그인 요청을 처리할 URL을 `/signin`으로 지정합니다. 이 설정으로 인해, 클라이언트가 `/signin` 경로로 로그인 요청을 보낼 때 해당 필터가 이 요청을 가로채어 처리하도록 설정됩니다.
@@ -158,13 +158,13 @@
 
 이미지 업로드를 위해 `form-data`를 통해 데이터를 매핑하려고 할 때, 해당 필드에 접근하지 못해 커뮤니티 글이 작성되지 않는 오류가 발생했습니다.
 
-###### ❓ cause
+##### ❓ cause
 
 `RequestDto` 클래스에 **@Getter** 어노테이션이 없어서, Spring Boot가 클라이언트가 보낸 데이터를 해당 필드에 접근하여 매핑하지 못했습니다.
 
 - Spring은 데이터 바인딩 시, 내부적으로 해당 필드의 Getter 메서드를 호출하여 값을 읽어오고, 또한 객체를 JSON이나 다른 형식으로 변환할 때도 Getter를 사용합니다.
 
-###### ❗ solution
+##### ❗ solution
 
 `RequestDto` 클래스에 **@Getter** 어노테이션을 추가하여 각 필드에 대한 Getter 메서드를 생성합니다. 이를 통해 Spring이 클라이언트로부터 전송된 데이터를 올바르게 매핑할 수 있도록 처리합니다.
 
