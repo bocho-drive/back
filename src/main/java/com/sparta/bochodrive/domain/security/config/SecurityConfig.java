@@ -2,6 +2,7 @@ package com.sparta.bochodrive.domain.security.config;
 
 import com.sparta.bochodrive.domain.oauth.handler.CustomSuccessHandler;
 import com.sparta.bochodrive.domain.oauth.service.CustomOAuth2UserService;
+import com.sparta.bochodrive.domain.refreshtoken.RefreshService;
 import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
@@ -30,6 +31,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshService refreshService;
 
 
     @Bean
@@ -64,7 +66,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtFilter(jwtUtils,customUserDetails,refreshTokenRepository), LoginFilter.class);
 
         httpSecurity
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils, customUserDetails,refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils, customUserDetails,refreshService), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
         httpSecurity

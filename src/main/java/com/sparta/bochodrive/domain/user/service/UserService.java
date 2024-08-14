@@ -1,5 +1,6 @@
 package com.sparta.bochodrive.domain.user.service;
 
+import com.sparta.bochodrive.domain.refreshtoken.RefreshService;
 import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
 import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -20,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final TeacherService teacherService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshService refreshService;
 
     /** 회원가입 */
     public UserModel.UserResponseDto registUser(UserModel.UserRegistDto userRegistDto) {
@@ -57,8 +60,7 @@ public class UserService {
     }
 
     public void logout(User user){
-        RefreshToken refreshToken=refreshTokenRepository.findByUserId(user.getId());
-        refreshTokenRepository.delete(refreshToken);
+        refreshService.deleteByUserId(user.getId());
     }
 
 

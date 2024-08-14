@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.bochodrive.domain.refreshtoken.RefreshService;
 import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
 import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
@@ -11,6 +12,7 @@ import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.function.CommonFuntion;
+import com.sparta.bochodrive.global.function.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,16 +35,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final CustomerUserDetailsService customerUserDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private static final int COOKIE_EXPIRED_TIME = (int) (JwtUtils.REFRESH_TOKEN_TIME / 1000);
+    private final RefreshService refreshService;
 
     public LoginFilter(AuthenticationManager authenticationManager,
                        JwtUtils jwtUtil, CustomerUserDetailsService customerUserDetailsService,
-                       RefreshTokenRepository refreshTokenRepository) {
+                       RefreshService refreshService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtil;
         this.customerUserDetailsService = customerUserDetailsService;
-        this.refreshTokenRepository=refreshTokenRepository;
+        this.refreshService = refreshService;
 
         this.setFilterProcessesUrl("/signin"); //filter로 들어올 url 지정
     }
@@ -80,15 +81,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtils.createRefreshToken(email);
 
         //3. RT를 cookie에 담아준다.
-        addRefreshTokenToCookie(response, refreshToken);
+        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
+        response.addCookie(refreshTokenToCookie);
 
         // 4. RT를 local DB에 저장해준다.
-        RefreshToken refreshTokenEntity = RefreshToken.createRefreshToken(refreshToken, userDetails.getUser());
-        refreshTokenRepository.save(refreshTokenEntity);
+        refreshService.saveRefreshToken(refreshToken, userDetails.getUser());
 
         //5. AT를 body에 담아준다.
-        UserModel.UserLoginResDto body=generateNewAccessToken(userDetails,accessToken,role);
-        ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
+        UserModel.UserLoginResDto body = generateNewAccessToken(userDetails,accessToken,role);
+        ApiResponse<UserModel.UserLoginResDto> res = ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
 
         //6. 응답값에 body json 추가
         CommonFuntion.addJsonBodyServletResponse(response,res);
@@ -103,18 +104,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed){
         response.setStatus(401);
     }
-
-    //RT를 쿠키에 넣는 메소드
-    public static void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setMaxAge(COOKIE_EXPIRED_TIME);
-        response.addCookie(refreshTokenCookie);
-    }
-
-
 
     //accessToken를 resDto에 담아주는 메소드
     public static UserModel.UserLoginResDto generateNewAccessToken(

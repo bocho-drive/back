@@ -1,6 +1,7 @@
 package com.sparta.bochodrive.domain.oauth.handler;
 
 import com.sparta.bochodrive.domain.oauth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.refreshtoken.RefreshService;
 import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
 import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
@@ -11,7 +12,9 @@ import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.function.CommonFuntion;
+import com.sparta.bochodrive.global.function.CookieUtil;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +36,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customerUserDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshService refreshService;
 
 
     //    spring.security.oauth2.client.redirectURL
@@ -57,11 +60,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtUtils.createRefreshToken(email);
 
         // 4. RT를 local DB에 저장해준다.
-        RefreshToken refreshTokenEntity = RefreshToken.createRefreshToken(refreshToken, userDetails.getUser());
-        refreshTokenRepository.save(refreshTokenEntity);
+        refreshService.saveRefreshToken(refreshToken, userDetails.getUser());
+
 
         // 5. RT를 쿠키("refreshToken")에 세팅한다.
-        LoginFilter.addRefreshTokenToCookie(response, refreshToken);
+        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
+        response.addCookie(refreshTokenToCookie);
 
         // 6. 프론트 리다이렉트 URL을 설정해준다.
         response.sendRedirect(getRedirectURL(redirectURL,accessToken));
