@@ -51,6 +51,17 @@ jobs:
       - name : ECR에 도커 이미지 push
         run : docker push ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
 
+      - name: Set permissions for Nginx log directory
+        run: |
+          sudo chown -R nginx:nginx /var/log/nginx
+          sudo chmod -R 755 /var/log/nginx
+
+      - name: Set permissions for SSL certificates
+        run: |
+          sudo chown -R root:nginx /etc/letsencrypt/live/api.tteokip.o-r.kr/
+          sudo chmod 750 /etc/letsencrypt/live/api.tteokip.o-r.kr/
+          sudo chmod 640 /etc/letsencrypt/live/api.tteokip.o-r.kr/fullchain.pem
+          sudo chmod 640 /etc/letsencrypt/live/api.tteokip.o-r.kr/privkey.pem
 
       - name: connect to EC2
         uses: appleboy/ssh-action@master
@@ -76,7 +87,7 @@ jobs:
               
               echo "엔지닉스 설정"
               sleep 10
-              nginx -s reload
+              sudo nginx -s reload
               
               
               docker stop bocho-ecr || true
@@ -84,3 +95,10 @@ jobs:
               
               docker rename bocho-ecr-green bocho-ecr
         
+
+#
+#              docker stop bocho-ecr || true
+#              docker rm bocho-ecr || true
+#              docker pull ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#              docker run -d --name bocho-ecr -p 3000:3000 ${{ steps.login-ecr.outputs.registry }}/bocho-ecr:latest
+#
