@@ -171,10 +171,12 @@ public class ChallengeVarifySeviceImpl implements ChallengeVarifyService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(challengeVarify.getCommunity().getId());
 
-
-        if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+        if(!user.getUserRole().equals("ADMIN")){
+            if(!challengeVarify.getCommunity().getUser().getId().equals(user.getId()) ) {
+                throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+            }
         }
+
         challengeVarify.getCommunity().setDeleteYn(true);
         challengeVarifyRepository.save(challengeVarify);
     }

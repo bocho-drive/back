@@ -175,9 +175,12 @@ public class CommunityServiceImpl implements CommunityService {
         //deleteYn=true인지 확인하는 로직
         commonFuntion.deleteCommunity(community.getId());
 
-        if(!community.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+        if(!user.getUserRole().equals("ADMIN")){
+            if(!community.getUser().getId().equals(user.getId())) {
+                throw new UnauthorizedException(ErrorCode.DELETE_FAILED);
+            }
         }
+
 
         //진짜로 글을 삭제하는게 아니므로 -> 이미지도 삭제할 필요가 없음
         community.setDeleteYn(true);
