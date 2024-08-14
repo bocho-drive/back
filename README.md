@@ -5,7 +5,7 @@
 여긴 초보 운전자들이 모여, 기초부터 안전한 운전 팁까지 서로 공유하고 성장하는 공간이에요. </br>
 함께라면 첫 운전도 두렵지 않아요! 운전, 같이 즐겨봐요! 🚗💨</br></br>
 
-## Info
+## 📌Info
 ● 프로젝트 브로셔 : <a href="https://dolphin-pc.notion.site/8-13-21-be75fecc932b4a8b88d86d2b1835252c?pvs=4"><b>보초운전 브로셔</b></a></br>
 ● 배포 링크 :  https://www.bocho.p-e.kr/</br>
 ● 팀 노션 :  <a href="https://dolphin-pc.notion.site/e4ebb89570f24cdab88acbaf40f86f81?v=aad47b31de7b4ad0814f1604b1a6972d&pvs=74"><b>보초운전 노션</b></a></br>
@@ -37,7 +37,7 @@
   </tr>
 </table></br>
        
-#### backend 역할 분담
+#### 👪backend 역할 분담
 <table>
  <tr>
  <td>이름</td>
@@ -63,9 +63,8 @@
 ## Service Architecture
 수인님 써주셈요!
 
-## Tools
+## 🛠️Tools
 #### backend
-
 <span>
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
 </span>
@@ -132,7 +131,7 @@
 
 ## ERD 
 
-## Backend 주요 기술
+## 🌟Backend 주요 기술
 1. 로그인 : JWT 토큰 방식, spring security
 2. websocket
 3. imageS3 upload
