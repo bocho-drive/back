@@ -1,9 +1,9 @@
-package com.sparta.bochodrive.domain.OAuth.service;
+package com.sparta.bochodrive.domain.oauth.service;
 
-import com.sparta.bochodrive.domain.OAuth.dto.CustomOAuth2User;
-import com.sparta.bochodrive.domain.OAuth.userinfo.GoogleUserInfo;
-import com.sparta.bochodrive.domain.OAuth.userinfo.KakaoUserInfo;
-import com.sparta.bochodrive.domain.OAuth.userinfo.OAuth2UserInfo;
+import com.sparta.bochodrive.domain.oauth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.oauth.userinfo.GoogleUserInfo;
+import com.sparta.bochodrive.domain.oauth.userinfo.KakaoUserInfo;
+import com.sparta.bochodrive.domain.oauth.userinfo.OAuth2UserInfo;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.user.entity.User;
 import com.sparta.bochodrive.domain.user.repository.UserRepository;

@@ -1,6 +1,8 @@
 package com.sparta.bochodrive.domain.security.filter;
 
 
+import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
+import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
@@ -8,6 +10,7 @@ import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import com.sparta.bochodrive.domain.user.model.UserModel;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.exception.ErrorCode;
+import com.sparta.bochodrive.global.exception.NotFoundException;
 import com.sparta.bochodrive.global.function.CommonFuntion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,17 +27,20 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Slf4j(topic = "AuthorizationFilter")
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-
-
-    public JwtFilter(JwtUtils jwtUtils,CustomerUserDetailsService customerUserDetailsService) {
+    public JwtFilter(JwtUtils jwtUtils,CustomerUserDetailsService customerUserDetailsService,RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtils = jwtUtils;
         this.customerUserDetailsService=customerUserDetailsService;
+        this.refreshTokenRepository=refreshTokenRepository;
     }
 
     @Override
@@ -71,10 +77,19 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
+
+
+
         /** 2) AT가 만료된 경우 **/
         if (StringUtils.hasText(refreshToken)) {
             boolean isRefreshTokenValid = jwtUtils.validateToken(refreshToken);
             if (isRefreshTokenValid) {
+
+                /**RT가 local에 저장된 RT랑 다른 경우**/
+                Optional<RefreshToken> refreshTokenOptional=refreshTokenRepository.findValidRefreshToken(refreshToken, LocalDateTime.now());
+                if(!refreshTokenOptional.isPresent()){
+                    throw new NotFoundException(ErrorCode.INVAILD_JWT);
+                }
 
                 /** RT가 유효한 경우 -> 토큰 재발급 **/
                 //1. token으로부터 사용자 정보를 가져오기
@@ -112,6 +127,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails userDetails=customerUserDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
 
 
 

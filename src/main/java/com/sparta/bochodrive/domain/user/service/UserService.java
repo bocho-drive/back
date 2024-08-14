@@ -1,5 +1,7 @@
 package com.sparta.bochodrive.domain.user.service;
 
+import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
+import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
@@ -17,9 +19,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final CustomerUserDetailsService customerUserDetailsService;
     private final TeacherService teacherService;
-    private final JwtUtils jwtUtils;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     /** 회원가입 */
     public UserModel.UserResponseDto registUser(UserModel.UserRegistDto userRegistDto) {
@@ -55,6 +56,10 @@ public class UserService {
         );
     }
 
+    public void logout(User user){
+        RefreshToken refreshToken=refreshTokenRepository.findByUserId(user.getId());
+        refreshTokenRepository.delete(refreshToken);
+    }
 
 
 }

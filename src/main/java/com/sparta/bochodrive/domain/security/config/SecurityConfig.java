@@ -1,14 +1,13 @@
 package com.sparta.bochodrive.domain.security.config;
 
-import com.sparta.bochodrive.domain.OAuth.handler.CustomSuccessHandler;
-import com.sparta.bochodrive.domain.OAuth.service.CustomOAuth2UserService;
+import com.sparta.bochodrive.domain.oauth.handler.CustomSuccessHandler;
+import com.sparta.bochodrive.domain.oauth.service.CustomOAuth2UserService;
+import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.filter.JwtFilter;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
-import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +29,7 @@ public class SecurityConfig {
     private final CustomerUserDetailsService customUserDetails;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Bean
@@ -61,10 +61,10 @@ public class SecurityConfig {
 
         // 필터 추가
         httpSecurity
-                .addFilterBefore(new JwtFilter(jwtUtils,customUserDetails), LoginFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtils,customUserDetails,refreshTokenRepository), LoginFilter.class);
 
         httpSecurity
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils, customUserDetails), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtils, customUserDetails,refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
         httpSecurity

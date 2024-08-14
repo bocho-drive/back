@@ -1,6 +1,8 @@
 package com.sparta.bochodrive.domain.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
+import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
@@ -31,12 +33,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
     private static final int COOKIE_EXPIRED_TIME = (int) (JwtUtils.REFRESH_TOKEN_TIME / 1000);
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtils jwtUtil, CustomerUserDetailsService customerUserDetailsService) {
+    public LoginFilter(AuthenticationManager authenticationManager,
+                       JwtUtils jwtUtil, CustomerUserDetailsService customerUserDetailsService,
+                       RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtil;
         this.customerUserDetailsService = customerUserDetailsService;
+        this.refreshTokenRepository=refreshTokenRepository;
 
         this.setFilterProcessesUrl("/signin"); //filter로 들어올 url 지정
     }
@@ -76,11 +82,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //3. RT를 cookie에 담아준다.
         addRefreshTokenToCookie(response, refreshToken);
 
-        //4. AT를 body에 담아준다.
+        // 4. RT를 local DB에 저장해준다.
+        RefreshToken refreshTokenEntity = RefreshToken.createRefreshToken(refreshToken, userDetails.getUser());
+        refreshTokenRepository.save(refreshTokenEntity);
+
+        //5. AT를 body에 담아준다.
         UserModel.UserLoginResDto body=generateNewAccessToken(userDetails,accessToken,role);
         ApiResponse<UserModel.UserLoginResDto> res=ApiResponse.ok(HttpStatus.OK.value(),"로그인이 완료되었습니다.",body);
 
-        //5. 응답값에 body json 추가
+        //6. 응답값에 body json 추가
         CommonFuntion.addJsonBodyServletResponse(response,res);
 
 
@@ -94,7 +104,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-    //토큰을 쿠키에 넣는 메소드
+    //RT를 쿠키에 넣는 메소드
     public static void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setPath("/");
@@ -105,10 +115,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
 
+
     //accessToken를 resDto에 담아주는 메소드
     public static UserModel.UserLoginResDto generateNewAccessToken(
-                                              CustomUserDetails userDetails,
-                                              String accessToken, UserRole role) throws IOException {
+            CustomUserDetails userDetails,
+            String accessToken, UserRole role) throws IOException {
 
         UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
                 .userId(userDetails.getUserId()) // username을 사용하여 userId 가져오기
