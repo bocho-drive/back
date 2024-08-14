@@ -151,7 +151,7 @@
 `this.setFilterProcessesUrl("/signin");`
 
 위의 코드를 통해 `UsernamePasswordAuthenticationFilter`가 로그인 요청을 처리할 URL을 `/signin`으로 지정합니다. 이 설정으로 인해, 클라이언트가 `/signin` 경로로 로그인 요청을 보낼 때 해당 필터가 이 요청을 가로채어 처리하도록 설정됩니다.
-
+</br></br>
 ### 🚨  **issue 2**
 
 **📷이미지 업로드 관련 오류**
