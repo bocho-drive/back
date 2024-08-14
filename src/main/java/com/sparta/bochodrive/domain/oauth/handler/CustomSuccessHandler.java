@@ -1,6 +1,8 @@
 package com.sparta.bochodrive.domain.oauth.handler;
 
 import com.sparta.bochodrive.domain.oauth.dto.CustomOAuth2User;
+import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
+import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.domain.security.filter.LoginFilter;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
@@ -31,6 +33,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtils jwtUtils;
     private final CustomerUserDetailsService customerUserDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     //    spring.security.oauth2.client.redirectURL
     @Value("${spring.security.oauth2.client.redirectURL}")
@@ -52,17 +56,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtUtils.createAccessToken(email, userRole);
         String refreshToken = jwtUtils.createRefreshToken(email);
 
-
-        // 4. AT을 res body에 담아준다.
-        UserModel.UserLoginResDto body = UserModel.UserLoginResDto.builder()
-                .userId(userDetails.getUserId())
-                .userRole(userRole)
-                .nickname(userDetails.getUser().getNickname())
-                .accessToken(accessToken)
-                .build();
-        //jsonbody 형식으로 보내주기
-        ApiResponse<UserModel.UserLoginResDto> res = ApiResponse.ok(HttpStatus.OK.value(), "로그인이 완료되었습니다.", body);
-        CommonFuntion.addJsonBodyServletResponse(response, res);
+        // 4. RT를 local DB에 저장해준다.
+        RefreshToken refreshTokenEntity = RefreshToken.createRefreshToken(refreshToken, userDetails.getUser());
+        refreshTokenRepository.save(refreshTokenEntity);
 
         // 5. RT를 쿠키("refreshToken")에 세팅한다.
         LoginFilter.addRefreshTokenToCookie(response, refreshToken);
