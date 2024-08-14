@@ -38,7 +38,17 @@
 </table>
 
 ## ⚠️Trouble Shooting
-##### ❗ solution</br>
+### 🚨  **issue 1**
+
+**🔐로그인 AccessToken, RefreshToken 발급**
+
+로그인 시 accessToken을 발급할 때 loginFilter에서 token을 발급하지 않고 controller에서 직접 accessToken을 발급하고 있었다. 
+
+❓ cause
+
+클라이언트가 로그인 요청을 보내면 loginFilter를 거치지 않고 바로 controller로 가는 문제가 발생되고 있었다.
+
+❗ solution
 `this.setFilterProcessesUrl("/signin");`
 
 위의 코드를 통해 `UsernamePasswordAuthenticationFilter`가 로그인 요청을 처리할 URL을 `/signin`으로 지정합니다. 이 설정으로 인해, 클라이언트가 `/signin` 경로로 로그인 요청을 보낼 때 해당 필터가 이 요청을 가로채어 처리하도록 설정됩니다.
