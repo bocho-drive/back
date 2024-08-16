@@ -33,7 +33,6 @@ public class SwaggerConfig {
                 .addServersItem(server);
     }
 
-
     @Bean
     public Info customOpenAPI() {
         return new Info()
