@@ -61,7 +61,7 @@
 
 
 ## Service Architecture
-수인님 써주셈요!
+<img src="https://github.com/user-attachments/assets/691059b9-bfda-48be-800d-f1ba2dcc0c20" alt=""/>
 
 ## 🛠️Tools
 #### backend
