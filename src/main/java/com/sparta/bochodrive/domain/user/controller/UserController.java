@@ -1,11 +1,10 @@
 package com.sparta.bochodrive.domain.user.controller;
 
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
-import com.sparta.bochodrive.domain.user.model.UserModel;
-import com.sparta.bochodrive.domain.user.model.UserModel.UserLoginReqDto;
 import com.sparta.bochodrive.domain.user.model.UserModel.UserRegistDto;
 import com.sparta.bochodrive.domain.user.service.UserService;
 import com.sparta.bochodrive.global.entity.ApiResponse;
+import com.sparta.bochodrive.global.function.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +31,7 @@ public class UserController {
     public ApiResponse postLogout(HttpServletResponse response, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         userService.logout(customUserDetails.getUser());
 
-        Cookie removeRefreshTokenCookie = new Cookie("refreshToken", null);
-        removeRefreshTokenCookie.setMaxAge(0);
-        removeRefreshTokenCookie.setPath("/");
-
-        response.addCookie(removeRefreshTokenCookie);
+        CookieUtil.deleteRefreshCookie(response);
 
         return ApiResponse.ok(HttpStatus.OK.value(), "로그아웃에 성공하였습니다.");
     }

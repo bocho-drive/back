@@ -4,6 +4,7 @@ import com.sparta.bochodrive.domain.security.enums.UserRole;
 import com.sparta.bochodrive.global.entity.ApiResponse;
 import com.sparta.bochodrive.global.exception.ErrorCode;
 import com.sparta.bochodrive.global.function.CommonFuntion;
+import com.sparta.bochodrive.global.function.CookieUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -124,7 +125,7 @@ public class JwtUtils {
     public String getRefreshTokenFromCookie(HttpServletRequest request) {
         if(request.getCookies()!=null) {
             for(Cookie cookie : request.getCookies()) {
-                if("refreshToken".equals(cookie.getName())){
+                if(CookieUtil.REFRESH_TOKEN.equals(cookie.getName())){
                     return cookie.getValue();
                 }
             }

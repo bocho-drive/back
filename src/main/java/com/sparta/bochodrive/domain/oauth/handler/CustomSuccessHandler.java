@@ -2,25 +2,17 @@ package com.sparta.bochodrive.domain.oauth.handler;
 
 import com.sparta.bochodrive.domain.oauth.dto.CustomOAuth2User;
 import com.sparta.bochodrive.domain.refreshtoken.RefreshService;
-import com.sparta.bochodrive.domain.refreshtoken.entity.RefreshToken;
-import com.sparta.bochodrive.domain.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.bochodrive.domain.security.enums.UserRole;
-import com.sparta.bochodrive.domain.security.filter.LoginFilter;
 import com.sparta.bochodrive.domain.security.model.CustomUserDetails;
 import com.sparta.bochodrive.domain.security.service.CustomerUserDetailsService;
 import com.sparta.bochodrive.domain.security.utils.JwtUtils;
-import com.sparta.bochodrive.domain.user.model.UserModel;
-import com.sparta.bochodrive.global.entity.ApiResponse;
-import com.sparta.bochodrive.global.function.CommonFuntion;
 import com.sparta.bochodrive.global.function.CookieUtil;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -64,8 +56,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
 
         // 5. RT를 쿠키("refreshToken")에 세팅한다.
-        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
-        response.addCookie(refreshTokenToCookie);
+        CookieUtil.addRefreshCookie(response, refreshToken);
+//        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
+//        response.addCookie(refreshTokenToCookie);
 
         // 6. 프론트 리다이렉트 URL을 설정해준다.
         response.sendRedirect(getRedirectURL(redirectURL,accessToken));

@@ -81,8 +81,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtUtils.createRefreshToken(email);
 
         //3. RT를 cookie에 담아준다.
-        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
-        response.addCookie(refreshTokenToCookie);
+        CookieUtil.addRefreshCookie(response, refreshToken);
+//        Cookie refreshTokenToCookie = CookieUtil.createRefreshTokenToCookie(refreshToken);
+//        response.addCookie(refreshTokenToCookie);
 
         // 4. RT를 local DB에 저장해준다.
         refreshService.saveRefreshToken(refreshToken, userDetails.getUser());
