@@ -38,25 +38,7 @@
 </table></br>
        
 #### 👪backend 역할 분담
-<table>
- <tr>
- <td>이름</td>
- <td>역할 분담</td>
-</tr>
-<tr>
- <td>조수인</td>
- <td></td>
-</tr>
-<tr>
- <td>김영아</td>
- <td></td>
-</tr>
-
-<tr>
- <td>전효열</td>
- <td></td>
-</tr>
-</table>
+<table> <tr> <td><strong>이름</strong></td> <td><strong>역할 분담</strong></td> </tr> <tr> <td>조수인</td> <td>소셜 로그인, 마이페이지, Nginx 사용을 통한 배포 인프라 작업</td> </tr> <tr> <td>김영아</td> <td>커뮤니티, 챌린지 인증글 작성, 챌린지 등록, 댓글, 좋아요, 투표, RefreshToken 로그인 기능, 소셜 로그인, 이미지 S3 업로드</td> </tr> <tr> <td>전효열</td> <td>WebSocket, 영상 공유, 연수 매칭</td> </tr> </table>
 
 
 
