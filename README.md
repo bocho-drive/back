@@ -110,9 +110,21 @@
 ## ERD 
 
 ## 🌟Backend 주요 기술
-1. 로그인 : JWT 토큰 방식, spring security
-2. websocket
-3. imageS3 upload
+1. 로그인: JWT 토큰 방식, Spring Security
+
+JWT(Json Web Token)를 활용하여 사용자 인증을 구현하였습니다. 클라이언트가 로그인할 때, 서버는 AccessToken과 RefreshToken을 발급해 클라이언트에게 전달한다. AccessToken은 일정 시간이 지나면 만료되며, RefreshToken을 통해 AccessToken을 재발급하여 사용자의 로그인을 유지한다.
+Spring Security를 통해 인증과 인가를 처리하고, 사용자 정보의 보안을 강화했다. 소셜 로그인(Kakao, Google) 또한 Spring Security와 OAuth2를 통해 구현했다.
+
+2. WebSocket
+
+WebSocket을 이용해 실시간 통신을 구현했다. 서버와 클라이언트 간 양방향 통신이 가능하며, 사용자가 실시간으로 영상 공유 및 연수 매칭과 같은 기능을 수행할 수 있도록 설계했다.
+HTTP와는 달리 WebSocket은 연결이 유지된 상태에서 데이터 교환이 가능하기 때문에, 빠른 응답 시간과 더 나은 사용자 경험을 제공한다.
+
+3. 이미지 S3 업로드
+
+**AWS S3(Simple Storage Service)**를 사용하여 이미지 파일을 저장하고 관리한다. 사용자가 이미지를 업로드하면 서버는 해당 파일을 S3 버킷에 저장합니다. S3는 고가용성과 확장성을 제공하여 대규모의 이미지 파일도 안정적으로 저장할 수 있다.
+업로드된 이미지는 URL 형태로 관리되며, 필요할 때마다 쉽게 접근할 수 있다. S3와 연동된 파일 관리 기능은 비용 효율적이며, 데이터 백업 및 복구 기능을 통해 보안과 안정성을 유지한다.
+또한, S3 버킷의 정책 설정을 통해 업로드된 파일에 대한 접근 제어가 가능하며, 파일의 공개 여부를 설정해 이미지 보안을 강화할 수 있다.
    
 ## ⚠️Trouble Shooting
 #### 🚨  **issue 1**
